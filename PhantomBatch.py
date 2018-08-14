@@ -80,7 +80,10 @@ def initiliase_phantom(conf):
     if isinstance(conf['setup'], list):
         for setup in conf['setup']:
             setup_dir = os.path.join(os.environ['PHANTOM_DATA'], conf['name'], 'phantom_'+setup)
-            os.mkdir(setup_dir)
+
+            if not os.path.exists(setup_dir):
+                os.mkdir(setup_dir)
+
             os.system(os.path.join(os.environ['PHANTOM_DIR'], 'scripts', 'writemake.sh')+' ' +
                       setup + ' > ' + os.path.join(setup_dir, 'Makefile'))
             os.chdir(setup_dir)
@@ -94,12 +97,15 @@ def initiliase_phantom(conf):
 
     else:
         setup_dir = os.path.join(os.environ['PHANTOM_DATA'], conf['name'], 'phantom_' + conf['setup'])
-        os.mkdir(setup_dir)
+
+        if not os.path.exists(setup_dir):
+            os.mkdir(setup_dir)
+
         os.system(os.path.join(os.environ['PHANTOM_DIR'], 'scripts', 'writemake.sh') + ' ' +
                   conf['setup'] + ' > ' + os.path.join(setup_dir, 'Makefile'))
         os.chdir(setup_dir)
-        os.system('make' + conf['make_options'])
-        os.system('make setup' + conf['make_setup_options'])
+        os.system('make ' + conf['make_options'])
+        os.system('make setup ' + conf['make_setup_options'])
 
         if 'make_moddump_options' in conf:
             os.system('make moddump ' + conf['make_moddump_options'])
