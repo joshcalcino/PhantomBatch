@@ -101,7 +101,7 @@ def initiliase_phantom(conf):
         os.system('make' + conf['make_options'])
         os.system('make setup' + conf['make_setup_options'])
 
-        if conf['make_moddump_options'] is not None:
+        if 'make_moddump_options' in conf:
             os.system('make moddump ' + conf['make_moddump_options'])
 
         os.chdir(os.environ['PHANTOM_DATA'])
