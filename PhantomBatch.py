@@ -27,7 +27,7 @@ def dir_func(dirs, string, dict_arr):
 def create_dirs(conf):
 
     suite_directory = os.path.join(os.environ['PHANTOM_DATA'], conf['name'])
-    dirs = []
+    dirs = [0]
 
     for key in conf:
         # print(key)a
