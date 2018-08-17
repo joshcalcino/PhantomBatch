@@ -22,6 +22,7 @@ def dir_func(dirs, string, dict_arr):
         dirs = ['']*len(dict_arr)
     for i in range(0, len(dict_arr)):
         dirs = dirs+len(dirs)*([string+str(dict_arr[i]).replace('.', '')])
+    print(dirs)
     return dirs
 
 
@@ -53,10 +54,12 @@ def create_dirs(conf):
     print(dirs)
     for dir in dirs:
         cdir = os.path.join(suite_directory, 'simulations', dir)
+        print(cdir)
         if os.path.exists(cdir):
             pass
         else:
-            os.mkdir(cdir)
+            # os.mkdir(cdir)
+            pass
 
     conf['dirs'] = dirs
 
