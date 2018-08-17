@@ -17,11 +17,15 @@ def submit_job():
 
 def dir_func(dirs, string, dict_arr):
     if len(dirs) is not 0:
-        dirs = dirs + len(dirs)*['_']
+        dirs = [i+'_' for i in dirs]
     else:
         dirs = ['']*len(dict_arr)
+
+    print(dict_arr)
+    print(len(dict_arr))
     for i in range(0, len(dict_arr)):
-        dirs = dirs+len(dirs)*([string+str(dict_arr[i]).replace('.', '')])
+        dirs = [i + string+str(dict_arr[i]).replace('.', '') for i in dirs]
+        #dirs = dirs+len(dirs)*([string+str(dict_arr[i]).replace('.', '')])
     print(dirs)
     return dirs
 
