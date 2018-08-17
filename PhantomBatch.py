@@ -18,15 +18,18 @@ def submit_job():
 def dir_func(dirs, string, dict_arr):
     print('Entering dir_func...')
     if len(dirs) is not 0:
+        print('Directory array is not empty, adding underscores.')
         dirs = [i+'_' for i in dirs]
         dirs *= len(dict_arr)
     else:
+        print('Directory array is empty, adding in the first list of parameters.')
         dirs = []*len(dict_arr)
         for i in range(0, len(dirs)):
             dirs = [j + string+str(dict_arr[i]).replace('.', '') for j in dirs]
         return dirs
 
     tmp_dir = ['']*len(dict_arr)
+    print(tmp_dir)
     for i in range(0, len(dict_arr)):
         tmp_dir[i] = string+str(dict_arr[i]).replace('.', '')
 
@@ -36,12 +39,8 @@ def dir_func(dirs, string, dict_arr):
 
     dirs = [dirs[i] + tmp_dir[j] for i in range(0, len(dirs)) for j in range(0, len(tmp_dir))]
 
-    # for i in range(0, len(dirs)):
-    #
-    #     # dirs[i] = [dirs[i] + string]
-    #     #dirs[i] = [dirs[i] + str(dict_arr[i]).replace('.', '') for j in dirs]
-    #     #dirs = dirs+len(dirs)*([string+str(dict_arr[i]).replace('.', '')])
     print(dirs)
+
     return dirs
 
 
