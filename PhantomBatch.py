@@ -79,8 +79,8 @@ def create_dirs(conf):
         if os.path.exists(cdir):
             pass
         else:
-            # os.mkdir(cdir)
-            pass
+            os.mkdir(cdir)
+            # pass
 
     conf['dirs'] = dirs
 
