@@ -104,7 +104,7 @@ def initialise(conf):
         # print(dir)
         # print(os.path.join(os.environ['PHANTOM_DATA'], conf['name'], 'phantom_'+conf['setup']))
         # print(os.path.join(sims_dir, dir))
-        os.system('cp ' + os.path.join(os.environ['PHANTOM_DATA'], conf['name'], 'phantom_'+conf['setup']) + '* '
+        os.system('cp ' + os.path.join(os.environ['PHANTOM_DATA'], conf['name'], 'phantom_'+conf['setup']) + '/* '
                   + os.path.join(sims_dir, dir))
 
 
