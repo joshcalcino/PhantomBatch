@@ -80,7 +80,7 @@ def create_dirs(conf):
             pass
         else:
             print(cdir)
-            #os.mkdir(cdir)
+            # os.mkdir(cdir)
             # pass
 
     conf['dirs'] = dirs
@@ -101,7 +101,8 @@ def initialise(conf):
     create_dirs(conf)
 
     for dir in conf['dirs']:
-        os.system('cp ' + os.path.join(conf['name'], 'phantom_'+conf['setup'], '/*') + ' ' + os.path.join(sims_dir, dir))
+        print(dir)
+        # os.system('cp ' + os.path.join(conf['name'], 'phantom_'+conf['setup'], '/*') + ' ' + os.path.join(sims_dir, dir))
 
 
 def initiliase_phantom(conf):
