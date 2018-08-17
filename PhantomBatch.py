@@ -32,6 +32,7 @@ def create_dirs(conf):
     for key in conf:
         print(key)
         print(conf[key])
+        print(type(conf[key]))
         if isinstance(conf[key], list):
             if key == 'binary_e':
                 dirs = dir_func(dirs, 'e', conf[key])
