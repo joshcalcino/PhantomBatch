@@ -30,10 +30,11 @@ def create_dirs(conf):
     dirs = []
 
     for key in conf:
-        print(key)
-        print(conf[key])
-        print(type(conf[key]))
+        # print(key)a
+        # print(conf[key])
+        # print(type(conf[key]))
         if isinstance(conf[key], list):
+            print(key)
             if key == 'binary_e':
                 dirs = dir_func(dirs, 'e', conf[key])
 
@@ -48,7 +49,7 @@ def create_dirs(conf):
 
             if key == 'binary_i':
                 dirs = dir_func(dirs, 'i', conf[key])
-
+    print(dirs)
     for dir in dirs:
         cdir = os.path.join(suite_directory, 'simulations', dir)
         if os.path.exists(cdir):
