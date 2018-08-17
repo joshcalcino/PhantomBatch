@@ -18,7 +18,8 @@ def submit_job():
 def dir_func(dirs, string, dict_arr):
     if len(dirs) is not 0:
         dirs = dirs + '_'
-    dirs = dirs*len(dict_arr)
+    else:
+        dirs = ['']*len(dict_arr)
     for i in range(0, len(dirs)):
         dirs[i] = string+str(dict_arr).replace('.', '')
     return dirs
@@ -27,7 +28,7 @@ def dir_func(dirs, string, dict_arr):
 def create_dirs(conf):
 
     suite_directory = os.path.join(os.environ['PHANTOM_DATA'], conf['name'])
-    dirs = [0]
+    dirs = []
 
     for key in conf:
         # print(key)a
