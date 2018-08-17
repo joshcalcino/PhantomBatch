@@ -29,6 +29,8 @@ def dir_func(dirs, string, dict_arr):
     for i in range(0, len(dict_arr)):
         tmp_dir[i] = string+str(dict_arr[i]).replace('.', '')
 
+    print(tmp_dir)
+
     print(dirs)
 
     dirs = [dirs[i] + tmp_dir[j] for i in range(0, len(dirs)) for j in range(0, len(tmp_dir))]
