@@ -17,7 +17,7 @@ def submit_job():
 
 def dir_func(dirs, string, dict_arr):
     if len(dirs) is not 0:
-        dirs = dirs + '_'
+        dirs = dirs + len(dirs)*['_']
     else:
         dirs = ['']*len(dict_arr)
     for i in range(0, len(dirs)):
