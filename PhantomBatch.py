@@ -24,10 +24,10 @@ def dir_func(dirs, string, dict_arr):
         dirs *= len(dict_arr)
     else:
         print('Directory array is empty, adding in the first list of parameters.')
-        dirs = ['']*len(dict_arr)
-        for i in range(0, len(dirs)):
-            dirs = [j + string+str(dict_arr[i]).replace('.', '') for j in dirs]
-        print(dirs)
+        # dirs = ['']*len(dict_arr)
+        #for i in range(0, len(dirs)):
+        dirs = [string+str(i).replace('.', '') for i in dict_arr]
+        #print(dirs)
         return dirs
 
     tmp_dir = ['']*len(dict_arr)
