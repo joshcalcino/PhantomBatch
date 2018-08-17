@@ -24,8 +24,8 @@ def dir_func(dirs, string, dict_arr):
     print(dict_arr)
     print(len(dict_arr))
     for i in range(0, len(dict_arr)):
-        dirs = [i + string for i in dirs]
-        dirs = [i + str(dict_arr[i]).replace('.', '') for i in dirs]
+        dirs = [j + string for j in dirs]
+        dirs = [j + str(dict_arr[i]).replace('.', '') for j in dirs]
         #dirs = dirs+len(dirs)*([string+str(dict_arr[i]).replace('.', '')])
     print(dirs)
     return dirs
