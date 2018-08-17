@@ -25,7 +25,7 @@ def dir_func(dirs, string, dict_arr):
             dirs = [j + string+str(dict_arr[i]).replace('.', '') for j in dirs]
         return dirs
 
-    tmp_dir = []*len(dict_arr)
+    tmp_dir = ['']*len(dict_arr)
     for i in range(0, len(dict_arr)):
         tmp_dir[i] = string+str(dict_arr[i]).replace('.', '')
 
@@ -69,7 +69,7 @@ def create_dirs(conf):
 
             if key == 'binary_i':
                 dirs = dir_func(dirs, 'i', conf[key])
-    print(dirs)
+
     for dir in dirs:
         cdir = os.path.join(suite_directory, 'simulations', dir)
         print(cdir)
