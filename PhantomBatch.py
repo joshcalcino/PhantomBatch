@@ -20,8 +20,8 @@ def dir_func(dirs, string, dict_arr):
         dirs = dirs + len(dirs)*['_']
     else:
         dirs = ['']*len(dict_arr)
-    for i in range(0, len(dirs)):
-        dirs[i] = dirs[i]+string+str(dict_arr[i]).replace('.', '')
+    for i in range(0, len(dict_arr)):
+        dirs = dirs+string+str(dict_arr[i]).replace('.', '')
     return dirs
 
 
