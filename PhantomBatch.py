@@ -101,11 +101,11 @@ def initialise(conf):
     create_dirs(conf)
 
     for dir in conf['dirs']:
-        print(dir)
-        print(os.path.join(os.environ['PHANTOM_DATA'], conf['name'], 'phantom_'+conf['setup']))
-        print(os.path.join(sims_dir, dir))
-        #os.system('cp ' + os.path.join(os.environ['PHANTOM_DATA'], conf['name'], 'phantom_'+conf['setup'],
-        #                               '/*') + ' ' + os.path.join(sims_dir, dir))
+        # print(dir)
+        # print(os.path.join(os.environ['PHANTOM_DATA'], conf['name'], 'phantom_'+conf['setup']))
+        # print(os.path.join(sims_dir, dir))
+        os.system('cp ' + os.path.join(os.environ['PHANTOM_DATA'], conf['name'], 'phantom_'+conf['setup']) + '* '
+                  + os.path.join(sims_dir, dir))
 
 
 def initiliase_phantom(conf):
