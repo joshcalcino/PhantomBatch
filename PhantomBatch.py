@@ -91,14 +91,16 @@ def initialise(conf):
     if not os.path.exists(suite_directory):
         os.mkdir(suite_directory)
 
-    if not os.path.exists(os.path.join(suite_directory, 'simulations')):
-        os.mkdir(os.path.join(suite_directory, 'simulations'))
+    sims_dir = os.path.join(suite_directory, 'simulations')
+
+    if not os.path.exists(sims_dir):
+        os.mkdir(sims_dir)
 
     initiliase_phantom(conf)
     create_dirs(conf)
 
     for dir in conf['dirs']:
-        os.system('cp ' + os.path.join(conf['name'], 'phantom_'+conf['setup'], '/*') + ' ' + dir)
+        os.system('cp ' + os.path.join(conf['name'], 'phantom_'+conf['setup'], '/*') + ' ' + os.path.join(sims_dir, dir))
 
 
 def initiliase_phantom(conf):
