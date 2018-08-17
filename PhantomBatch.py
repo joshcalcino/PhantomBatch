@@ -16,6 +16,7 @@ def submit_job():
 
 
 def dir_func(dirs, string, dict_arr):
+    print('Entering dir_func...')
     if len(dirs) is not 0:
         dirs = [i+'_' for i in dirs]
         dirs *= len(dict_arr)
@@ -56,6 +57,7 @@ def create_dirs(conf):
         if isinstance(conf[key], list):
             print(key)
             if key == 'binary_e':
+                print('This should print.. ')
                 dirs = dir_func(dirs, 'e', conf[key])
 
             if key == 'binary_a':
