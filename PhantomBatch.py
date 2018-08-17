@@ -7,10 +7,6 @@ def load_config(filename):
     return d
 
 
-def initiliase_setup():
-    pass
-
-
 def check_running_jobs():
     pass
 
@@ -84,16 +80,17 @@ def initiliase_phantom(conf):
             if not os.path.exists(setup_dir):
                 os.mkdir(setup_dir)
 
-            os.system(os.path.join(os.environ['PHANTOM_DIR'], 'scripts', 'writemake.sh')+' ' +
-                      setup + ' > ' + os.path.join(setup_dir, 'Makefile'))
-            os.chdir(setup_dir)
-            os.system('make '+conf['make_options'])
-            os.system('make setup '+conf['make_setup_options'])
+            if not os.path.exists(os.path.join(setup_dir, 'Makefile')):
+                os.system(os.path.join(os.environ['PHANTOM_DIR'], 'scripts', 'writemake.sh')+' ' +
+                          setup + ' > ' + os.path.join(setup_dir, 'Makefile'))
+                os.chdir(setup_dir)
+                os.system('make '+conf['make_options'])
+                os.system('make setup '+conf['make_setup_options'])
 
-            if conf['make_setup_options'] is not None:
-                os.system('make moddump ' + conf['make_moddump_options'])
+                if conf['make_setup_options'] is not None:
+                    os.system('make moddump ' + conf['make_moddump_options'])
 
-            os.chdir(os.environ['PHANTOM_DATA'])
+                os.chdir(os.environ['PHANTOM_DATA'])
 
     else:
         setup_dir = os.path.join(os.environ['PHANTOM_DATA'], conf['name'], 'phantom_' + conf['setup'])
@@ -101,16 +98,18 @@ def initiliase_phantom(conf):
         if not os.path.exists(setup_dir):
             os.mkdir(setup_dir)
 
-        os.system(os.path.join(os.environ['PHANTOM_DIR'], 'scripts', 'writemake.sh') + ' ' +
-                  conf['setup'] + ' > ' + os.path.join(setup_dir, 'Makefile'))
-        os.chdir(setup_dir)
-        os.system('make ' + conf['make_options'])
-        os.system('make setup ' + conf['make_setup_options'])
+        if not os.path.exists(os.path.join(setup_dir, 'Makefile')):
+            os.system(os.path.join(os.environ['PHANTOM_DIR'], 'scripts', 'writemake.sh') + ' ' +
+                      conf['setup'] + ' > ' + os.path.join(setup_dir, 'Makefile'))
 
-        if 'make_moddump_options' in conf:
-            os.system('make moddump ' + conf['make_moddump_options'])
+            os.chdir(setup_dir)
+            os.system('make ' + conf['make_options'])
+            os.system('make setup ' + conf['make_setup_options'])
 
-        os.chdir(os.environ['PHANTOM_DATA'])
+            if 'make_moddump_options' in conf:
+                os.system('make moddump ' + conf['make_moddump_options'])
+
+            os.chdir(os.environ['PHANTOM_DATA'])
 
 
 if __name__ == "__main__":
