@@ -16,18 +16,11 @@ def submit_job():
 
 
 def dir_func(dirs, string, dict_arr):
-    print('Entering dir_func...')
-    print(len(dirs))
     if len(dirs) is not 0:
-        print('Directory array is not empty, adding underscores.')
         dirs = [i+'_' for i in dirs]
         dirs *= len(dict_arr)
     else:
-        print('Directory array is empty, adding in the first list of parameters.')
-        # dirs = ['']*len(dict_arr)
-        #for i in range(0, len(dirs)):
         dirs = [string+str(i).replace('.', '') for i in dict_arr]
-        #print(dirs)
         return dirs
 
     tmp_dir = ['']*len(dict_arr)
@@ -52,13 +45,8 @@ def create_dirs(conf):
     dirs = []
 
     for key in conf:
-        # print(key)a
-        # print(conf[key])
-        # print(type(conf[key]))
         if isinstance(conf[key], list):
-            print(key)
             if key == 'binary_e':
-                print('This should print.. ')
                 dirs = dir_func(dirs, 'e', conf[key])
 
             if key == 'binary_a':
@@ -75,12 +63,10 @@ def create_dirs(conf):
 
     for dir in dirs:
         cdir = os.path.join(suite_directory, 'simulations', dir)
-        print(cdir)
         if os.path.exists(cdir):
             pass
         else:
-            print(cdir)
-            # os.mkdir(cdir)
+            os.mkdir(cdir)
             # pass
 
     conf['dirs'] = dirs
@@ -101,9 +87,6 @@ def initialise(conf):
     create_dirs(conf)
 
     for dir in conf['dirs']:
-        # print(dir)
-        # print(os.path.join(os.environ['PHANTOM_DATA'], conf['name'], 'phantom_'+conf['setup']))
-        # print(os.path.join(sims_dir, dir))
         os.system('cp ' + os.path.join(os.environ['PHANTOM_DATA'], conf['name'], 'phantom_'+conf['setup']) + '/* '
                   + os.path.join(sims_dir, dir))
 
