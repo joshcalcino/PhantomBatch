@@ -138,15 +138,14 @@ def setup_from_array(setup_strings, string, dict_arr):
         return setup_strings
 
     else:
-        setup_strings = [setup_strings[i].append(string + ' = ') for i in range(0, len(setup_strings))]
-        print(setup_strings)
+        [setup_strings[i].append(string + ' = ') for i in range(0, len(setup_strings))]
         # setup_strings *= len(dict_arr)
 
     print(setup_strings)
 
     tmp_setup_strings = ['']*len(dict_arr)
     for i in range(0, len(dict_arr)):
-        tmp_setup_strings[i] = string+str(dict_arr[i]).replace('.', '')
+        tmp_setup_strings[i] = string+str(dict_arr[i])
 
     setup_strings = [setup_strings[i] + tmp_setup_strings[j] for i in range(0, len(setup_strings))
                      for j in range(0, len(tmp_setup_strings))]
