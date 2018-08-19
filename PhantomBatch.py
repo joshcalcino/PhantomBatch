@@ -131,7 +131,7 @@ def initiliase_phantom(pbconf):
 
 
 def setup_from_array(setup_strings, string, dict_arr):
-    if len(setup_strings) is 1:
+    if len(setup_strings) is 0:
         setup_strings = [string + ' = ' + str(i) for i in dict_arr]
         return setup_strings
 
@@ -140,15 +140,13 @@ def setup_from_array(setup_strings, string, dict_arr):
     tmp_setup_strings = ['']*len(dict_arr)
     for i in range(0, len(dict_arr)):
         tmp_setup_strings[i] = string + ' = ' + str(dict_arr[i])
-
     setup_strings = [[setup_strings[i], tmp_setup_strings[j]] for i in range(0, len(setup_strings))
                      for j in range(0, len(tmp_setup_strings))]
-
     return setup_strings
 
 
 def get_setup_strings(pconf, pbconf):
-    setup_strings = [[]]
+    setup_strings = []
     for key in pconf:
         if isinstance(pconf[key], list):
             if key == 'binary_e':
@@ -165,6 +163,8 @@ def get_setup_strings(pconf, pbconf):
 
             if key == 'binary_i':
                 setup_strings = setup_from_array(setup_strings, key, pconf[key])
+
+    return setup_strings
     
 
 def create_setup(pconf, pbconf):
