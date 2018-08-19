@@ -134,10 +134,14 @@ def create_setup(conf):
                 binary_setup = open('setup/binary.setup', 'r')
                 for line in binary_setup:
                     for key in conf:
+                        key_added = False
                         if key in line:
                             new_setup.write(key + ' = ' + str(conf[key]))
-                        else:
-                            new_setup.write(line)
+                            key_added = True
+
+                    if not key_added:
+                        new_setup.write(line)
+
 
 
 if __name__ == "__main__":
