@@ -143,6 +143,7 @@ def setup_from_array(setup_strings, string, dict_arr):
 
     print(setup_strings)
     setup_strings = setup_strings * len(dict_arr)
+    print(setup_strings)
 
     tmp_setup_strings = ['']*len(dict_arr)
     for i in range(0, len(dict_arr)):
@@ -150,7 +151,7 @@ def setup_from_array(setup_strings, string, dict_arr):
 
     print(tmp_setup_strings)
 
-    [setup_strings[i+j].append(tmp_setup_strings[j]) for i in range(0, len(setup_strings))
+    [setup_strings[i].append(tmp_setup_strings[j]) for i in range(0, len(setup_strings))
      for j in range(0, len(tmp_setup_strings))]
     print(setup_strings)
     return setup_strings
