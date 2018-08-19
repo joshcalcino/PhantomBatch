@@ -1,11 +1,10 @@
-import argparse
-import os
-import json
+import argparse, os, json
 
 
 def load_config(filename):
     with open(filename) as f:
         d = json.load(f)
+    f.close()
     return d
 
 
@@ -137,7 +136,6 @@ def create_setup(conf):
                             new_setup.write(key + ' = ' + conf[key])
                         else:
                             new_setup.write(line)
-
 
 
 if __name__ == "__main__":
