@@ -131,29 +131,19 @@ def initiliase_phantom(pbconf):
 
 
 def setup_from_array(setup_strings, string, dict_arr):
-    print(len(setup_strings))
     if len(setup_strings) is 1:
         setup_strings = [string + ' = ' + str(i) for i in dict_arr]
-        print(setup_strings)
         return setup_strings
 
-    # else:
-    #     [setup_strings[i].append(string + ' = ') for i in range(0, len(setup_strings))]
-    #     # setup_strings *= len(dict_arr)
-
-    print(setup_strings)
     setup_strings = setup_strings * len(dict_arr)
-    print(setup_strings)
 
     tmp_setup_strings = ['']*len(dict_arr)
     for i in range(0, len(dict_arr)):
         tmp_setup_strings[i] = string + ' = ' + str(dict_arr[i])
 
-    print(tmp_setup_strings)
-
     setup_strings = [[setup_strings[i], tmp_setup_strings[j]] for i in range(0, len(setup_strings))
                      for j in range(0, len(tmp_setup_strings))]
-    print(setup_strings)
+
     return setup_strings
 
 
@@ -183,6 +173,7 @@ def create_setup(pconf, pbconf):
     looped_keys = loop_keys_dir(pconf)
     setup_dirs = [os.path.join(os.environ['PHANTOM_DATA'], pbconf['name'], 'simulations', key) for key in looped_keys]
     setup_strings = get_setup_strings(pconf, pbconf)
+    print(setup_strings)
 
     for dir in setup_dirs:
         filename = os.path.join(dir, setup_filename)
