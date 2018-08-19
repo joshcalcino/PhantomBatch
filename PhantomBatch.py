@@ -1,10 +1,13 @@
-import argparse, os, json
+import argparse
+import os
+import json
 
 
 def load_config(filename):
-    with open(filename) as f:
-        d = json.load(f)
-    f.close()
+    d = json.load(filename)
+    # with open(filename) as f:
+    #     d = json.load(f)
+    # f.close()
     return d
 
 
