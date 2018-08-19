@@ -180,7 +180,7 @@ def get_setup_strings(pconf, pbconf):
 def create_setup(pconf, pbconf):
 
     setup_filename = os.path.join(pbconf['setup'] + '.setup')
-    setup_dirs = loop_keys_dir(pconf)
+    setup_dirs = os.path.join(os.environ['PHANTOM_DATA'], + pbconf['name'], 'simulations', loop_keys_dir(pconf))
     setup_strings = get_setup_strings(pconf, pbconf)
 
     for dir in setup_dirs:
