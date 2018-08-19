@@ -133,7 +133,7 @@ def initiliase_phantom(pbconf):
 def setup_from_array(setup_strings, string, dict_arr):
     print(len(setup_strings))
     if len(setup_strings) is 1:
-        setup_strings = [[string + ' = ' + str(i)] for i in dict_arr]
+        setup_strings = [string + ' = ' + str(i) for i in dict_arr]
         print(setup_strings)
         return setup_strings
 
