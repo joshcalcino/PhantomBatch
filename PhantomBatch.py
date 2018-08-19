@@ -130,7 +130,7 @@ def create_setup(conf):
     setup_filename = os.path.join(os.environ['PHANTOM_DATA'], conf['name'], 'phantom_'+conf['setup'], conf['setup']+'.setup')
     with open(setup_filename, 'w') as new_setup:
         if 'binary' in conf:
-            if conf('binary'):
+            if conf['binary']:
                 binary_setup = open('setup/binary.setup', 'r')
                 for line in binary_setup:
                     for key in conf:
