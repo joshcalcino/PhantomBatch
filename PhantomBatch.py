@@ -151,8 +151,8 @@ def setup_from_array(setup_strings, string, dict_arr):
 
     print(tmp_setup_strings)
 
-    [setup_strings[i*j].append(tmp_setup_strings[j]) for i in range(0, len(setup_strings))
-     for j in range(0, len(tmp_setup_strings))]
+    setup_strings = [[setup_strings[i], tmp_setup_strings[j]] for i in range(0, len(setup_strings))
+                     for j in range(0, len(tmp_setup_strings))]
     print(setup_strings)
     return setup_strings
 
@@ -180,7 +180,8 @@ def get_setup_strings(pconf, pbconf):
 def create_setup(pconf, pbconf):
 
     setup_filename = os.path.join(pbconf['setup'] + '.setup')
-    setup_dirs = os.path.join(os.environ['PHANTOM_DATA'], + pbconf['name'], 'simulations', loop_keys_dir(pconf))
+    looped_keys = loop_keys_dir(pconf)
+    setup_dirs = [os.path.join(os.environ['PHANTOM_DATA'], pbconf['name'], 'simulations', key) for key in looped_keys]
     setup_strings = get_setup_strings(pconf, pbconf)
 
     for dir in setup_dirs:
