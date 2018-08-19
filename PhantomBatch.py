@@ -128,7 +128,7 @@ def initiliase_phantom(conf):
 
 def create_setup(conf):
     setup_filename = os.path.join(os.environ['PHANTOM_DATA'], conf['name'], 'phantom_'+conf['setup'], conf['setup']+'.setup')
-    with os.fdopen(setup_filename, 'w', 2) as new_setup:
+    with open(setup_filename, 'w') as new_setup:
         if 'binary' in conf:
             if conf('binary'):
                 binary_setup = open('setup/binary.setup', 'r')
