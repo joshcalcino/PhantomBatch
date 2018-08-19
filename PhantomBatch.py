@@ -4,10 +4,9 @@ import json
 
 
 def load_config(filename):
-    d = json.load(filename)
-    # with open(filename) as f:
-    #     d = json.load(f)
-    # f.close()
+    with open(filename) as f:
+        d = json.load(f)
+    f.close()
     return d
 
 
