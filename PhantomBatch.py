@@ -35,27 +35,27 @@ def dir_func(dirs, string, dict_arr):
     return dirs
 
 
-def create_dirs(conf):
+def create_dirs(pconf, pbconf):
 
-    suite_directory = os.path.join(os.environ['PHANTOM_DATA'], conf['name'])
+    suite_directory = os.path.join(os.environ['PHANTOM_DATA'], pbconf['name'])
     dirs = []
 
-    for key in conf:
-        if isinstance(conf[key], list):
+    for key in pconf:
+        if isinstance(pconf[key], list):
             if key == 'binary_e':
-                dirs = dir_func(dirs, 'e', conf[key])
+                dirs = dir_func(dirs, 'e', pconf[key])
 
             if key == 'binary_a':
-                dirs = dir_func(dirs, 'a', conf[key])
+                dirs = dir_func(dirs, 'a', pconf[key])
 
             if key == 'm2':
-                dirs = dir_func(dirs, 'br', conf[key])
+                dirs = dir_func(dirs, 'br', pconf[key])
 
             if key == 'alphaSS':
-                dirs = dir_func(dirs, 'aSS', conf[key])
+                dirs = dir_func(dirs, 'aSS', pconf[key])
 
             if key == 'binary_i':
-                dirs = dir_func(dirs, 'i', conf[key])
+                dirs = dir_func(dirs, 'i', pconf[key])
 
     for dir in dirs:
         cdir = os.path.join(suite_directory, 'simulations', dir)
@@ -64,11 +64,11 @@ def create_dirs(conf):
         else:
             os.mkdir(cdir)
 
-    conf['dirs'] = dirs
+    pbconf['dirs'] = dirs
 
 
-def initialise(conf):
-    suite_directory = os.path.join(os.environ['PHANTOM_DATA'], conf['name'])
+def initialise(pconf, pbconf):
+    suite_directory = os.path.join(os.environ['PHANTOM_DATA'], pbconf['name'])
 
     if not os.path.exists(suite_directory):
         os.mkdir(suite_directory)
@@ -78,18 +78,18 @@ def initialise(conf):
     if not os.path.exists(sims_dir):
         os.mkdir(sims_dir)
 
-    initiliase_phantom(conf)
-    create_dirs(conf)
+    initiliase_phantom(pbconf)
+    create_dirs(pconf, pbconf)
 
-    for dir in conf['dirs']:
-        os.system('cp ' + os.path.join(os.environ['PHANTOM_DATA'], conf['name'], 'phantom_'+conf['setup']) + '/* '
+    for dir in pbconf['dirs']:
+        os.system('cp ' + os.path.join(os.environ['PHANTOM_DATA'], pbconf['name'], 'phantom_'+pbconf['setup']) + '/* '
                   + os.path.join(sims_dir, dir))
 
 
-def initiliase_phantom(conf):
-    if isinstance(conf['setup'], list):
-        for setup in conf['setup']:
-            setup_dir = os.path.join(os.environ['PHANTOM_DATA'], conf['name'], 'phantom_'+setup)
+def initiliase_phantom(pbconf):
+    if isinstance(pbconf['setup'], list):
+        for setup in pbconf['setup']:
+            setup_dir = os.path.join(os.environ['PHANTOM_DATA'], pbconf['name'], 'phantom_'+setup)
 
             if not os.path.exists(setup_dir):
                 os.mkdir(setup_dir)
@@ -98,45 +98,45 @@ def initiliase_phantom(conf):
                 os.system(os.path.join(os.environ['PHANTOM_DIR'], 'scripts', 'writemake.sh')+' ' +
                           setup + ' > ' + os.path.join(setup_dir, 'Makefile'))
                 os.chdir(setup_dir)
-                os.system('make '+conf['make_options'])
-                os.system('make setup '+conf['make_setup_options'])
+                os.system('make '+pbconf['make_options'])
+                os.system('make setup '+pbconf['make_setup_options'])
 
-                if conf['make_setup_options'] is not None:
-                    os.system('make moddump ' + conf['make_moddump_options'])
+                if pbconf['make_setup_options'] is not None:
+                    os.system('make moddump ' + pbconf['make_moddump_options'])
 
                 os.chdir(os.environ['PHANTOM_DATA'])
 
     else:
-        setup_dir = os.path.join(os.environ['PHANTOM_DATA'], conf['name'], 'phantom_' + conf['setup'])
+        setup_dir = os.path.join(os.environ['PHANTOM_DATA'], pbconf['name'], 'phantom_' + pbconf['setup'])
 
         if not os.path.exists(setup_dir):
             os.mkdir(setup_dir)
 
         if not os.path.exists(os.path.join(setup_dir, 'Makefile')):
             os.system(os.path.join(os.environ['PHANTOM_DIR'], 'scripts', 'writemake.sh') + ' ' +
-                      conf['setup'] + ' > ' + os.path.join(setup_dir, 'Makefile'))
+                      pbconf['setup'] + ' > ' + os.path.join(setup_dir, 'Makefile'))
 
             os.chdir(setup_dir)
-            os.system('make ' + conf['make_options'])
-            os.system('make setup ' + conf['make_setup_options'])
+            os.system('make ' + pbconf['make_options'])
+            os.system('make setup ' + pbconf['make_setup_options'])
 
-            if 'make_moddump_options' in conf:
-                os.system('make moddump ' + conf['make_moddump_options'])
+            if 'make_moddump_options' in pbconf:
+                os.system('make moddump ' + pbconf['make_moddump_options'])
 
             os.chdir(os.environ['PHANTOM_DATA'])
 
 
-def create_setup(conf):
-    setup_filename = os.path.join(os.environ['PHANTOM_DATA'], conf['name'], 'phantom_'+conf['setup'], conf['setup']+'.setup')
+def create_setup(pconf, pbconf):
+    setup_filename = os.path.join(os.environ['PHANTOM_DATA'], pbconf['name'], 'phantom_'+pbconf['setup'], pbconf['setup']+'.setup')
     with open(setup_filename, 'w') as new_setup:
-        if 'binary' in conf:
-            if conf['binary']:
+        if 'binary' in pbconf:
+            if pbconf['binary']:
                 binary_setup = open('setup/binary.setup', 'r')
                 for line in binary_setup:
-                    for key in conf:
+                    for key in pconf:
                         key_added = False
                         if key in line:
-                            new_setup.write(key + ' = ' + str(conf[key]))
+                            new_setup.write(key + ' = ' + str(pconf[key]))
                             key_added = True
 
                     if not key_added:
@@ -151,8 +151,11 @@ if __name__ == "__main__":
 
     config = load_config(args.config)
 
-    initialise(config)
-    create_setup(config)
+    phantom_config = config['phantom_setup']
+    phantombatch_config = config['phantombatch_setup']
+
+    initialise(phantom_config, phantombatch_config)
+    create_setup(phantom_config, phantombatch_config)
 
 
 
