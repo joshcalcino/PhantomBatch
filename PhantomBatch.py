@@ -135,7 +135,7 @@ def create_setup(conf):
                 for line in binary_setup:
                     for key in conf:
                         if key in line:
-                            new_setup.write(key + ' = ' + conf[key])
+                            new_setup.write(key + ' = ' + str(conf[key]))
                         else:
                             new_setup.write(line)
 
