@@ -139,6 +139,7 @@ def setup_from_array(setup_strings, string, dict_arr):
 
     else:
         setup_strings = [setup_strings[i].append(string + ' = ') for i in range(0, len(setup_strings))]
+        print(setup_strings)
         # setup_strings *= len(dict_arr)
 
     print(setup_strings)
