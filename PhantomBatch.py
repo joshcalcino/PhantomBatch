@@ -35,11 +35,8 @@ def dir_func(dirs, string, dict_arr):
     return dirs
 
 
-def create_dirs(pconf, pbconf):
-
-    suite_directory = os.path.join(os.environ['PHANTOM_DATA'], pbconf['name'])
+def loop_keys_dir(pconf):
     dirs = []
-
     for key in pconf:
         if isinstance(pconf[key], list):
             if key == 'binary_e':
@@ -57,11 +54,18 @@ def create_dirs(pconf, pbconf):
             if key == 'binary_i':
                 dirs = dir_func(dirs, 'i', pconf[key])
 
+    return dirs
+
+
+def create_dirs(pconf, pbconf):
+
+    suite_directory = os.path.join(os.environ['PHANTOM_DATA'], pbconf['name'])
+
+    dirs = loop_keys_dir(pconf)
+
     for dir in dirs:
         cdir = os.path.join(suite_directory, 'simulations', dir)
-        if os.path.exists(cdir):
-            pass
-        else:
+        if not os.path.exists(cdir):
             os.mkdir(cdir)
 
     pbconf['dirs'] = dirs
@@ -126,22 +130,69 @@ def initiliase_phantom(pbconf):
             os.chdir(os.environ['PHANTOM_DATA'])
 
 
+def setup_from_array(setup_strings, string, dict_arr):
+    if len(setup_strings) is 0:
+        setup_strings = [string + ' = ' + str(i) for i in dict_arr]
+        return setup_strings
+
+    else:
+        setup_strings = [setup_strings[i].append(i+' = ') for i in setup_strings]
+        # setup_strings *= len(dict_arr)
+
+    print(setup_strings)
+
+    tmp_setup_strings = ['']*len(dict_arr)
+    for i in range(0, len(dict_arr)):
+        tmp_setup_strings[i] = string+str(dict_arr[i]).replace('.', '')
+
+    setup_strings = [setup_strings[i] + tmp_setup_strings[j] for i in range(0, len(setup_strings))
+                     for j in range(0, len(tmp_setup_strings))]
+    return setup_strings
+
+
+def get_setup_strings(pconf, pbconf):
+    setup_strings = [[]]
+    for key in pconf:
+        if isinstance(pconf[key], list):
+            if key == 'binary_e':
+                setup_strings = setup_from_array(setup_strings, key, pconf[key])
+
+            if key == 'binary_a':
+                setup_strings = setup_from_array(setup_strings, key, pconf[key])
+
+            if key == 'm2':
+                setup_strings = setup_from_array(setup_strings, key, pconf[key])
+
+            if key == 'alphaSS':
+                setup_strings = setup_from_array(setup_strings, key, pconf[key])
+
+            if key == 'binary_i':
+                setup_strings = setup_from_array(setup_strings, key, pconf[key])
+    
+
 def create_setup(pconf, pbconf):
-    setup_filename = os.path.join(os.environ['PHANTOM_DATA'], pbconf['name'], 'phantom_'+pbconf['setup'], pbconf['setup']+'.setup')
-    with open(setup_filename, 'w') as new_setup:
-        if 'binary' in pbconf:
-            if pbconf['binary']:
-                binary_setup = open('setup/binary.setup', 'r')
-                for line in binary_setup:
-                    for key in pconf:
-                        key_added = False
-                        if key in line:
-                            new_setup.write(key + ' = ' + str(pconf[key]) + '\n')
-                            key_added = True
 
-                    if not key_added:
-                        new_setup.write(line)
+    setup_filename = os.path.join(pbconf['setup'] + '.setup')
+    setup_dirs = loop_keys_dir(pconf)
+    setup_strings = get_setup_strings(pconf, pbconf)
 
+    for dir in setup_dirs:
+        filename = os.path.join(dir, setup_filename)
+        with open(filename, 'w') as new_setup:
+            if 'binary' in pbconf:
+                if pbconf['binary']:
+                    binary_setup = open('setup/binary.setup', 'r')
+                    for line in binary_setup:
+                        for key in pconf:
+                            key_added = False
+                            if key in line:
+                                new_setup.write(key + ' = ' + str(pconf[key]) + '\n')
+                                key_added = True
+
+                        if not key_added:
+                            new_setup.write(line)
+
+            new_setup.close()
 
 
 if __name__ == "__main__":
