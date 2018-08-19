@@ -1,4 +1,6 @@
-import argparse, os, json
+import argparse
+import os
+import json
 
 
 def load_config(filename):
@@ -19,23 +21,16 @@ def dir_func(dirs, string, dict_arr):
     if len(dirs) is not 0:
         dirs = [i+'_' for i in dirs]
         dirs *= len(dict_arr)
+
     else:
         dirs = [string+str(i).replace('.', '') for i in dict_arr]
         return dirs
 
     tmp_dir = ['']*len(dict_arr)
-    print(tmp_dir)
     for i in range(0, len(dict_arr)):
         tmp_dir[i] = string+str(dict_arr[i]).replace('.', '')
 
-    print(tmp_dir)
-
-    print(dirs)
-
     dirs = [dirs[i] + tmp_dir[j] for i in range(0, len(dirs)) for j in range(0, len(tmp_dir))]
-
-    print(dirs)
-
     return dirs
 
 
@@ -67,7 +62,6 @@ def create_dirs(conf):
             pass
         else:
             os.mkdir(cdir)
-            # pass
 
     conf['dirs'] = dirs
 
@@ -131,6 +125,21 @@ def initiliase_phantom(conf):
             os.chdir(os.environ['PHANTOM_DATA'])
 
 
+def create_setup(conf):
+    setup_filename = os.path.join(os.environ['PHANTOM_DATA'], conf['name'], 'phantom_'+conf['setup'], conf['setup']+'.setup')
+    with os.fdopen(setup_filename, 'w') as new_setup:
+        if 'binary' in conf:
+            if conf('binary'):
+                binary_setup = open('setup/binary.setup', 'r')
+                for line in binary_setup:
+                    for key in conf:
+                        if key in line:
+                            new_setup.write(key + ' = ' + conf[key])
+                        else:
+                            new_setup.write(line)
+
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Submit batches of Phantom simulations.')
     parser.add_argument('config', type=str)
@@ -139,6 +148,7 @@ if __name__ == "__main__":
     config = load_config(args.config)
 
     initialise(config)
+    create_setup(config)
 
 
 
