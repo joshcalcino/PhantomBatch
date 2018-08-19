@@ -136,7 +136,7 @@ def create_setup(pconf, pbconf):
                     for key in pconf:
                         key_added = False
                         if key in line:
-                            new_setup.write(key + ' = ' + str(pconf[key]))
+                            new_setup.write(key + ' = ' + str(pconf[key]) + '\n')
                             key_added = True
 
                     if not key_added:
