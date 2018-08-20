@@ -187,7 +187,7 @@ def create_setups(pconf, pbconf):
                         for key in pconf:
                             if isinstance(pconf[key], list):
                                 for string in setup_strings[i]:
-                                    if key in line:
+                                    if key in line and key in string:
                                         print(string)
                                         print(key)
                                         print(line)
