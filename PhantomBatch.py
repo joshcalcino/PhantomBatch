@@ -17,8 +17,8 @@ def check_running_jobs(pbconf):
     print(pbconf['job_scheduler'])
     if pbconf['job_scheduler'] == 'slurm':
         jobs = subprocess.check_output('qstat').decode("utf-8")
-        print(jobs)
-        my_jobs = np.genfromtxt(jobs)
+        # print(jobs)
+        # my_jobs = np.genfromtxt(jobs)
         for line in jobs:
             if pbconf['user'] in line:
                 print(line)
