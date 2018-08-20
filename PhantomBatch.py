@@ -253,7 +253,7 @@ if __name__ == "__main__":
     phantombatch_config = config['phantombatch_setup']
 
     initialise(phantom_config, phantombatch_config)
-    create_setups(phantom_config, phantombatch_config)
+    # create_setups(phantom_config, phantombatch_config)
     # run_phantom_setup(phantombatch_config)
     check_running_jobs(phantombatch_config)
 
