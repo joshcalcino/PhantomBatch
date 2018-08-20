@@ -15,6 +15,7 @@ def check_running_jobs(pbconf):
     if pbconf['job_scheduler'] == 'slurm':
         jobs = os.system('qstat')
         print(jobs)
+        print(type(jobs))
 
 
 def submit_job():
