@@ -15,8 +15,13 @@ def check_running_jobs(pbconf):
     # job_names = pbconf['job_names']
     if pbconf['job_scheduler'] == 'slurm':
         jobs = subprocess.check_output('qstat')
-        print(jobs)
-        print(type(jobs))
+        my_jobs = ''
+        for line in jobs:
+            if pbconf['user'] in line:
+                my_jobs.join(line)
+
+        print(my_jobs)
+
 
 
 def submit_job():
