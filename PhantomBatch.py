@@ -15,6 +15,7 @@ def check_running_jobs(pbconf):
     # job_names = pbconf['job_names']
     print(pbconf['job_scheduler'])
     if pbconf['job_scheduler'] == 'slurm':
+        print('Is it entering?')
         jobs = subprocess.check_output('qstat')
         my_jobs = ''
         for line in jobs:
