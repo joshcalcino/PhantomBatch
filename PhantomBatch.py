@@ -178,6 +178,7 @@ def create_setups(pconf, pbconf):
     for dir in setup_dirs:
         filename = os.path.join(dir, setup_filename)
         with open(filename, 'w') as new_setup:
+            print('Entering ' + filename + '..')
             key_added = False
             if 'binary' in pbconf:
                 if pbconf['binary']:
