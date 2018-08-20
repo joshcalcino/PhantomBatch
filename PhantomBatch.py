@@ -1,6 +1,7 @@
 import argparse
 import os
 import json
+import subprocess
 
 
 def load_config(filename):
@@ -13,7 +14,7 @@ def load_config(filename):
 def check_running_jobs(pbconf):
     # job_names = pbconf['job_names']
     if pbconf['job_scheduler'] == 'slurm':
-        jobs = os.system('qstat')
+        jobs = subprocess.check_output('qstat')
         print(jobs)
         print(type(jobs))
 
