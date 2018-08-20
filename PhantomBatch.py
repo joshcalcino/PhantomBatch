@@ -188,7 +188,7 @@ def create_setups(pconf, pbconf):
                         for key in pconf:
                             if isinstance(pconf[key], list):
                                 for string in setup_strings[i]:
-                                    if key in string:
+                                    if key in line:
                                         new_setup.write(string + '\n')
                             else:
                                 key_added = False
@@ -198,7 +198,6 @@ def create_setups(pconf, pbconf):
 
                         if not key_added:
                             new_setup.write(line)
-
 
             new_setup.close()
             i += 1
