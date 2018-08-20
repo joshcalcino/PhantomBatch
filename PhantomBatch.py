@@ -2,6 +2,7 @@ import argparse
 import os
 import json
 import subprocess
+import numpy as np
 
 
 def load_config(filename):
@@ -17,7 +18,7 @@ def check_running_jobs(pbconf):
     if pbconf['job_scheduler'] == 'slurm':
         print('Is it entering?')
         jobs = subprocess.check_output('qstat')
-        my_jobs = ''
+        my_jobs = np.genfromtxt(jobs)
         for line in jobs:
             if pbconf['user'] in line:
                 print(line)
