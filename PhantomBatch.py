@@ -167,11 +167,25 @@ def get_setup_strings(pconf, pbconf):
     return setup_strings
     
 
+def write_setup_comment(key):
+    if key == 'np':
+        return ' ! number of gas particles'
+    if key == 'dist_unit':
+        return ' ! distance unit (e.g. au,pc,kpc,0.1pc)'
+    if key == 'primary_mass':
+        return ' ! primary mass'
+    if key == 'binary_a':
+        return ' ! binary semi-major axis'
+    if key == 'binary_e':
+        return ' ! binary eccentricity'
+
+
 def create_setups(pconf, pbconf):
 
     setup_filename = os.path.join(pbconf['setup'] + '.setup')
     looped_keys = loop_keys_dir(pconf)
-    setup_dirs = [os.path.join(os.environ['PHANTOM_DATA'], pbconf['name'], 'simulations', key) for key in looped_keys]
+    # setup_dirs = [os.path.join(os.environ['PHANTOM_DATA'], pbconf['name'], 'simulations', key) for key in looped_keys]
+    setup_dirs = pbconf['dirs']
     setup_strings = get_setup_strings(pconf, pbconf)
 
     i = 0
@@ -188,16 +202,13 @@ def create_setups(pconf, pbconf):
                             if isinstance(pconf[key], list):
                                 for string in setup_strings[i]:
                                     if key in line and key in string:
-                                        print(string)
-                                        print(key)
-                                        print(line)
-                                        print('Writing to setup file..')
-                                        new_setup.write(string + '\n')
+                                        if verbose: print('Writing to setup file..')
+                                        new_setup.write(string + write_setup_comment(key) + '\n')
                                         key_added = True
                             else:
                                 key_added = False
                                 if key in line:
-                                    new_setup.write(key + ' = ' + str(pconf[key]) + '\n')
+                                    new_setup.write(key + ' = ' + str(pconf[key]) + write_setup_comment(key) +  '\n')
                                     key_added = True
 
                         if not key_added:
@@ -207,10 +218,20 @@ def create_setups(pconf, pbconf):
             i += 1
 
 
+def run_phantom_setup(pbconf):
+    setup_dirs = pbconf['dirs']
+
+    for dir in setup_dirs:
+        os.chdir(dir)
+        os.system('./phantomsetup ' + pbconf['setup'])
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Submit batches of Phantom simulations.')
     parser.add_argument('config', type=str)
     args = parser.parse_args()
+
+    verbose = True
 
     config = load_config(args.config)
 
