@@ -187,7 +187,7 @@ def create_setups(pconf, pbconf):
                     for line in binary_setup:
                         for key in pconf:
                             if isinstance(pconf[key], list):
-                                for string in setup_strings:
+                                for string in setup_strings[i]:
                                     if key in string:
                                         new_setup.write(string + '\n')
                             else:
@@ -199,7 +199,9 @@ def create_setups(pconf, pbconf):
                         if not key_added:
                             new_setup.write(line)
 
+
             new_setup.close()
+            i += 1
 
 
 if __name__ == "__main__":
