@@ -193,6 +193,7 @@ def create_setups(pconf, pbconf):
                                         print(line)
                                         print('Writing to setup file..')
                                         new_setup.write(string + '\n')
+                                        key_added = True
                             else:
                                 key_added = False
                                 if key in line:
