@@ -185,6 +185,7 @@ def create_setups(pconf, pbconf):
     setup_filename = os.path.join(pbconf['setup'] + '.setup')
     # looped_keys = loop_keys_dir(pconf)
     setup_dirs = [os.path.join(os.environ['PHANTOM_DATA'], pbconf['name'], 'simulations', dir) for dir in pbconf['dirs']]
+    pbconf['sim_dirs'] = setup_dirs
     # setup_dirs = pbconf['dirs']
     setup_strings = get_setup_strings(pconf, pbconf)
     print(setup_dirs)
@@ -220,7 +221,7 @@ def create_setups(pconf, pbconf):
 
 
 def run_phantom_setup(pbconf):
-    setup_dirs = pbconf['dirs']
+    setup_dirs = pbconf['sim_dirs']
 
     for dir in setup_dirs:
         os.chdir(dir)
