@@ -18,6 +18,7 @@ def check_running_jobs(pbconf):
     if pbconf['job_scheduler'] == 'slurm':
         print('Is it entering?')
         jobs = subprocess.check_output('qstat')
+        print(jobs)
         my_jobs = np.genfromtxt(jobs)
         for line in jobs:
             if pbconf['user'] in line:
