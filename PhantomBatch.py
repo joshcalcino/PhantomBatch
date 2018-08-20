@@ -18,6 +18,7 @@ def check_running_jobs(pbconf):
         my_jobs = ''
         for line in jobs:
             if pbconf['user'] in line:
+                print(line)
                 my_jobs = my_jobs + line + '\n'
 
         print(my_jobs)
