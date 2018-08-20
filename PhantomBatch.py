@@ -188,6 +188,7 @@ def create_setups(pconf, pbconf):
                             if isinstance(pconf[key], list):
                                 for string in setup_strings[i]:
                                     if key in line:
+                                        print(string)
                                         print(key)
                                         print(line)
                                         print('Writing to setup file..')
