@@ -16,11 +16,11 @@ def check_running_jobs(pbconf):
     # job_names = pbconf['job_names']
     print(pbconf['job_scheduler'])
     if pbconf['job_scheduler'] == 'slurm':
-        print('Is it entering?')
         jobs = subprocess.check_output('qstat', universal_newlines=True)
         print(jobs)
         # my_jobs = np.genfromtxt(jobs)
         for line in jobs:
+            print('Checking line..')
             if pbconf['user'] in line:
                 print(line)
                 my_jobs = my_jobs + line + '\n'
