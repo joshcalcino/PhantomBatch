@@ -179,11 +179,11 @@ def create_setups(pconf, pbconf):
         filename = os.path.join(dir, setup_filename)
         with open(filename, 'w') as new_setup:
             print('Entering ' + filename + '..')
-            key_added = False
             if 'binary' in pbconf:
                 if pbconf['binary']:
                     binary_setup = open('setup/binary.setup', 'r')
                     for line in binary_setup:
+                        key_added = False
                         for key in pconf:
                             if isinstance(pconf[key], list):
                                 for string in setup_strings[i]:
