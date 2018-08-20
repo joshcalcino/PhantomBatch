@@ -10,8 +10,11 @@ def load_config(filename):
     return d
 
 
-def check_running_jobs():
-    pass
+def check_running_jobs(pbconf):
+    # job_names = pbconf['job_names']
+    if pbconf['job_scheduler'] == 'slurm':
+        jobs = os.system('qstat')
+        print(jobs)
 
 
 def submit_job():
@@ -227,6 +230,8 @@ def run_phantom_setup(pbconf):
         os.chdir(dir)
         os.system('./phantomsetup ' + pbconf['setup'])
 
+    os.chdir(os.environ['PHANTOM_DATA'])
+
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Submit batches of Phantom simulations.')
@@ -242,7 +247,8 @@ if __name__ == "__main__":
 
     initialise(phantom_config, phantombatch_config)
     create_setups(phantom_config, phantombatch_config)
-    run_phantom_setup(phantombatch_config)
+    # run_phantom_setup(phantombatch_config)
+    check_running_jobs(phantombatch_config)
 
 
 
