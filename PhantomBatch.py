@@ -19,13 +19,13 @@ def check_running_jobs(pbconf):
         print('Is it entering?')
         jobs = subprocess.check_output('qstat', universal_newlines=True)
         print(jobs)
-        my_jobs = np.genfromtxt(jobs)
+        # my_jobs = np.genfromtxt(jobs)
         for line in jobs:
             if pbconf['user'] in line:
                 print(line)
                 my_jobs = my_jobs + line + '\n'
 
-        print(my_jobs)
+        # print(my_jobs)
 
 
 
