@@ -173,8 +173,6 @@ def create_setups(pconf, pbconf):
     looped_keys = loop_keys_dir(pconf)
     setup_dirs = [os.path.join(os.environ['PHANTOM_DATA'], pbconf['name'], 'simulations', key) for key in looped_keys]
     setup_strings = get_setup_strings(pconf, pbconf)
-    print(setup_strings)
-    print(setup_dirs)
 
     i = 0
     for dir in setup_dirs:
@@ -188,8 +186,9 @@ def create_setups(pconf, pbconf):
                         for key in pconf:
                             if isinstance(pconf[key], list):
                                 for string in setup_strings[i]:
-                                    print(string)
                                     if key in line:
+                                        print(key)
+                                        print(line)
                                         print('Writing to setup file..')
                                         new_setup.write(string + '\n')
                             else:
