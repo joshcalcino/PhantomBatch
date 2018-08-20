@@ -167,7 +167,7 @@ def get_setup_strings(pconf, pbconf):
     return setup_strings
     
 
-def create_setup(pconf, pbconf):
+def create_setups(pconf, pbconf):
 
     setup_filename = os.path.join(pbconf['setup'] + '.setup')
     looped_keys = loop_keys_dir(pconf)
@@ -176,18 +176,25 @@ def create_setup(pconf, pbconf):
     print(setup_strings)
     print(setup_dirs)
 
+    i = 0
     for dir in setup_dirs:
         filename = os.path.join(dir, setup_filename)
         with open(filename, 'w') as new_setup:
+            key_added = False
             if 'binary' in pbconf:
                 if pbconf['binary']:
                     binary_setup = open('setup/binary.setup', 'r')
                     for line in binary_setup:
                         for key in pconf:
-                            key_added = False
-                            if key in line:
-                                new_setup.write(key + ' = ' + str(pconf[key]) + '\n')
-                                key_added = True
+                            if isinstance(pconf[key], list):
+                                for string in setup_strings:
+                                    if key in string:
+                                        new_setup.write(string + '\n')
+                            else:
+                                key_added = False
+                                if key in line:
+                                    new_setup.write(key + ' = ' + str(pconf[key]) + '\n')
+                                    key_added = True
 
                         if not key_added:
                             new_setup.write(line)
@@ -206,7 +213,7 @@ if __name__ == "__main__":
     phantombatch_config = config['phantombatch_setup']
 
     initialise(phantom_config, phantombatch_config)
-    create_setup(phantom_config, phantombatch_config)
+    create_setups(phantom_config, phantombatch_config)
 
 
 
