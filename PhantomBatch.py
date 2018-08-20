@@ -183,9 +183,9 @@ def write_setup_comment(key):
 def create_setups(pconf, pbconf):
 
     setup_filename = os.path.join(pbconf['setup'] + '.setup')
-    looped_keys = loop_keys_dir(pconf)
-    # setup_dirs = [os.path.join(os.environ['PHANTOM_DATA'], pbconf['name'], 'simulations', key) for key in looped_keys]
-    setup_dirs = pbconf['dirs']
+    # looped_keys = loop_keys_dir(pconf)
+    setup_dirs = [os.path.join(os.environ['PHANTOM_DATA'], pbconf['name'], 'simulations', dir) for dir in pbconf['dirs']]
+    # setup_dirs = pbconf['dirs']
     setup_strings = get_setup_strings(pconf, pbconf)
     print(setup_dirs)
 
