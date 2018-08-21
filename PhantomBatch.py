@@ -16,14 +16,14 @@ def decipher_slurm_output(slurm_output):
     tally = 0
     tally_arr = []
     found_dash = False
-    slurm_output.replace('\n', '')
+    slurm_output.replace(' ', '_')
 
     for char in slurm_output:
-        print(char)
+        # print(char)
         if char == '-':
             tally += 1
             found_dash = True
-        elif char == ' ' and found_dash:
+        elif char == ' ' or char == '_' and found_dash:
             tally += 1
             tally_arr.append(tally)
             tally = 0
