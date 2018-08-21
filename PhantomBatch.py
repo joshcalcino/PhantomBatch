@@ -54,7 +54,7 @@ def decipher_slurm_output(slurm_output, pbconf):
             status = line[job_id_len+name_len+username_len+time_len:
                           job_id_len+name_len+username_len+time_len+status_len].replace(' ', '')
             queue = line[job_id_len+name_len+username_len+time_len+status_len:line_length].replace(' ', '')
-            queue.replace('\n', '')
+            queue.rstrip()
             line_array = [job_id, job_name, username, time, status, queue]
             my_jobs.append(line_array)
     print(my_jobs)
