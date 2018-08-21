@@ -354,7 +354,7 @@ def create_setups(pconf, pbconf):
             verboseprint('Entering ' + filename + '..')
             if 'binary' in pbconf:
                 if pbconf['binary']:
-                    binary_setup = open('setup/binary.setup', 'r')
+                    binary_setup = open('data/setup/binary.setup', 'r')
                     for line in binary_setup:
                         key_added = False
                         for key in pconf:
