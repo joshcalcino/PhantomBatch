@@ -410,12 +410,12 @@ def run_phantom_setup(pbconf):
 
 def run_batch_jobs(pbconf):
     current_jobs = check_running_jobs(pbconf)
-    # print(current_jobs)
+    print(current_jobs)
     i = 0
     for job in pbconf['job_names']:
         print(job)
         for cjob in current_jobs:
-            # print(cjob)
+            print(cjob)
             if job not in cjob and ('job_limit' in pbconf and len(current_jobs) < pbconf['job_limit']):
                 submit_job(pbconf, pbconf['sim_dirs'][i] + pbconf['setup'] + '.jobscript')
         i += 1
