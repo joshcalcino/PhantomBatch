@@ -347,6 +347,9 @@ def create_job_scripts(pconf, pbconf):
                     else:
                         print('export OMP_NUM_THREADS=' + pbconf['ncpus'])
 
+                else:
+                    print(line)
+
             elif pbconf['job_scheduler'] == 'pbs':
                 raise NotImplementedError
 
