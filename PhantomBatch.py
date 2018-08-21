@@ -66,7 +66,7 @@ def check_running_jobs(pbconf):
     if pbconf['job_scheduler'] == 'slurm':
         jobs = subprocess.check_output('qstat', stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
         # print(jobs)
-        decipher_slurm_output(jobs)
+        decipher_slurm_output(jobs, pbconf)
         # np.savetxt('test_text.txt', jobs)
         for line in jobs:
             if pbconf['user'] in line:
