@@ -39,7 +39,8 @@ def decipher_slurm_output(slurm_output):
     for i in range(0, int(len(slurm_output)/line_length)):
         slurm_lines.append(slurm_output[i*line_length:(i+1)*line_length])
 
-    print(slurm_lines)
+    for line in slurm_lines:
+        print(line)
     return slurm_lines
 
 
