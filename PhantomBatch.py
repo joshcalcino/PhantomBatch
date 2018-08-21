@@ -321,24 +321,23 @@ def create_job_scripts(pconf, pbconf):
         print(jobscript_names[i])
         filename = os.path.join(dir, jobscript_filename)
         for line in fileinput.input(filename, inplace=True):
-            verboseprint(line.rstrip())
             if pbconf['job_scheduler'] == 'slurm':
                 if '#SBATCH --nodes' in line and ('ncpus' in pbconf):
-                    print('#SBATCH --nodes=1 --ntasks=' + pbconf['ncpus'])
+                    print(('#SBATCH --nodes=1 --ntasks=' + pbconf['ncpus']).rstrip())
 
-                if '#SBATCH --job-name' in line:
+                elif '#SBATCH --job-name' in line:
                     print('#SBATCH --job-name='+jobscript_names[i])
 
-                if '#SBATCH --output' in line:
+                elif '#SBATCH --output' in line:
                     print('#SBATCH --output=' + pbconf['setup'] + '.out')
 
-                if '#SBATCH --time' in line and ('walltime' in pbconf):
+                elif '#SBATCH --time' in line and ('walltime' in pbconf):
                     print('#SBATCH --time=' + pbconf['walltime'])
 
-                if '#SBATCH --mem' in line and ('memory' in pbconf):
+                elif '#SBATCH --mem' in line and ('memory' in pbconf):
                     print('#SBATCH --mem=' + pbconf['memory'])
 
-                if 'export OMP_NUM_THREADS' in line and ('ncpus' in pbconf or 'omp_threads' in pbconf):
+                elif 'export OMP_NUM_THREADS' in line and ('ncpus' in pbconf or 'omp_threads' in pbconf):
                     if 'omp_threads' in pbconf:
                         print('export OMP_NUM_THREADS=' + pbconf['omp_threads'])
                     else:
