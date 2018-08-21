@@ -86,6 +86,7 @@ def submit_job(pbconf, jobscript):
     verboseprint('Submitting job ')
 
     if pbconf['job_scheduler'] == 'slurm':
+        verboseprint('Attempting to submit job......')
         subprocess.check_output('sbatch ' + jobscript)
 
     elif pbconf['job_scheduler'] == 'pbs':
@@ -414,7 +415,9 @@ def run_batch_jobs(pbconf):
 
     i = 0
     for job in pbconf['job_names']:
+        print(job)
         for cjob in current_jobs:
+            print(cjob)
             if job not in cjob and ('job_limit' in pbconf and len(current_jobs) < pbconf['job_limit']):
                 submit_job(pbconf, pbconf['sim_dirs'][i] + pbconf['setup'] + '.jobscript')
         i += 1
