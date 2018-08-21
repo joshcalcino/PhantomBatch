@@ -16,6 +16,7 @@ def decipher_slurm_output(slurm_output):
     tally = 0
     tally_arr = []
     found_dash = False
+    slurm_output.replace('\n', '')
 
     for char in slurm_output:
         print(char)
