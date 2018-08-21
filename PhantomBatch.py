@@ -91,7 +91,7 @@ def submit_job(pbconf, directory, jobscript_name):
     if pbconf['job_scheduler'] == 'slurm':
         verboseprint('Attempting to submit job..')
         output = subprocess.check_output('sbatch ' + jobscript_name, stderr=subprocess.STDOUT,
-                                         universal_newlines=True, shell=True)
+                                         universal_newlines=True, shell=True).rstrip()
         verboseprint(output)
         len_slurm_output = len('Submitted batch job ')  # Change this string if your slurm prints something else out
         job_number = output[len_slurm_output:]
