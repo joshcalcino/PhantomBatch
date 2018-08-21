@@ -12,12 +12,43 @@ def load_config(filename):
     return d
 
 
+def decipher_slurm_output(slurm_output):
+    tally = 0
+    tally_arr = []
+    found_dash = False
+
+    for char in slurm_output:
+        if char == '-':
+            tally += 1
+            found_dash = True
+        elif char == ' ' and found_dash:
+            tally += 1
+            tally_arr.append(tally)
+            tally = 0
+        elif char.isdigit():
+            tally_arr.append(tally)
+            break
+
+    job_id_len, name_len, username_len = tally_arr[0], tally_arr[1], tally_arr[2]
+    time_len, status_len, queue_len = tally_arr[3], tally_arr[4], tally_arr[5]
+
+    line_length = job_id_len + name_len + username_len + time_len + status_len + queue_len
+    slurm_lines = []
+
+    for i in range(0, len(slurm_output)/line_length):
+        slurm_lines.append(slurm_output[i*line_length:(i+1)*line_length])
+
+    print(slurm_lines)
+    return slurm_lines
+
+
 def check_running_jobs(pbconf):
     # job_names = pbconf['job_names']
     print(pbconf['job_scheduler'])
     if pbconf['job_scheduler'] == 'slurm':
         jobs = subprocess.check_output('qstat', stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
         print(jobs)
+        decipher_slurm_output(jobs)
         # np.savetxt('test_text.txt', jobs)
         for line in jobs:
             if pbconf['user'] in line:
