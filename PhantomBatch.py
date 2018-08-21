@@ -324,7 +324,7 @@ def create_job_scripts(pconf, pbconf):
         for line in fileinput.input(filename, inplace=True):
             if pbconf['job_scheduler'] == 'slurm':
                 if '#SBATCH --nodes' in line and ('ncpus' in pbconf):
-                    print(('#SBATCH --nodes=1 --ntasks=' + pbconf['ncpus']).rstrip())
+                    print(('#SBATCH --nodes=1 --ntasks=' + str(pbconf['ncpus'])).rstrip())
 
                 elif '#SBATCH --job-name' in line:
                     print(('#SBATCH --job-name='+jobscript_names[i]).rstrip())
