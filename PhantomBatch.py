@@ -281,6 +281,8 @@ def get_jobscript_names(pconf, pbconf):
             if key == 'binary_i':
                 jobscript_names = dir_func(jobscript_names, 'i', pconf[key])
 
+    print(jobscript_names)
+
     if 'short_name' in pbconf and pbconf['short_name'] is not None:
         jobscript_names = [pbconf['short_name'] + '_' + name for name in jobscript_names]
 
@@ -289,6 +291,8 @@ def get_jobscript_names(pconf, pbconf):
 
     if len(jobscript_names[0]) > 16:
         log.warning('Job names are quite long. Consider adding in a \'short_name\' to phantombatch config.')
+
+    print(jobscript_names)
 
     return jobscript_names
     
