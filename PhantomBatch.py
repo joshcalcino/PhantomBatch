@@ -82,20 +82,24 @@ def check_running_jobs(pbconf):
     return my_jobs
  
 
-def submit_job(pbconf, jobscript):
+def submit_job(pbconf, directory, jobscript_name):
     verboseprint('Submitting job ')
+
+    os.chdir(directory)
 
     if pbconf['job_scheduler'] == 'slurm':
         verboseprint('Attempting to submit job......')
-        subprocess.check_output('sbatch ' + jobscript)
+        subprocess.check_output('sbatch ' + jobscript_name)
 
     elif pbconf['job_scheduler'] == 'pbs':
-        subprocess.check_output('qsub ' + jobscript)
+        subprocess.check_output('qsub ' + jobscript_name)
 
     else:
         log.error('Job scheduler not recognised, cannot submit jobs!')
         log.info('Please use a known job scheduler, or add in your own.')
         exit()
+
+    os.chdir(os.environ['PHANTOM_DATA'])
 
 
 def dir_func(dirs, string, dict_arr):
@@ -419,7 +423,7 @@ def run_batch_jobs(pbconf):
             print(job not in cjob)
             print('job_limit' in pbconf and len(current_jobs) < pbconf['job_limit'])
             if job not in cjob and ('job_limit' in pbconf and len(current_jobs) < pbconf['job_limit']):
-                submit_job(pbconf, os.path.join(pbconf['sim_dirs'][i], pbconf['setup'] + '.jobscript'))
+                submit_job(pbconf, pbconf['sim_dirs'][i], pbconf['setup'] + '.jobscript')
         i += 1
 
 
