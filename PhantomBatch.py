@@ -393,7 +393,7 @@ def run_phantom_setup(pbconf):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Submit batches of Phantom simulations.')
-    parser.add_argument('--verbose', '-v', action='store_true', description='Turn on verbose.')
+    parser.add_argument('--verbose', '-v', action='store_true')
     parser.add_argument('config', type=str)
     args = parser.parse_args()
 
