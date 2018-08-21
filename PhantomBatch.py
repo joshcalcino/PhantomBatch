@@ -459,7 +459,7 @@ def run_batch_jobs(pbconf):
             # job_number = submit_job(pbconf, pbconf['sim_dirs'][i], pbconf['setup'] + '.jobscript')
             # pbconf['submitted_jobs'].append(job_number)
             # print(pbconf['submitted_jobs'])
-
+            print('job_limit' in pbconf and (len(current_jobs) < pbconf['job_limit']))
         elif 'job_limit' in pbconf and (len(current_jobs) < pbconf['job_limit']):
             verboseprint('Hit maximum number of allowed jobs.')
             break
