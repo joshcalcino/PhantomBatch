@@ -45,7 +45,7 @@ def decipher_slurm_output(slurm_output, pbconf):
 
     my_jobs = []
     for line in slurm_lines:
-        if pbconf['username'] in line:
+        if pbconf['user'] in line:
             job_id = line[0:job_id_len].replace(' ', '')
             job_name = line[job_id_len:job_id_len+name_len].replace(' ', '')
             username = line[job_id_len+name_len:job_id_len+name_len+username_len].replace(' ', '')
