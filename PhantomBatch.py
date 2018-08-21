@@ -207,9 +207,17 @@ def initiliase_phantom(pbconf):
             os.chdir(setup_dir)
             os.system('make ' + pbconf['make_options'])
             os.system('make setup ' + pbconf['make_setup_options'])
-            verboseprint('Writing jobscript template. '
-                         'You should make sure that your SYSTEM variable is defined in Phantom.')
-            os.system('make qscript INFILE=' + pbconf['setup']+'.in' + ' > ' + pbconf['setup'] + '.jobscript')
+            verboseprint('Writing jobscript template.')
+
+            try:
+                os.environ['SYSTEM']
+                os.system('make qscript INFILE=' + pbconf['setup'] + '.in' + ' > ' + pbconf['setup'] + '.jobscript')
+
+            except KeyError:
+                log.warning('SYSTEM environment variable is not set, jobscript may not be created.')
+                verboseprint('You should make sure that your SYSTEM variable is defined in the Phantom Makefile.')
+                os.system('make qscript INFILE=' + pbconf['setup']+'.in' + pbconf['make_options'] +
+                          ' > ' + pbconf['setup'] + '.jobscript')
 
             if 'make_moddump_options' in pbconf:
                 os.system('make moddump ' + pbconf['make_moddump_options'])
