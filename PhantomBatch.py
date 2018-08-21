@@ -423,7 +423,8 @@ def run_batch_jobs(pbconf):
             print(job not in cjob)
             print('job_limit' in pbconf and len(current_jobs) < pbconf['job_limit'])
             if job not in cjob and ('job_limit' in pbconf and len(current_jobs) < pbconf['job_limit']):
-                submit_job(pbconf, pbconf['sim_dirs'][i], pbconf['setup'] + '.jobscript')
+                print('Would have tried to submit job '+pbconf['sim_dirs'][i])
+                # submit_job(pbconf, pbconf['sim_dirs'][i], pbconf['setup'] + '.jobscript')
         i += 1
 
 
