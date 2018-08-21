@@ -329,6 +329,9 @@ def create_job_scripts(pconf, pbconf):
                 elif '#SBATCH --job-name' in line:
                     print(('#SBATCH --job-name='+jobscript_names[i]).rstrip())
 
+                elif '#SBATCH --mail' in line and 'no_email' in pbconf and pbconf['no_email']:
+                    print(''.rstrip())
+
                 elif '#SBATCH --output' in line:
                     print(('#SBATCH --output=' + pbconf['setup'] + '.out').rstrip())
 
