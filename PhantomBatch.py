@@ -26,7 +26,6 @@ def decipher_slurm_output(slurm_output):
             tally_arr.append(tally)
             tally = 0
         elif char.isdigit():
-            tally+=1
             tally_arr.append(tally)
             break
 
@@ -36,7 +35,7 @@ def decipher_slurm_output(slurm_output):
     line_length = job_id_len + name_len + username_len + time_len + status_len + queue_len
     slurm_lines = []
 
-    print(len(slurm_output)/line_length)
+    print(len(slurm_output)/(line_length - 1.))
     for i in range(0, int(len(slurm_output)/line_length)):
         slurm_lines.append(slurm_output[i*line_length:(i+1)*line_length])
 
