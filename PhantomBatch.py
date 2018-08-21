@@ -588,7 +588,6 @@ def check_completed_jobs(pbconf):
 #     while True:
 
 
-
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Submit batches of Phantom simulations.')
     parser.add_argument('--verbose', '-v', action='store_true')
