@@ -4,6 +4,7 @@ import json
 import logging as log
 import subprocess
 import fileinput
+import time
 
 
 def load_config(filename):
@@ -416,7 +417,7 @@ def run_batch_jobs(pbconf):
     current_jobs = check_running_jobs(pbconf)
     print(current_jobs)
     i = 0
-    os.wait(2)
+    time.sleep(3)
     for job in pbconf['job_names']:
         print(job)
         for cjob in current_jobs:
