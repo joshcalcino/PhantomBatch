@@ -12,15 +12,12 @@ def load_config(filename):
     return d
 
 
-def decipher_slurm_output(slurm_output):
+def decipher_slurm_output(slurm_output, pbconf):
     tally = 0
     tally_arr = []
     found_dash = False
-    # slurm_output.replace(' ', '_')
-    print(slurm_output)
 
     for char in slurm_output:
-        # print(char)
         if char == '-':
             tally += 1
             found_dash = True
@@ -43,12 +40,23 @@ def decipher_slurm_output(slurm_output):
     line_length = job_id_len + name_len + username_len + time_len + status_len + queue_len
     slurm_lines = []
 
-    print(len(slurm_output)/line_length)
     for i in range(0, int(len(slurm_output)/line_length)):
         slurm_lines.append(slurm_output[i*line_length:(i+1)*line_length])
 
+    my_jobs = []
     for line in slurm_lines:
-        print(line)
+        if pbconf['username'] in line:
+            job_id = line[0:job_id_len].replace(' ', '')
+            job_name = line[job_id_len:job_id_len+name_len].replace(' ', '')
+            username = line[job_id_len+name_len:job_id_len+name_len+username_len].replace(' ', '')
+            time = line[job_id_len+name_len+username_len:
+                        job_id_len+name_len+username_len+time_len].replace(' ', '')
+            status = line[job_id_len+name_len+username_len+time_len:
+                          job_id_len+name_len+username_len+time_len+status_len].replace(' ', '')
+            queue = line[job_id_len+name_len+username_len+time_len+status_len:line_length].replace(' ', '')
+            line_array = [job_id, job_name, username, time, status, queue]
+            my_jobs.append(line_array)
+    print(my_jobs)
     return slurm_lines
 
 
@@ -56,7 +64,7 @@ def check_running_jobs(pbconf):
     # job_names = pbconf['job_names']
     print(pbconf['job_scheduler'])
     if pbconf['job_scheduler'] == 'slurm':
-        jobs = subprocess.check_output('qstat', stderr=subprocess.STDOUT, universal_newlines=True, shell=True).decode("utf-8")
+        jobs = subprocess.check_output('qstat', stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
         # print(jobs)
         decipher_slurm_output(jobs)
         # np.savetxt('test_text.txt', jobs)
