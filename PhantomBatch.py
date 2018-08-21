@@ -319,8 +319,6 @@ def create_job_scripts(pconf, pbconf):
     i = 0
 
     for dir in sim_dirs:
-        print(dir)
-        print(jobscript_names[i])
         filename = os.path.join(dir, jobscript_filename)
         for line in fileinput.input(filename, inplace=True):
             if pbconf['job_scheduler'] == 'slurm':
@@ -412,7 +410,7 @@ def run_phantom_setup(pbconf):
 
 def run_batch_jobs(pbconf):
     current_jobs = check_running_jobs(pbconf)
-
+    print(current_jobs)
     i = 0
     for job in pbconf['job_names']:
         print(job)
