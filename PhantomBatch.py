@@ -89,7 +89,7 @@ def submit_job(pbconf, directory, jobscript_name):
     os.chdir(directory)
 
     if pbconf['job_scheduler'] == 'slurm':
-        verboseprint('Attempting to submit job......')
+        verboseprint('Attempting to submit job..')
         subprocess.check_output('sbatch ' + jobscript_name, stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
 
     elif pbconf['job_scheduler'] == 'pbs':
@@ -106,7 +106,6 @@ def submit_job(pbconf, directory, jobscript_name):
 def dir_func(dirs, string, dict_arr):
     if len(dirs) is not 0:
         dirs = [i+'_' for i in dirs]
-        #dirs *= len(dict_arr)
 
     else:
         dirs = [string+str(i).replace('.', '') for i in dict_arr]
@@ -182,6 +181,8 @@ def initialise(pconf, pbconf):
 def initiliase_phantom(pbconf):
     verboseprint('Checking if Phantom has been compiled for ' + pbconf['name'] + '..')
     if isinstance(pbconf['setup'], list):
+        """ Imagining that we can have an array of setups which would be consecutively executed.. """
+        raise NotImplementedError
         for setup in pbconf['setup']:
             setup_dir = os.path.join(os.environ['PHANTOM_DATA'], pbconf['name'], 'phantom_'+setup)
 
@@ -414,19 +415,42 @@ def run_phantom_setup(pbconf):
     verboseprint('Completed.')
 
 
+def cancel_job(pbconf, job_number):
+    verboseprint('Cancelling job ' + job_number)
+
+    if pbconf['job_scheduler'] == 'slurm':
+        subprocess.check_output('scancel ' + job_number, stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
+
+    elif pbconf['job_scheduler'] == 'pbs':
+        subprocess.check_output('qdel ' + job_number, stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
+
+
+def cancel_all_submitted_jobs(pbconf):
+    verboseprint('Cancelling all submitted jobs.')
+    current_jobs = check_running_jobs(pbconf)
+
+    for job_number in pbconf['submitted_job_names']:
+        if job_number in current_jobs:
+            cancel_job(pbconf, job_number)
+
+    verboseprint('All submitted jobs have been cancelled.')
+
+
+
 def run_batch_jobs(pbconf):
     current_jobs = check_running_jobs(pbconf)
     print(current_jobs)
     i = 0
     time.sleep(1)
-    print(pbconf['job_names'])
-    print(pbconf['sim_dirs'])
     for job in pbconf['job_names']:
-        print(job)
         current_jobs = check_running_jobs(pbconf)
         if job not in current_jobs and ('job_limit' in pbconf and len(current_jobs) < pbconf['job_limit']):
-            print('Would have tried to submit job '+pbconf['sim_dirs'][i])
-            # submit_job(pbconf, pbconf['sim_dirs'][i], pbconf['setup'] + '.jobscript')
+            # print('Would have tried to submit job '+pbconf['sim_dirs'][i])
+            submit_job(pbconf, pbconf['sim_dirs'][i], pbconf['setup'] + '.jobscript')
+        elif 'job_limit' in pbconf and len(current_jobs) < pbconf['job_limit']:
+            verboseprint('Hit maximum number of allowed jobs.')
+            break
+
         i += 1
 
 
@@ -449,3 +473,5 @@ if __name__ == "__main__":
     check_running_jobs(phantombatch_config)
     create_job_scripts(phantom_config, phantombatch_config)
     run_batch_jobs(phantombatch_config)
+    time.sleep(5)
+    cancel_all_submitted_jobs(phantombatch_config)
