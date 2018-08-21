@@ -106,7 +106,7 @@ def submit_job(pbconf, directory, jobscript_name):
 def dir_func(dirs, string, dict_arr):
     if len(dirs) is not 0:
         dirs = [i+'_' for i in dirs]
-        dirs *= len(dict_arr)
+        #dirs *= len(dict_arr)
 
     else:
         dirs = [string+str(i).replace('.', '') for i in dict_arr]
