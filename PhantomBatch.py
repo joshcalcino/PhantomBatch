@@ -437,7 +437,7 @@ def cancel_all_submitted_jobs(pbconf):
     current_jobs = check_running_jobs(pbconf)
 
     for job_number in pbconf['submitted_jobs']:
-        if job_number in current_jobs:
+        if any(job_number in cjob for cjob in current_jobs):
             cancel_job(pbconf, job_number)
 
     verboseprint('All submitted jobs have been cancelled.')
@@ -487,5 +487,6 @@ if __name__ == "__main__":
     create_job_scripts(phantom_config, phantombatch_config)
     check_running_jobs(phantombatch_config)
     run_batch_jobs(phantombatch_config)
+    os.system('qstat')
     time.sleep(5)
     cancel_all_submitted_jobs(phantombatch_config)
