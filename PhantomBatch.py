@@ -419,6 +419,7 @@ def run_batch_jobs(pbconf):
     i = 0
     time.sleep(1)
     print(pbconf['job_names'])
+    print(pbconf['sim_dirs'])
     for job in pbconf['job_names']:
         print(job)
         current_jobs = check_running_jobs(pbconf)
