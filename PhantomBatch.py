@@ -424,7 +424,10 @@ def cancel_job(pbconf, job_number):
     verboseprint('Cancelling job ' + job_number)
 
     if pbconf['job_scheduler'] == 'slurm':
-        subprocess.check_output('scancel ' + job_number, stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
+        output = subprocess.check_output('scancel ' + job_number, stderr=subprocess.STDOUT,
+                                         universal_newlines=True, shell=True)
+        print(output)
+        verboseprint(output)
 
     elif pbconf['job_scheduler'] == 'pbs':
         subprocess.check_output('qdel ' + job_number, stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
