@@ -75,16 +75,17 @@ def decipher_slurm_output(slurm_output, pbconf):
     my_jobs = []
     for line in slurm_lines:
         if pbconf['user'] in line:
-            job_id = line[0:job_id_len].rstrip()
-            job_name = line[job_id_len:job_id_len+name_len].rstrip()
-            username = line[job_id_len+name_len:job_id_len+name_len+username_len].rstrip()
-            time = line[job_id_len+name_len+username_len:
-                        job_id_len+name_len+username_len+time_len].rstrip()
-            status = line[job_id_len+name_len+username_len+time_len:
-                          job_id_len+name_len+username_len+time_len+status_len].rstrip()
-            queue = line[job_id_len+name_len+username_len+time_len+status_len:line_length].rstrip()
-            line_array = [job_id, job_name, username, time, status, queue]
-            my_jobs.append(line_array)
+            if 'C' not in line:
+                job_id = line[0:job_id_len].rstrip()
+                job_name = line[job_id_len:job_id_len+name_len].rstrip()
+                username = line[job_id_len+name_len:job_id_len+name_len+username_len].rstrip()
+                time = line[job_id_len+name_len+username_len:
+                            job_id_len+name_len+username_len+time_len].rstrip()
+                status = line[job_id_len+name_len+username_len+time_len:
+                              job_id_len+name_len+username_len+time_len+status_len].rstrip()
+                queue = line[job_id_len+name_len+username_len+time_len+status_len:line_length].rstrip()
+                line_array = [job_id, job_name, username, time, status, queue]
+                my_jobs.append(line_array)
 
     return my_jobs
 
