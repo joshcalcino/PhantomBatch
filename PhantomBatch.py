@@ -313,6 +313,7 @@ def create_job_scripts(pconf, pbconf):
     sim_dirs = [os.path.join(os.environ['PHANTOM_DATA'], pbconf['name'], 'simulations', dir) for dir in pbconf['dirs']]
 
     jobscript_names = get_jobscript_names(pconf, pbconf)
+    pbconf['job_names'] = jobscript_names
 
     i = 0
 
@@ -405,6 +406,17 @@ def run_phantom_setup(pbconf):
     verboseprint('Completed.')
 
 
+def run_batch_jobs(pbconf):
+    current_jobs = check_running_jobs(pbconf)
+
+    i = 0
+    for job in pbconf['job_names']:
+        for cjob in current_jobs:
+            if job not in cjob and ('job_limit' in pbconf and len(current_jobs) < pbconf['job_limit']):
+                submit_job(pbconf, pbconf['sim_dirs'][i] + pbconf['setup'] + '.jobscript')
+        i += 1
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Submit batches of Phantom simulations.')
     parser.add_argument('--verbose', '-v', action='store_true')
@@ -419,7 +431,8 @@ if __name__ == "__main__":
     phantombatch_config = config['phantombatch_setup']
 
     initialise(phantom_config, phantombatch_config)
-    # create_setups(phantom_config, phantombatch_config)
-    # run_phantom_setup(phantombatch_config)
+    create_setups(phantom_config, phantombatch_config)
+    run_phantom_setup(phantombatch_config)
     check_running_jobs(phantombatch_config)
     create_job_scripts(phantom_config, phantombatch_config)
+    run_phantom_setup(phantombatch_config)
