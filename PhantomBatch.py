@@ -441,4 +441,4 @@ if __name__ == "__main__":
     run_phantom_setup(phantombatch_config)
     check_running_jobs(phantombatch_config)
     create_job_scripts(phantom_config, phantombatch_config)
-    run_phantom_setup(phantombatch_config)
+    run_batch_jobs(phantombatch_config)
