@@ -90,7 +90,11 @@ def submit_job(pbconf, directory, jobscript_name):
 
     if pbconf['job_scheduler'] == 'slurm':
         verboseprint('Attempting to submit job..')
-        subprocess.check_output('sbatch ' + jobscript_name, stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
+        output = subprocess.check_output('sbatch ' + jobscript_name, stderr=subprocess.STDOUT,
+                                         universal_newlines=True, shell=True)
+        verboseprint(output)
+        len_slurm_output = len('Submitted batch job ')  # Change this string if your slurm prints something else out
+        job_number = output[len_slurm_output:]
 
     elif pbconf['job_scheduler'] == 'pbs':
         subprocess.check_output('qsub ' + jobscript_name, stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
@@ -101,6 +105,7 @@ def submit_job(pbconf, directory, jobscript_name):
         exit()
 
     os.chdir(os.environ['PHANTOM_DATA'])
+    return job_number
 
 
 def dir_func(dirs, string, dict_arr):
@@ -429,24 +434,28 @@ def cancel_all_submitted_jobs(pbconf):
     verboseprint('Cancelling all submitted jobs.')
     current_jobs = check_running_jobs(pbconf)
 
-    for job_number in pbconf['submitted_job_names']:
+    for job_number in pbconf['submitted_jobs']:
         if job_number in current_jobs:
             cancel_job(pbconf, job_number)
 
     verboseprint('All submitted jobs have been cancelled.')
 
 
-
 def run_batch_jobs(pbconf):
-    current_jobs = check_running_jobs(pbconf)
-    print(current_jobs)
+
+    if 'submitted_jobs' not in pbconf:
+        pbconf['submitted_jobs'] = []
+
     i = 0
     time.sleep(1)
     for job in pbconf['job_names']:
         current_jobs = check_running_jobs(pbconf)
+
         if job not in current_jobs and ('job_limit' in pbconf and len(current_jobs) < pbconf['job_limit']):
             # print('Would have tried to submit job '+pbconf['sim_dirs'][i])
-            submit_job(pbconf, pbconf['sim_dirs'][i], pbconf['setup'] + '.jobscript')
+            job_number = submit_job(pbconf, pbconf['sim_dirs'][i], pbconf['setup'] + '.jobscript')
+            pbconf['submitted_jobs'].append(job_number)
+
         elif 'job_limit' in pbconf and len(current_jobs) < pbconf['job_limit']:
             verboseprint('Hit maximum number of allowed jobs.')
             break
