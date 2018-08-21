@@ -84,7 +84,7 @@ def check_running_jobs(pbconf):
  
 
 def submit_job(pbconf, directory, jobscript_name):
-    verboseprint('Submitting job ')
+    verboseprint('Submitting job in directory ' + directory)
 
     os.chdir(directory)
 
@@ -479,8 +479,8 @@ if __name__ == "__main__":
     initialise(phantom_config, phantombatch_config)
     create_setups(phantom_config, phantombatch_config)
     run_phantom_setup(phantombatch_config)
-    check_running_jobs(phantombatch_config)
     create_job_scripts(phantom_config, phantombatch_config)
+    check_running_jobs(phantombatch_config)
     run_batch_jobs(phantombatch_config)
     time.sleep(5)
     cancel_all_submitted_jobs(phantombatch_config)
