@@ -5,21 +5,48 @@ import logging as log
 import subprocess
 import fileinput
 import time
+import pickle
+from glob import glob
 
 
-def load_config(filename):
+def load_init_config(filename):
+    """ Load in the json configuration file. """
+
     with open(filename) as f:
         d = json.load(f)
     f.close()
     return d
 
 
+def save_config(pbconf):
+    """ Save the phantombatch config file to disk. """
+
+    verboseprint('Saving phantom batch config to disk.')
+
+    with open(pbconf['name'] + '_pbconf.pkl', 'wb') as f:
+        pickle.dump(pbconf, f, pickle.HIGHEST_PROTOCOL)
+
+
+def load_config(pbconf):
+    """ Load a saved copy of phantombatch config. Note that this function takes the initial json phantombatch config
+    file as an argument. This will get overwritten. """
+
+    verboseprint('Loading in a saved copy of phantombatch config..')
+
+    with open(pbconf['name'] + '_pbconf.pkl', 'rb') as f:
+        return pickle.load(f)
+
+
 def decipher_slurm_output(slurm_output, pbconf):
+    """ This hacky function deciphers the output from executing qstat in the terminal so that we have a usable list
+    of all jobs currently running on the cluster. """
+
     tally = 0
     tally_arr = []
     found_dash = False
 
     for char in slurm_output:
+        """ Check each character in the slurm output to determine the output column widths. """
         if char == '-':
             tally += 1
             found_dash = True
@@ -79,11 +106,14 @@ def check_running_jobs(pbconf):
         my_jobs = decipher_pbs_output(jobs, pbconf)
 
     else:
-        log.warning('Job scheduler not recognised!')
+        log.error('Job scheduler not recognised!')
+
     return my_jobs
  
 
 def submit_job(pbconf, directory, jobscript_name):
+    """ Submit a job to the cluster. Both SLURM and PBS job schedulers are supported. """
+
     verboseprint('Submitting job in directory ' + directory)
 
     os.chdir(directory)
@@ -105,7 +135,11 @@ def submit_job(pbconf, directory, jobscript_name):
         exit()
 
     os.chdir(os.environ['PHANTOM_DATA'])
-    return job_number
+
+    try:
+        return job_number
+    except NameError:
+        log.error('Unable to submit job.')
 
 
 def dir_func(dirs, string, dict_arr):
@@ -147,6 +181,8 @@ def loop_keys_dir(pconf):
 
 
 def create_dirs(pconf, pbconf):
+    """ Create the simulation directories. """
+
     verboseprint('Checking if simulation directories exist..')
 
     suite_directory = os.path.join(os.environ['PHANTOM_DATA'], pbconf['name'])
@@ -183,6 +219,9 @@ def initialise(pconf, pbconf):
 
 
 def initiliase_phantom(pbconf):
+    """ This function will initialise phantom in a special directory called phantom_pbconfg['setup']. We do this so
+    that we do not need to compile phantom for each simulation directory. """
+
     verboseprint('Checking if Phantom has been compiled for ' + pbconf['name'] + '..')
     if isinstance(pbconf['setup'], list):
         """ Imagining that we can have an array of setups which would be consecutively executed.. """
@@ -213,12 +252,15 @@ def initiliase_phantom(pbconf):
 
         if not os.path.exists(os.path.join(setup_dir, 'Makefile')):
             verboseprint('Setting up Phantom.. This may take a few moments.')
+
             os.system(os.path.join(os.environ['PHANTOM_DIR'], 'scripts', 'writemake.sh') + ' ' +
                       pbconf['setup'] + ' > ' + os.path.join(setup_dir, 'Makefile'))
 
             os.chdir(setup_dir)
+
             os.system('make ' + pbconf['make_options'])
             os.system('make setup ' + pbconf['make_setup_options'])
+
             verboseprint('Writing jobscript template.')
 
             try:
@@ -228,6 +270,7 @@ def initiliase_phantom(pbconf):
             except KeyError:
                 log.warning('SYSTEM environment variable is not set, jobscript may not be created.')
                 verboseprint('You should make sure that your SYSTEM variable is defined in the Phantom Makefile.')
+
                 os.system('make qscript INFILE=' + pbconf['setup']+'.in' + pbconf['make_options'] +
                           ' > ' + pbconf['setup'] + '.jobscript')
 
@@ -253,6 +296,8 @@ def setup_from_array(setup_strings, string, dict_arr):
 
 
 def get_setup_strings(pconf):
+    """ This function creates the directory names for each simulation. """
+
     setup_strings = []
     for key in pconf:
         if isinstance(pconf[key], list):
@@ -275,6 +320,8 @@ def get_setup_strings(pconf):
 
 
 def get_jobscript_names(pconf, pbconf):
+    """ This function generates a list of job script names given the suite of parameters being used in pconf. """
+
     jobscript_names = []
     for key in pconf:
         if isinstance(pconf[key], list):
@@ -300,7 +347,7 @@ def get_jobscript_names(pconf, pbconf):
         jobscript_names = [pbconf['name'] + '_' + name for name in jobscript_names]
 
     if len(jobscript_names[0]) > 16:
-        log.warning('Job names are quite long. Consider adding in a \'short_name\' to phantombatch config.')
+        log.warning('Job names are too long. Consider adding in a \'short_name\' to phantombatch config.')
 
     return jobscript_names
     
@@ -319,6 +366,10 @@ def write_setup_comment(key):
 
 
 def create_job_scripts(pconf, pbconf):
+    """ This function edits the job script file in each pbconf['sim_dir'], so that the requested resources are
+    allocated for each job, and so each job has a sensible name that reflects the parameter choice of each particular
+    simulation. """
+
     verboseprint('Creating job scripts for ' + pbconf['name'] + '..')
     
     jobscript_filename = os.path.join(pbconf['setup'] + '.jobscript')
@@ -369,6 +420,9 @@ def create_job_scripts(pconf, pbconf):
 
 
 def create_setups(pconf, pbconf):
+    """ This function will create all of the setup files for the simulation parameters specified in the phantom config
+    dictionary, pconf. """
+
     verboseprint('Creating the Phantom setup files for ' + pbconf['name'] + '..')
     setup_filename = os.path.join(pbconf['setup'] + '.setup')
     setup_dirs = [os.path.join(os.environ['PHANTOM_DATA'], pbconf['name'], 'simulations', dir) for dir in pbconf['dirs']]
@@ -408,7 +462,11 @@ def create_setups(pconf, pbconf):
 
 
 def run_phantom_setup(pbconf):
+    """ This function will execute phantomsetup in each directory in pbconf['sim_dirs'] to produce pbconf['name'].in,
+     which is the file that is read in by phantom. """
+
     verboseprint('Running phantomsetup for each setup file in each simulation for ' + pbconf['name'] + '..')
+
     setup_dirs = pbconf['sim_dirs']
 
     for dir in setup_dirs:
@@ -420,23 +478,27 @@ def run_phantom_setup(pbconf):
 
 
 def cancel_job(pbconf, job_number):
+    """ Cancel a single job. """
     verboseprint('Cancelling job ' + job_number)
 
     if pbconf['job_scheduler'] == 'slurm':
         output = subprocess.check_output('scancel ' + job_number, stderr=subprocess.STDOUT,
                                          universal_newlines=True, shell=True)
-        print(output)
-        verboseprint(output)
+        verboseprint(output.rstrip())
 
     elif pbconf['job_scheduler'] == 'pbs':
-        subprocess.check_output('qdel ' + job_number, stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
+        output = subprocess.check_output('qdel ' + job_number, stderr=subprocess.STDOUT,
+                                         universal_newlines=True, shell=True)
+        verboseprint(output.rstrip())
 
 
 def cancel_all_submitted_jobs(pbconf):
+    """ This function will cancel all of the jobs submitted by PhantomBatch for pbconf['name']. """
+
     verboseprint('Cancelling all submitted jobs.')
     current_jobs = check_running_jobs(pbconf)
 
-    for job_number in pbconf['submitted_jobs']:
+    for job_number in pbconf['submitted_job_numbers']:
         if any(job_number in cjob for cjob in current_jobs):
             cancel_job(pbconf, job_number)
 
@@ -444,28 +506,87 @@ def cancel_all_submitted_jobs(pbconf):
 
 
 def run_batch_jobs(pbconf):
+    """ This function will attempt to submit all of the jobs in pbconf['job_names'] and pbconf['sim_dirs']. """
 
     if 'submitted_jobs' not in pbconf:
-        pbconf['submitted_jobs'] = []
+        pbconf['submitted_job_number'] = []
 
     i = 0
     time.sleep(1)
     for job in pbconf['job_names']:
         current_jobs = check_running_jobs(pbconf)
-        print(current_jobs)
-        print(len(current_jobs))
         if not any(job in cjob for cjob in current_jobs) and ('job_limit' in pbconf and len(current_jobs) < pbconf['job_limit']):
-            print('Would have tried to submit job '+pbconf['sim_dirs'][i])
+            # print('Would have tried to submit job '+pbconf['sim_dirs'][i])
             job_number = submit_job(pbconf, pbconf['sim_dirs'][i], pbconf['setup'] + '.jobscript')
-            pbconf['submitted_jobs'].append(job_number)
-            print(pbconf['submitted_jobs'])
+            pbconf['submitted_job_numbers'].append(job_number)  # Save the submitted job numbers for later reference
+            pbconf['submitted_job_names'].append(job)  # As above but for the job names
 
         elif 'job_limit' in pbconf and (len(current_jobs) > pbconf['job_limit']):
             verboseprint('Hit maximum number of allowed jobs.')
             break
 
-        print('job_limit' in pbconf and (len(current_jobs) > pbconf['job_limit']))
         i += 1
+
+    save_config(pbconf)
+
+
+def _check_pbconf_sim_dir_consistency(job_name, sim_dir, pbconf):
+    """ Check to make sure that job_name corresponds to the correct sim_dir """
+
+    short_sim_dir = os.path.basename(sim_dir)
+
+    if job_name.startswith(pbconf['name']):
+        return short_sim_dir.startswith(job_name[len(pbconf['name']):])
+
+    elif job_name.startswith(pbconf['short_name']):
+        return short_sim_dir.startswith(job_name[len(pbconf['short_name']):])
+
+    else:
+        return False
+
+
+def check_completed_jobs(pbconf):
+    """ Check if any jobs have been completed. """
+    verboseprint('Checking for any completed jobs..')
+
+    current_jobs = check_running_jobs(pbconf)
+
+    i = 0
+    for job in pbconf['job_names']:
+        if _check_pbconf_sim_dir_consistency(job, pbconf['sim_dir'][i], pbconf):
+            """ This check makes sure that we keep ordering in place. Currently, pbconf['sim_dirs'][i] corrosponds to
+            the directory that stores pbconf['job_names'][i] """
+
+            """ Make a list of all of the dump files in the simulation directory. """
+            job_list = glob(pbconf['sim_dir'][i] + '/' + pbconf['setup'] + '_*')
+
+            if 'num_dumps' in pbconf and (len(job_list) >= pbconf['num_dumps']):
+                """ Check if the number of dumps in the given directory is at least as many as the requested 
+                number of dump files for each simulation, and if so, save the job name in the completed list. """
+
+                verboseprint('Job ' + job + ' has reached the desired number of dump files.')
+
+                if any(job in cjob for cjob in current_jobs):
+                    verboseprint('Cancelling ' + job + ' since it has reached the desired number of dump files.')
+
+                    assert any(job and pbconf['submitted_job_numbers'][i] in cjob for cjob in current_jobs)
+
+                    cancel_job(pbconf, pbconf['submitted_job_numbers'])
+
+                pbconf['completed_jobs'].append(job)
+
+            if 'num_dumps' not in pbconf:
+                log.warning('You have not specified the number of dump files you would like for each simulation. '
+                            'Please specify this in your .config file with the \'num_dumps\' key.')
+
+        i += 1
+
+        save_config(pbconf)
+
+
+# def monitor_jobs(pbconf):
+#     while True:
+
 
 
 if __name__ == "__main__":
@@ -476,7 +597,7 @@ if __name__ == "__main__":
 
     verboseprint = print if args.verbose else lambda *a, **k: None
 
-    config = load_config(args.config)
+    config = load_init_config(args.config)
 
     phantom_config = config['phantom_setup']
     phantombatch_config = config['phantombatch_setup']
@@ -488,5 +609,6 @@ if __name__ == "__main__":
     check_running_jobs(phantombatch_config)
     run_batch_jobs(phantombatch_config)
     os.system('qstat')
-    time.sleep(5)
+    time.sleep(60)
+    check_completed_jobs(phantombatch_config)
     cancel_all_submitted_jobs(phantombatch_config)
