@@ -115,11 +115,10 @@ def dir_func(dirs, string, dict_arr):
     else:
         dirs = [string+str(i).replace('.', '') for i in dict_arr]
         return dirs
-    print(dirs)
+
     tmp_dir = ['']*len(dict_arr)
     for i in range(0, len(dict_arr)):
         tmp_dir[i] = string+str(dict_arr[i]).replace('.', '')
-    print(tmp_dir)
 
     dirs = [dirs[i] + tmp_dir[j] for i in range(0, len(dirs)) for j in range(0, len(tmp_dir))]
     return dirs
@@ -456,7 +455,7 @@ def run_batch_jobs(pbconf):
         print(current_jobs)
         print(len(current_jobs))
         if job not in current_jobs and ('job_limit' in pbconf and len(current_jobs) > pbconf['job_limit']):
-            # print('Would have tried to submit job '+pbconf['sim_dirs'][i])
+            print('Would have tried to submit job '+pbconf['sim_dirs'][i])
             job_number = submit_job(pbconf, pbconf['sim_dirs'][i], pbconf['setup'] + '.jobscript')
             pbconf['submitted_jobs'].append(job_number)
             print(pbconf['submitted_jobs'])
