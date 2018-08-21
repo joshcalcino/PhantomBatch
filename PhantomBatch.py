@@ -89,10 +89,10 @@ def submit_job(pbconf, directory, jobscript_name):
 
     if pbconf['job_scheduler'] == 'slurm':
         verboseprint('Attempting to submit job......')
-        subprocess.check_output('sbatch ' + jobscript_name)
+        subprocess.check_output('sbatch ' + jobscript_name, stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
 
     elif pbconf['job_scheduler'] == 'pbs':
-        subprocess.check_output('qsub ' + jobscript_name)
+        subprocess.check_output('qsub ' + jobscript_name, stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
 
     else:
         log.error('Job scheduler not recognised, cannot submit jobs!')
