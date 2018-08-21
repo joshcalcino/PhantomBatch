@@ -334,7 +334,7 @@ def create_job_scripts(pconf, pbconf):
                 if '#SBATCH --time' in line and ('walltime' in pbconf):
                     print('#SBATCH --time=' + pbconf['walltime'])
 
-                if '#SBATCH --mem' in line (and 'memory' in pbconf):
+                if '#SBATCH --mem' in line and ('memory' in pbconf):
                     print('#SBATCH --mem=' + pbconf['memory'])
 
                 if 'export OMP_NUM_THREADS' in line and ('ncpus' in pbconf or 'omp_threads' in pbconf):
