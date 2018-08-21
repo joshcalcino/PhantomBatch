@@ -319,6 +319,9 @@ def create_job_scripts(pconf, pbconf):
     jobscript_names = get_jobscript_names(pconf, pbconf)
 
     i = 0
+    print(len(sim_dirs))
+    print(len(jobscript_names))
+
     for dir in sim_dirs:
         filename = os.path.join(dir, jobscript_filename)
         for line in fileinput.input(filename, inplace=True):
