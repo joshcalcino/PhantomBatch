@@ -1,8 +1,9 @@
 import argparse
 import os
 import json
+import logging as log
 import subprocess
-import numpy as np
+import fileinput
 
 
 def load_config(filename):
@@ -56,29 +57,44 @@ def decipher_slurm_output(slurm_output, pbconf):
             queue = line[job_id_len+name_len+username_len+time_len+status_len:line_length].rstrip()
             line_array = [job_id, job_name, username, time, status, queue]
             my_jobs.append(line_array)
-    print(my_jobs)
+
     return slurm_lines
 
 
+def decipher_pbs_output(pbs_output, pbconf):
+    return NotImplementedError
+
+
 def check_running_jobs(pbconf):
-    # job_names = pbconf['job_names']
-    print(pbconf['job_scheduler'])
+    verboseprint('Checking jobs currently running..')
+
+    my_jobs = None
     if pbconf['job_scheduler'] == 'slurm':
         jobs = subprocess.check_output('qstat', stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
-        # print(jobs)
-        decipher_slurm_output(jobs, pbconf)
-        # np.savetxt('test_text.txt', jobs)
-        for line in jobs:
-            if pbconf['user'] in line:
-                print(line)
-                my_jobs = my_jobs + line + '\n'
+        my_jobs = decipher_slurm_output(jobs, pbconf)
 
-        # print(my_jobs)
+    elif pbconf['job_scheduler'] == 'pbs':
+        jobs = subprocess.check_output('qstat', stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
+        my_jobs = decipher_pbs_output(jobs, pbconf)
 
+    else:
+        log.warning('Job scheduler not recognised!')
+    return my_jobs
+ 
 
+def submit_job(pbconf, jobscript):
+    verboseprint('Submitting job ')
 
-def submit_job():
-    pass
+    if pbconf['job_scheduler'] == 'slurm':
+        subprocess.check_output('sbatch ' + jobscript)
+
+    elif pbconf['job_scheduler'] == 'pbs':
+        subprocess.check_output('qsub ' + jobscript)
+
+    else:
+        log.error('Job scheduler not recognised, cannot submit jobs!')
+        log.info('Please use a known job scheduler, or add in your own.')
+        exit()
 
 
 def dir_func(dirs, string, dict_arr):
@@ -121,6 +137,7 @@ def loop_keys_dir(pconf):
 
 
 def create_dirs(pconf, pbconf):
+    verboseprint('Checking if simulation directories exist..')
 
     suite_directory = os.path.join(os.environ['PHANTOM_DATA'], pbconf['name'])
 
@@ -132,9 +149,11 @@ def create_dirs(pconf, pbconf):
             os.mkdir(cdir)
 
     pbconf['dirs'] = dirs
+    verboseprint('Completed.')
 
 
 def initialise(pconf, pbconf):
+    verboseprint('Initialising ' + pbconf['name'] + '..')
     suite_directory = os.path.join(os.environ['PHANTOM_DATA'], pbconf['name'])
 
     if not os.path.exists(suite_directory):
@@ -154,6 +173,7 @@ def initialise(pconf, pbconf):
 
 
 def initiliase_phantom(pbconf):
+    verboseprint('Checking if Phantom has been compiled for ' + pbconf['name'] + '..')
     if isinstance(pbconf['setup'], list):
         for setup in pbconf['setup']:
             setup_dir = os.path.join(os.environ['PHANTOM_DATA'], pbconf['name'], 'phantom_'+setup)
@@ -180,12 +200,16 @@ def initiliase_phantom(pbconf):
             os.mkdir(setup_dir)
 
         if not os.path.exists(os.path.join(setup_dir, 'Makefile')):
+            verboseprint('Setting up Phantom.. This may take a few moments.')
             os.system(os.path.join(os.environ['PHANTOM_DIR'], 'scripts', 'writemake.sh') + ' ' +
                       pbconf['setup'] + ' > ' + os.path.join(setup_dir, 'Makefile'))
 
             os.chdir(setup_dir)
             os.system('make ' + pbconf['make_options'])
             os.system('make setup ' + pbconf['make_setup_options'])
+            verboseprint('Writing jobscript template. '
+                         'You should make sure that your SYSTEM variable is defined in Phantom.')
+            os.system('make qscript INFILE=' + pbconf['setup']+'.in' + ' > ' + pbconf['setup'] + '.jobscript')
 
             if 'make_moddump_options' in pbconf:
                 os.system('make moddump ' + pbconf['make_moddump_options'])
@@ -208,7 +232,7 @@ def setup_from_array(setup_strings, string, dict_arr):
     return setup_strings
 
 
-def get_setup_strings(pconf, pbconf):
+def get_setup_strings(pconf):
     setup_strings = []
     for key in pconf:
         if isinstance(pconf[key], list):
@@ -228,6 +252,37 @@ def get_setup_strings(pconf, pbconf):
                 setup_strings = setup_from_array(setup_strings, key, pconf[key])
 
     return setup_strings
+
+
+def get_jobscript_names(pconf, pbconf):
+    jobscript_names = []
+    for key in pconf:
+        if isinstance(pconf[key], list):
+            if key == 'binary_e':
+                jobscript_names = dir_func(jobscript_names, 'e', pconf[key])
+
+            if key == 'binary_a':
+                jobscript_names = dir_func(jobscript_names, 'a', pconf[key])
+
+            if key == 'm2':
+                jobscript_names = dir_func(jobscript_names, 'br', pconf[key])
+
+            if key == 'alphaSS':
+                jobscript_names = dir_func(jobscript_names, 'aSS', pconf[key])
+
+            if key == 'binary_i':
+                jobscript_names = dir_func(jobscript_names, 'i', pconf[key])
+
+    if 'short_name' in pbconf and pbconf['short_name'] is not None:
+        jobscript_names = [pbconf['short_name'] + '_' + name for name in jobscript_names]
+
+    else:
+        jobscript_names = [pbconf['name'] + '_' + name for name in jobscript_names]
+
+    if len(jobscript_names[0]) > 16:
+        log.warning('Job names are quite long. Consider adding in a \'short_name\' to phantombatch config.')
+
+    return jobscript_names
     
 
 def write_setup_comment(key):
@@ -243,21 +298,60 @@ def write_setup_comment(key):
         return ' ! binary eccentricity'
 
 
-def create_setups(pconf, pbconf):
+def create_job_scripts(pconf, pbconf):
+    verboseprint('Creating job scripts for ' + pbconf['name'] + '..')
+    
+    jobscript_filename = os.path.join(pbconf['setup'] + '.jobscript')
+    sim_dirs = [os.path.join(os.environ['PHANTOM_DATA'], pbconf['name'], 'simulations', dir) for dir in pbconf['dirs']]
 
+    jobscript_names = get_jobscript_names(pconf, pbconf)
+
+    i = 0
+    for dir in sim_dirs:
+        filename = os.path.join(dir, jobscript_filename)
+        for line in fileinput.input(filename, inplace=True):
+            if pbconf['job_scheduler'] == 'slurm':
+                if '#SBATCH --nodes' in line and 'ncpus' in pbconf:
+                    print('#SBATCH --nodes=1 --ntasks=' + pbconf['ncpus'])
+
+                if '#SBATCH --job-name' in line:
+                    print('#SBATCH --job-name='+jobscript_names[i])
+
+                if '#SBATCH --output' in line:
+                    print('#SBATCH --output=' + pbconf['setup'] + '.out')
+
+                if '#SBATCH --time' in line and 'walltime' in pbconf:
+                    print('#SBATCH --time=' + pbconf['walltime'])
+
+                if '#SBATCH --mem' in line and 'memory' in pbconf:
+                    print('#SBATCH --mem=' + pbconf['memory'])
+
+                if 'export OMP_NUM_THREADS' in line and ('ncpus' in pbconf or 'omp_threads' in pbconf):
+                    if 'omp_threads' in pbconf:
+                        print('export OMP_NUM_THREADS=' + pbconf['omp_threads'])
+                    else:
+                        print('export OMP_NUM_THREADS=' + pbconf['ncpus'])
+
+            elif pbconf['job_scheduler'] == 'pbs':
+                raise NotImplementedError
+
+            i += 1
+
+    verboseprint('Completed.')
+
+
+def create_setups(pconf, pbconf):
+    verboseprint('Creating the Phantom setup files for ' + pbconf['name'] + '..')
     setup_filename = os.path.join(pbconf['setup'] + '.setup')
-    # looped_keys = loop_keys_dir(pconf)
     setup_dirs = [os.path.join(os.environ['PHANTOM_DATA'], pbconf['name'], 'simulations', dir) for dir in pbconf['dirs']]
     pbconf['sim_dirs'] = setup_dirs
-    # setup_dirs = pbconf['dirs']
-    setup_strings = get_setup_strings(pconf, pbconf)
-    print(setup_dirs)
+    setup_strings = get_setup_strings(pconf)
 
     i = 0
     for dir in setup_dirs:
         filename = os.path.join(dir, setup_filename)
         with open(filename, 'w') as new_setup:
-            print('Entering ' + filename + '..')
+            verboseprint('Entering ' + filename + '..')
             if 'binary' in pbconf:
                 if pbconf['binary']:
                     binary_setup = open('setup/binary.setup', 'r')
@@ -267,13 +361,13 @@ def create_setups(pconf, pbconf):
                             if isinstance(pconf[key], list):
                                 for string in setup_strings[i]:
                                     if key in line and key in string:
-                                        if verbose: print('Writing to setup file..')
+                                        verboseprint('Writing to setup file..')
                                         new_setup.write(string + write_setup_comment(key) + '\n')
                                         key_added = True
                             else:
                                 key_added = False
                                 if key in line:
-                                    new_setup.write(key + ' = ' + str(pconf[key]) + write_setup_comment(key) +  '\n')
+                                    new_setup.write(key + ' = ' + str(pconf[key]) + write_setup_comment(key) + '\n')
                                     key_added = True
 
                         if not key_added:
@@ -282,8 +376,11 @@ def create_setups(pconf, pbconf):
             new_setup.close()
             i += 1
 
+    verboseprint('Completed.')
+
 
 def run_phantom_setup(pbconf):
+    verboseprint('Running phantomsetup for each setup file in each simulation for ' + pbconf['name'] + '..')
     setup_dirs = pbconf['sim_dirs']
 
     for dir in setup_dirs:
@@ -291,14 +388,16 @@ def run_phantom_setup(pbconf):
         os.system('./phantomsetup ' + pbconf['setup'])
 
     os.chdir(os.environ['PHANTOM_DATA'])
+    verboseprint('Completed.')
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Submit batches of Phantom simulations.')
+    parser.add_argument('--verbose', '-v', action='store_true', description='Turn on verbose.')
     parser.add_argument('config', type=str)
     args = parser.parse_args()
 
-    verbose = True
+    verboseprint = print if args.verbose else lambda *a, **k: None
 
     config = load_config(args.config)
 
@@ -309,9 +408,3 @@ if __name__ == "__main__":
     # create_setups(phantom_config, phantombatch_config)
     # run_phantom_setup(phantombatch_config)
     check_running_jobs(phantombatch_config)
-
-
-
-
-
-
