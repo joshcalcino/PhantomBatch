@@ -18,6 +18,7 @@ def decipher_slurm_output(slurm_output):
     found_dash = False
 
     for char in slurm_output:
+        print(char)
         if char == '-':
             tally += 1
             found_dash = True
@@ -35,12 +36,12 @@ def decipher_slurm_output(slurm_output):
     line_length = job_id_len + name_len + username_len + time_len + status_len + queue_len
     slurm_lines = []
 
-    print(len(slurm_output)/(line_length - 1.))
+    print(len(slurm_output)/line_length)
     for i in range(0, int(len(slurm_output)/line_length)):
         slurm_lines.append(slurm_output[i*line_length:(i+1)*line_length])
 
-    for line in slurm_lines:
-        print(line)
+    # for line in slurm_lines:
+    #     print(line)
     return slurm_lines
 
 
@@ -49,7 +50,7 @@ def check_running_jobs(pbconf):
     print(pbconf['job_scheduler'])
     if pbconf['job_scheduler'] == 'slurm':
         jobs = subprocess.check_output('qstat', stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
-        print(jobs)
+        # print(jobs)
         decipher_slurm_output(jobs)
         # np.savetxt('test_text.txt', jobs)
         for line in jobs:
