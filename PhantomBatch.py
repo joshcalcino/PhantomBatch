@@ -453,7 +453,7 @@ def run_batch_jobs(pbconf):
     time.sleep(1)
     for job in pbconf['job_names']:
         current_jobs = check_running_jobs(pbconf)
-
+        print(len(current_jobs))
         if job not in current_jobs and ('job_limit' in pbconf and len(current_jobs) > pbconf['job_limit']):
             # print('Would have tried to submit job '+pbconf['sim_dirs'][i])
             job_number = submit_job(pbconf, pbconf['sim_dirs'][i], pbconf['setup'] + '.jobscript')
