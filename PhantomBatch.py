@@ -570,7 +570,7 @@ def check_completed_jobs(pbconf):
             the directory that stores pbconf['job_names'][i] """
 
             """ Make a list of all of the dump files in the simulation directory. """
-            job_list = glob(pbconf['sim_dir'][i] + '/' + pbconf['setup'] + '_*')
+            job_list = glob(pbconf['sim_dirs'][i] + '/' + pbconf['setup'] + '_*')
 
             if 'num_dumps' in pbconf and (len(job_list) >= pbconf['num_dumps']):
                 """ Check if the number of dumps in the given directory is at least as many as the requested 
@@ -620,6 +620,6 @@ if __name__ == "__main__":
     check_running_jobs(phantombatch_config)
     run_batch_jobs(phantombatch_config)
     os.system('qstat')
-    time.sleep(60)
+    time.sleep(20)
     check_completed_jobs(phantombatch_config)
     cancel_all_submitted_jobs(phantombatch_config)
