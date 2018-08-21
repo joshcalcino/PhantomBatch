@@ -326,25 +326,25 @@ def create_job_scripts(pconf, pbconf):
                     print(('#SBATCH --nodes=1 --ntasks=' + pbconf['ncpus']).rstrip())
 
                 elif '#SBATCH --job-name' in line:
-                    print('#SBATCH --job-name='+jobscript_names[i])
+                    print(('#SBATCH --job-name='+jobscript_names[i]).rstrip())
 
                 elif '#SBATCH --output' in line:
-                    print('#SBATCH --output=' + pbconf['setup'] + '.out')
+                    print(('#SBATCH --output=' + pbconf['setup'] + '.out').rstrip())
 
                 elif '#SBATCH --time' in line and ('walltime' in pbconf):
-                    print('#SBATCH --time=' + pbconf['walltime'])
+                    print(('#SBATCH --time=' + pbconf['walltime']).rstrip())
 
                 elif '#SBATCH --mem' in line and ('memory' in pbconf):
-                    print('#SBATCH --mem=' + pbconf['memory'])
+                    print(('#SBATCH --mem=' + pbconf['memory']).rstrip())
 
                 elif 'export OMP_NUM_THREADS' in line and ('ncpus' in pbconf or 'omp_threads' in pbconf):
                     if 'omp_threads' in pbconf:
-                        print('export OMP_NUM_THREADS=' + pbconf['omp_threads'])
+                        print(('export OMP_NUM_THREADS=' + pbconf['omp_threads']).rstrip())
                     else:
-                        print('export OMP_NUM_THREADS=' + pbconf['ncpus'])
+                        print(('export OMP_NUM_THREADS=' + pbconf['ncpus']).rstrip())
 
                 else:
-                    print(line)
+                    print(line.rstrip())
 
             elif pbconf['job_scheduler'] == 'pbs':
                 raise NotImplementedError
