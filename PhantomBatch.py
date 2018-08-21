@@ -350,7 +350,7 @@ def create_job_scripts(pconf, pbconf):
             elif pbconf['job_scheduler'] == 'pbs':
                 raise NotImplementedError
 
-            i += 1
+        i += 1
 
     verboseprint('Completed.')
 
