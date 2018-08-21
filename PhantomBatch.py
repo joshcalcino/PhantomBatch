@@ -16,7 +16,7 @@ def decipher_slurm_output(slurm_output):
     tally = 0
     tally_arr = []
     found_dash = False
-    slurm_output.replace(' ', '_')
+    # slurm_output.replace(' ', '_')
     print(slurm_output)
 
     for char in slurm_output:
@@ -33,6 +33,7 @@ def decipher_slurm_output(slurm_output):
             tally_arr.append(tally)
             tally = 0
         elif char.isdigit():
+            tally += 1
             tally_arr.append(tally)
             break
 
