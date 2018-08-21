@@ -26,6 +26,7 @@ def decipher_slurm_output(slurm_output):
             tally_arr.append(tally)
             tally = 0
         elif char.isdigit():
+            tally+=1
             tally_arr.append(tally)
             break
 
