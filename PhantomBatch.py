@@ -58,7 +58,7 @@ def decipher_slurm_output(slurm_output, pbconf):
             line_array = [job_id, job_name, username, time, status, queue]
             my_jobs.append(line_array)
 
-    return slurm_lines
+    return my_jobs
 
 
 def decipher_pbs_output(pbs_output, pbconf):
