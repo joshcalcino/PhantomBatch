@@ -324,24 +324,30 @@ def create_job_scripts(pconf, pbconf):
             if pbconf['job_scheduler'] == 'slurm':
                 if '#SBATCH --nodes' in line and 'ncpus' in pbconf:
                     print('#SBATCH --nodes=1 --ntasks=' + pbconf['ncpus'])
+                    continue
 
                 if '#SBATCH --job-name' in line:
                     print('#SBATCH --job-name='+jobscript_names[i])
+                    continue
 
                 if '#SBATCH --output' in line:
                     print('#SBATCH --output=' + pbconf['setup'] + '.out')
+                    continue
 
                 if '#SBATCH --time' in line and 'walltime' in pbconf:
                     print('#SBATCH --time=' + pbconf['walltime'])
+                    continue
 
                 if '#SBATCH --mem' in line and 'memory' in pbconf:
                     print('#SBATCH --mem=' + pbconf['memory'])
+                    continue
 
                 if 'export OMP_NUM_THREADS' in line and ('ncpus' in pbconf or 'omp_threads' in pbconf):
                     if 'omp_threads' in pbconf:
                         print('export OMP_NUM_THREADS=' + pbconf['omp_threads'])
                     else:
                         print('export OMP_NUM_THREADS=' + pbconf['ncpus'])
+                    continue
 
                 else:
                     print(line)
