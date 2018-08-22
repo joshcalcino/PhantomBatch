@@ -118,29 +118,55 @@ def initiliase_phantom(pbconf):
         if not os.path.exists(os.path.join(setup_dir, 'Makefile')):
             log.debug('Setting up Phantom.. This may take a few moments.')
 
-            os.system(os.path.join(os.environ['PHANTOM_DIR'], 'scripts', 'writemake.sh') + ' ' +
-                      pbconf['setup'] + ' > ' + os.path.join(setup_dir, 'Makefile'))
+            # os.system(os.path.join(os.environ['PHANTOM_DIR'], 'scripts', 'writemake.sh') + ' ' +
+            #           pbconf['setup'] + ' > ' + os.path.join(setup_dir, 'Makefile'))
+
+            output = subprocess.check_output(os.path.join(os.environ['PHANTOM_DIR'], 'scripts', 'writemake.sh') + ' ' +
+                                             pbconf['setup'] + ' > ' + os.path.join(setup_dir, 'Makefile'),
+                                             stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
+            util.save_phantom_output(output.rstrip(), pbconf)
 
             os.chdir(setup_dir)
 
-            os.system('make ' + pbconf['make_options'])
-            os.system('make setup ' + pbconf['make_setup_options'])
+            output = subprocess.check_output('make ' + pbconf['make_options'],
+                                             stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
+            util.save_phantom_output(output.rstrip(), pbconf)
+
+            output = subprocess.check_output('make setup ' + pbconf['make_setup_options'],
+                                             stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
+            util.save_phantom_output(output.rstrip(), pbconf)
+
+            # os.system('make ' + pbconf['make_options'])
+            # os.system('make setup ' + pbconf['make_setup_options'])
 
             log.debug('Writing jobscript template.')
 
             try:
                 os.environ['SYSTEM']
-                os.system('make qscript INFILE=' + pbconf['setup'] + '.in' + ' > ' + pbconf['setup'] + '.jobscript')
+                output = subprocess.check_output('make qscript INFILE=' + pbconf['setup'] + '.in' + ' > '
+                                                 + pbconf['setup'] + '.jobscript',
+                                                 stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
+                util.save_phantom_output(output.rstrip(), pbconf)
+
+                # os.system('make qscript INFILE=' + pbconf['setup'] + '.in' + ' > ' + pbconf['setup'] + '.jobscript')
 
             except KeyError:
                 log.warning('SYSTEM environment variable is not set, jobscript may not be created.')
                 log.debug('You should make sure that your SYSTEM variable is defined in the Phantom Makefile.')
 
-                os.system('make qscript INFILE=' + pbconf['setup']+'.in' + pbconf['make_options'] +
-                          ' > ' + pbconf['setup'] + '.jobscript')
+                output = subprocess.check_output('make qscript INFILE=' + pbconf['setup']+'.in' + pbconf['make_options']
+                                                 + ' > ' + pbconf['setup'] + '.jobscript',
+                                                 stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
+                util.save_phantom_output(output.rstrip(), pbconf)
+
+                # os.system('make qscript INFILE=' + pbconf['setup']+'.in' + pbconf['make_options'] +
+                #           ' > ' + pbconf['setup'] + '.jobscript')
 
             if 'make_moddump_options' in pbconf:
-                os.system('make moddump ' + pbconf['make_moddump_options'])
+                output = subprocess.check_output('make moddump ' + pbconf['make_moddump_options'],
+                                                 stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
+
+                # os.system('make moddump ' + pbconf['make_moddump_options'])
 
             os.chdir(os.environ['PHANTOM_DATA'])
 
@@ -337,10 +363,36 @@ def run_phantom_setup(pbconf):
     for dir in setup_dirs:
         log.debug('Changing directory to ' + dir)
         os.chdir(dir)
-        os.system('./phantomsetup ' + pbconf['setup'])
+        output = subprocess.check_output('./phantomsetup ' + pbconf['setup'], stderr=subprocess.STDOUT,
+                                         universal_newlines=True, shell=True)
+
+        util.check_for_phantom_warnings(output.rstrip())
+        # os.system('./phantomsetup ' + pbconf['setup'])
 
     os.chdir(os.environ['PHANTOM_DATA'])
     log.info('Completed.')
+
+
+def check_phantombatch_complete(pbconf):
+    """ Check if all the desired phantombatch jobs have been completed. """
+
+    log.info('Checking if PhantomBatch has completed all requested jobs.')
+
+    current_jobs = jobhandler.check_running_jobs(pbconf)
+
+    if len(pbconf['job_names']) == len(pbconf['submitted_job_names']):
+
+        if len(current_jobs) > 0:
+            log.info('There are still jobs to be submitted.')
+            return False
+
+        elif len(current_jobs) == 0:
+            log.info('All jobs complete.')
+            return True
+
+    else:
+        log.info('There are still jobs to be submitted.')
+        return False
 
 
 def phantom_batch_monitor(pbconf):

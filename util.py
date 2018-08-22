@@ -32,6 +32,16 @@ def load_config(pbconf):
         return pickle.load(f)
 
 
+def check_for_phantom_warnings(output):
+    """ Check for any warnings in the phantom routines. """
+
+    warnings_kw = ['WARNING', 'Warning', 'warning']
+
+    for line in output:
+        if any(warning in line for warning in warnings_kw):
+            log.warning('Phantom warning found: ' + line)
+
+
 def check_pbconf_sim_dir_consistency(job_name, sim_dir, pbconf):
     """ Check to make sure that job_name corresponds to the correct sim_dir """
 
@@ -45,3 +55,13 @@ def check_pbconf_sim_dir_consistency(job_name, sim_dir, pbconf):
 
     else:
         return False
+
+
+def save_phantom_output(output, pbconf):
+    """ Save the output from phantom into a separate file. """
+
+    output_filename = os.path.join(os.environ['PHANTOM_DATA'], pbconf['name'], 'phantom_output')
+
+    # if os.path.exists(output_filename):
+    with open(output_filename, 'wb') as f:
+        pickle.dump(output, f)
