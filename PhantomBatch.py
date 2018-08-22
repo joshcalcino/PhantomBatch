@@ -564,6 +564,8 @@ def check_completed_jobs(pbconf):
 
     current_jobs = check_running_jobs(pbconf)
 
+    print(pbconf['job_names'])
+
     i = 0
     for job in pbconf['job_names']:
         print('Checking ' + job)
