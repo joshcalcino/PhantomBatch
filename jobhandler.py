@@ -235,6 +235,7 @@ def check_completed_jobs(pbconf):
 
         log.info('There are now ' + str(len(current_jobs)) + ' still running.')
         log.info('There are now ' + str(len(pbconf['completed_jobs'])) + ' finished.')
+        print(pbconf['completed_jobs'])
         log.info('There are now ' + str(len(pbconf['job_names']) - len(current_jobs) - len(pbconf['completed_jobs'])) +
                  ' to be started.')
 
