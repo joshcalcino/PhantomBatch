@@ -390,7 +390,7 @@ def phantombatch_monitor(pconf, pbconf):
     while not completed:
         jobhandler.run_batch_jobs(pbconf)
 
-        log.info('PhantomBatch will now sleep for ' + pbconf['sleep_time'] + ' minutes.')
+        log.info('PhantomBatch will now sleep for ' + str(pbconf['sleep_time']) + ' minutes.')
         time.sleep(pbconf['sleep_time']*60)
 
         jobhandler.check_completed_jobs(pbconf)
