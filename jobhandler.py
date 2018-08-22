@@ -66,19 +66,28 @@ def decipher_pbs_output(pbs_output, pbconf):
 def check_running_jobs(pbconf):
     log.info('Checking jobs currently running..')
 
-    my_jobs = None
+    my_pb_jobs = []
     if pbconf['job_scheduler'] == 'slurm':
         jobs = subprocess.check_output('qstat', stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
         my_jobs = decipher_slurm_output(jobs, pbconf)
+
+        for line in my_jobs:
+            print(line)
+            if any([job in line[1] for job in pbconf['job_names']]):  # line[1] holds the name of the job in my_job
+                my_pb_jobs.append(line)
 
     elif pbconf['job_scheduler'] == 'pbs':
         jobs = subprocess.check_output('qstat', stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
         my_jobs = decipher_pbs_output(jobs, pbconf)
 
+        for line in my_jobs:
+            if any([job in line[1] for job in pbconf['job_names']]):  # line[1] holds the name of the job in my_job
+                my_pb_jobs.append(line)
+
     else:
         log.error('Job scheduler not recognised!')
 
-    return my_jobs
+    return my_pb_jobs
 
 
 def submit_job(pbconf, directory, jobscript_name):
@@ -152,22 +161,27 @@ def run_batch_jobs(pbconf):
     for job in pbconf['job_names']:
         current_jobs = check_running_jobs(pbconf)
         if not any(job in cjob for cjob in current_jobs) and ('job_limit' in pbconf and len(current_jobs) < pbconf['job_limit']):
-            # print('Would have tried to submit job '+pbconf['sim_dirs'][i])
-            job_number = submit_job(pbconf, pbconf['sim_dirs'][i], pbconf['setup'] + '.jobscript')
-
-            if 'submitted_job_numbers' in pbconf:
-                pbconf['submitted_job_numbers'].append(str(job_number))  # Save the submitted job numbers for later reference
+            if 'submitted_job_names' in pbconf and (job in pbconf['submitted_job_names']):
+                pass
 
             else:
-                pbconf['submitted_job_numbers'] = []
-                pbconf['submitted_job_numbers'].append(str(job_number))
+                # print('Would have tried to submit job '+pbconf['sim_dirs'][i])
+                job_number = submit_job(pbconf, pbconf['sim_dirs'][i], pbconf['setup'] + '.jobscript')
 
-            if 'submitted_job_names' in pbconf:
-                pbconf['submitted_job_names'].append(job)  # As above but for the job names
+                if 'submitted_job_numbers' in pbconf:
+                    """ Save the submitted job numbers for later reference """
+                    pbconf['submitted_job_numbers'].append(str(job_number))
 
-            else:
-                pbconf['submitted_job_names'] = []
-                pbconf['submitted_job_names'].append(str(job_number))
+                else:
+                    pbconf['submitted_job_numbers'] = []
+                    pbconf['submitted_job_numbers'].append(str(job_number))
+
+                if 'submitted_job_names' in pbconf:
+                    pbconf['submitted_job_names'].append(job)  # As above but for the job names
+
+                else:
+                    pbconf['submitted_job_names'] = []
+                    pbconf['submitted_job_names'].append(str(job_number))
 
         elif 'job_limit' in pbconf and (len(current_jobs) > pbconf['job_limit']):
             log.debug('Hit maximum number of allowed jobs.')
@@ -218,6 +232,8 @@ def check_completed_jobs(pbconf):
             if 'num_dumps' not in pbconf:
                 log.warning('You have not specified the number of dump files you would like for each simulation. '
                             'Please specify this in your .config file with the \'num_dumps\' key.')
+
+        log.info('There are now ' + str(len()))
 
         i += 1
 

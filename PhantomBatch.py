@@ -5,7 +5,7 @@ import subprocess
 import fileinput
 import jobhandler
 import util
-
+import time
 
 def dir_func(dirs, string, dict_arr):
     if len(dirs) is not 0:
@@ -372,7 +372,31 @@ def check_phantombatch_complete(pbconf):
         return False
 
 
-def phantombatch_monitor(pbconf):
+def phantombatch_monitor(pconf, pbconf):
+
+    initialise(pconf, pbconf)
+    create_setups(pconf, pbconf)
+    run_phantom_setup(pbconf)
+    create_job_scripts(pconf, pbconf)
+    # jobhandler.check_running_jobs(pbconf)
+    jobhandler.run_batch_jobs(pbconf)
+    jobhandler.check_completed_jobs(pbconf)
+    jobhandler.cancel_all_submitted_jobs(pbconf)
+
+    sleep_time = pbconf['sleep_time']
+
+    completed = False
+
+    while not completed:
+        jobhandler.run_batch_jobs(pbconf)
+
+        log.info('PhantomBatch will now sleep for ' + pbconf['sleep_time'] + ' minutes.')
+        time.sleep(pbconf['sleep_time']*60)
+
+        jobhandler.check_completed_jobs(pbconf)
+
+        completed = check_phantombatch_complete(pbconf)
+
     return NotImplementedError
 
 
@@ -393,14 +417,3 @@ if __name__ == "__main__":
     phantom_config = config['phantom_setup']
     phantombatch_config = config['phantombatch_setup']
 
-    initialise(phantom_config, phantombatch_config)
-    create_setups(phantom_config, phantombatch_config)
-    run_phantom_setup(phantombatch_config)
-    create_job_scripts(phantom_config, phantombatch_config)
-    jobhandler.check_running_jobs(phantombatch_config)
-    jobhandler.run_batch_jobs(phantombatch_config)
-    os.system('qstat')
-    # print('Sleeping..')
-    # time.sleep(120)
-    jobhandler.check_completed_jobs(phantombatch_config)
-    jobhandler.cancel_all_submitted_jobs(phantombatch_config)
