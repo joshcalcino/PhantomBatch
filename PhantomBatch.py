@@ -344,7 +344,7 @@ def run_phantom_setup(pbconf):
                                          universal_newlines=True, shell=True)
 
         util.check_for_phantom_warnings(output.rstrip())
-        # os.system('./phantomsetup ' + pbconf['setup'])
+        util.save_phantom_output(output.rstrip(), pbconf)
 
     os.chdir(os.environ['PHANTOM_DATA'])
     log.info('Completed.')
