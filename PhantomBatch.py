@@ -566,6 +566,7 @@ def check_completed_jobs(pbconf):
 
     i = 0
     for job in pbconf['job_names']:
+        print('Checking ' + job)
         if _check_pbconf_sim_dir_consistency(job, pbconf['sim_dirs'][i], pbconf):
             """ This check makes sure that we keep ordering in place. Currently, pbconf['sim_dirs'][i] corrosponds to
             the directory that stores pbconf['job_names'][i] """
@@ -622,6 +623,6 @@ if __name__ == "__main__":
     check_running_jobs(phantombatch_config)
     run_batch_jobs(phantombatch_config)
     os.system('qstat')
-    time.sleep(60)
+    time.sleep(30)
     check_completed_jobs(phantombatch_config)
     cancel_all_submitted_jobs(phantombatch_config)
