@@ -33,7 +33,7 @@ def load_config(pbconf):
 
 
 def check_for_phantom_warnings(output):
-    """ Check for any warnings in the phantom routines. """
+    """ Check for any warnings in the phantom routines. Don't think this is working just yet. """
 
     log.debug('Checking for warnings in phantom output..')
 

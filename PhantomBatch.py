@@ -381,7 +381,6 @@ def phantombatch_monitor(pconf, pbconf):
     create_job_scripts(pconf, pbconf)
     jobhandler.check_running_jobs(pbconf)
     jobhandler.run_batch_jobs(pbconf)
-    # jobhandler.check_completed_jobs(pbconf)
 
     completed = False
 
@@ -394,8 +393,6 @@ def phantombatch_monitor(pconf, pbconf):
         jobhandler.check_completed_jobs(pbconf)
 
         completed = check_phantombatch_complete(pbconf)
-
-    return NotImplementedError
 
 
 if __name__ == "__main__":
