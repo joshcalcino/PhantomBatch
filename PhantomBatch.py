@@ -281,14 +281,14 @@ def create_job_scripts(pconf, pbconf):
 
         i += 1
 
-    log.debug('Completed.')
+    log.info('Completed.')
 
 
 def create_setups(pconf, pbconf):
     """ This function will create all of the setup files for the simulation parameters specified in the phantom config
     dictionary, pconf. """
 
-    log.debug('Creating the Phantom setup files for ' + pbconf['name'] + '..')
+    log.info('Creating the Phantom setup files for ' + pbconf['name'] + '..')
     setup_filename = os.path.join(pbconf['setup'] + '.setup')
     setup_dirs = [os.path.join(os.environ['PHANTOM_DATA'], pbconf['name'], 'simulations', dir) for dir in pbconf['dirs']]
     pbconf['sim_dirs'] = setup_dirs
@@ -323,23 +323,24 @@ def create_setups(pconf, pbconf):
             new_setup.close()
             i += 1
 
-    log.debug('Completed.')
+    log.info('Completed.')
 
 
 def run_phantom_setup(pbconf):
     """ This function will execute phantomsetup in each directory in pbconf['sim_dirs'] to produce pbconf['name'].in,
      which is the file that is read in by phantom. """
 
-    log.debug('Running phantomsetup for each setup file in each simulation for ' + pbconf['name'] + '..')
+    log.info('Running phantomsetup for each setup file in each simulation for ' + pbconf['name'] + '..')
 
     setup_dirs = pbconf['sim_dirs']
 
     for dir in setup_dirs:
+        log.debug('Changing directory to ' + dir)
         os.chdir(dir)
         os.system('./phantomsetup ' + pbconf['setup'])
 
     os.chdir(os.environ['PHANTOM_DATA'])
-    log.debug('Completed.')
+    log.info('Completed.')
 
 
 def phantom_batch_monitor(pbconf):
