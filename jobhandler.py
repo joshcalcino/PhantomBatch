@@ -200,6 +200,9 @@ def check_completed_jobs(pbconf):
 
     print(pbconf['job_names'])
 
+    if 'completed_jobs' not in pbconf:
+        pbconf['completed_jobs'] = []
+
     i = 0
     for job in pbconf['job_names']:
 
@@ -224,9 +227,6 @@ def check_completed_jobs(pbconf):
                     cancel_job(pbconf, pbconf['submitted_job_numbers'][i])
 
                 if 'completed_jobs' in pbconf:
-                    pbconf['completed_jobs'].append(job)
-                else:
-                    pbconf['completed_jobs'] = []
                     pbconf['completed_jobs'].append(job)
 
             if 'num_dumps' not in pbconf:
