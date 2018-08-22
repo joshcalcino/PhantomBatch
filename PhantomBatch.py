@@ -597,7 +597,11 @@ def check_completed_jobs(pbconf):
 
                     cancel_job(pbconf, pbconf['submitted_job_numbers'][i])
 
-                pbconf['completed_jobs'].append(job)
+                if 'completed_jobs' in pbconf:
+                    pbconf['completed_jobs'].append(job)
+                else:
+                    pbconf['completed_jobs'] = []
+                    pbconf['completed_jobs'].append(job)
 
             if 'num_dumps' not in pbconf:
                 log.warning('You have not specified the number of dump files you would like for each simulation. '
