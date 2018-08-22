@@ -572,6 +572,7 @@ def check_completed_jobs(pbconf):
 
             """ Make a list of all of the dump files in the simulation directory. """
             job_list = glob(pbconf['sim_dirs'][i] + '/' + pbconf['setup'] + '_*')
+            print(job_list)
 
             if 'num_dumps' in pbconf and (len(job_list) >= pbconf['num_dumps']):
                 """ Check if the number of dumps in the given directory is at least as many as the requested 
