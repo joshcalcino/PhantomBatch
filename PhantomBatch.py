@@ -7,6 +7,7 @@ import jobhandler
 import util
 import time
 
+
 def dir_func(dirs, string, dict_arr):
     if len(dirs) is not 0:
         dirs = [i+'_' for i in dirs]

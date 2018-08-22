@@ -162,7 +162,9 @@ def run_batch_jobs(pbconf):
     time.sleep(1)
     for job in pbconf['job_names']:
         current_jobs = check_running_jobs(pbconf)
-        if not any(job in cjob for cjob in current_jobs) and ('job_limit' in pbconf and len(current_jobs) < pbconf['job_limit']):
+        if not any(job in cjob for cjob in current_jobs) and \
+                ('job_limit' in pbconf and (len(current_jobs) < pbconf['job_limit'])):
+
             if 'submitted_job_names' in pbconf and (job in pbconf['submitted_job_names']):
                 pass
 
@@ -183,7 +185,7 @@ def run_batch_jobs(pbconf):
 
                 else:
                     pbconf['submitted_job_names'] = []
-                    pbconf['submitted_job_names'].append(str(job_number))
+                    pbconf['submitted_job_names'].append(job)
 
         elif 'job_limit' in pbconf and (len(current_jobs) > pbconf['job_limit']):
             log.debug('Hit maximum number of allowed jobs.')
