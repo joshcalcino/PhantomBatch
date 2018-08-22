@@ -629,6 +629,7 @@ if __name__ == "__main__":
     check_running_jobs(phantombatch_config)
     run_batch_jobs(phantombatch_config)
     os.system('qstat')
+    print('Sleeping..')
     time.sleep(30)
     check_completed_jobs(phantombatch_config)
     cancel_all_submitted_jobs(phantombatch_config)
