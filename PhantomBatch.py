@@ -417,5 +417,5 @@ if __name__ == "__main__":
     phantom_config = config['phantom_setup']
     phantombatch_config = config['phantombatch_setup']
 
-    phantombatch_monitor(phantombatch_config, phantombatch_config)
+    phantombatch_monitor(phantom_config, phantombatch_config)
 
