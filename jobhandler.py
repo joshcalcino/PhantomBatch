@@ -120,7 +120,7 @@ def cancel_job(pbconf, job_number):
         output = subprocess.check_output('scancel ' + str(job_number), stderr=subprocess.STDOUT,
                                          universal_newlines=True, shell=True)
         log.debug(output.rstrip())
-        util.
+        # util.
 
     elif pbconf['job_scheduler'] == 'pbs':
         output = subprocess.check_output('qdel ' + str(job_number), stderr=subprocess.STDOUT,
