@@ -48,7 +48,7 @@ def loop_keys_dir(pconf):
 def create_dirs(pconf, pbconf):
     """ Create the simulation directories. """
 
-    log.debug('Checking if simulation directories exist..')
+    log.info('Checking if simulation directories exist..')
 
     suite_directory = os.path.join(os.environ['PHANTOM_DATA'], pbconf['name'])
 
@@ -60,11 +60,12 @@ def create_dirs(pconf, pbconf):
             os.mkdir(cdir)
 
     pbconf['dirs'] = dirs
-    log.debug('Completed.')
+    log.info('Completed.')
 
 
 def initialise(pconf, pbconf):
-    log.debug('Initialising ' + pbconf['name'] + '..')
+    log.info('Initialising ' + pbconf['name'] + '..')
+
     suite_directory = os.path.join(os.environ['PHANTOM_DATA'], pbconf['name'])
 
     if not os.path.exists(suite_directory):
@@ -79,35 +80,23 @@ def initialise(pconf, pbconf):
     create_dirs(pconf, pbconf)
 
     for dir in pbconf['dirs']:
-        os.system('cp ' + os.path.join(os.environ['PHANTOM_DATA'], pbconf['name'], 'phantom_'+pbconf['setup']) + '/* '
-                  + os.path.join(sims_dir, dir))
+        output = subprocess.check_output('cp ' + os.path.join(os.environ['PHANTOM_DATA'], pbconf['name'], 'phantom_' +
+                                                              pbconf['setup']) + '/* ' + os.path.join(sims_dir, dir),
+                                         stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
+        util.save_phantom_output(output.rstrip(), pbconf)
 
 
 def initiliase_phantom(pbconf):
     """ This function will initialise phantom in a special directory called phantom_pbconfg['setup']. We do this so
     that we do not need to compile phantom for each simulation directory. """
 
-    log.debug('Checking if Phantom has been compiled for ' + pbconf['name'] + '..')
+    log.info('Checking if Phantom has been compiled for ' + pbconf['name'] + '..')
+
     if isinstance(pbconf['setup'], list):
-        """ Imagining that we can have an array of setups which would be consecutively executed.. """
+        """ Imagining that we can have an array of setups which would be consecutively executed.. Say if we wanted to
+        run some gas and then moddump with dust grains.."""
+
         raise NotImplementedError
-        for setup in pbconf['setup']:
-            setup_dir = os.path.join(os.environ['PHANTOM_DATA'], pbconf['name'], 'phantom_'+setup)
-
-            if not os.path.exists(setup_dir):
-                os.mkdir(setup_dir)
-
-            if not os.path.exists(os.path.join(setup_dir, 'Makefile')):
-                os.system(os.path.join(os.environ['PHANTOM_DIR'], 'scripts', 'writemake.sh')+' ' +
-                          setup + ' > ' + os.path.join(setup_dir, 'Makefile'))
-                os.chdir(setup_dir)
-                os.system('make '+pbconf['make_options'])
-                os.system('make setup '+pbconf['make_setup_options'])
-
-                if pbconf['make_setup_options'] is not None:
-                    os.system('make moddump ' + pbconf['make_moddump_options'])
-
-                os.chdir(os.environ['PHANTOM_DATA'])
 
     else:
         setup_dir = os.path.join(os.environ['PHANTOM_DATA'], pbconf['name'], 'phantom_' + pbconf['setup'])
@@ -117,9 +106,6 @@ def initiliase_phantom(pbconf):
 
         if not os.path.exists(os.path.join(setup_dir, 'Makefile')):
             log.debug('Setting up Phantom.. This may take a few moments.')
-
-            # os.system(os.path.join(os.environ['PHANTOM_DIR'], 'scripts', 'writemake.sh') + ' ' +
-            #           pbconf['setup'] + ' > ' + os.path.join(setup_dir, 'Makefile'))
 
             output = subprocess.check_output(os.path.join(os.environ['PHANTOM_DIR'], 'scripts', 'writemake.sh') + ' ' +
                                              pbconf['setup'] + ' > ' + os.path.join(setup_dir, 'Makefile'),
@@ -136,9 +122,6 @@ def initiliase_phantom(pbconf):
                                              stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
             util.save_phantom_output(output.rstrip(), pbconf)
 
-            # os.system('make ' + pbconf['make_options'])
-            # os.system('make setup ' + pbconf['make_setup_options'])
-
             log.debug('Writing jobscript template.')
 
             try:
@@ -147,8 +130,6 @@ def initiliase_phantom(pbconf):
                                                  + pbconf['setup'] + '.jobscript',
                                                  stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
                 util.save_phantom_output(output.rstrip(), pbconf)
-
-                # os.system('make qscript INFILE=' + pbconf['setup'] + '.in' + ' > ' + pbconf['setup'] + '.jobscript')
 
             except KeyError:
                 log.warning('SYSTEM environment variable is not set, jobscript may not be created.')
@@ -159,14 +140,10 @@ def initiliase_phantom(pbconf):
                                                  stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
                 util.save_phantom_output(output.rstrip(), pbconf)
 
-                # os.system('make qscript INFILE=' + pbconf['setup']+'.in' + pbconf['make_options'] +
-                #           ' > ' + pbconf['setup'] + '.jobscript')
-
             if 'make_moddump_options' in pbconf:
                 output = subprocess.check_output('make moddump ' + pbconf['make_moddump_options'],
                                                  stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
-
-                # os.system('make moddump ' + pbconf['make_moddump_options'])
+                util.save_phantom_output(output.rstrip(), pbconf)
 
             os.chdir(os.environ['PHANTOM_DATA'])
 
@@ -261,7 +238,7 @@ def create_job_scripts(pconf, pbconf):
     allocated for each job, and so each job has a sensible name that reflects the parameter choice of each particular
     simulation. """
 
-    log.debug('Creating job scripts for ' + pbconf['name'] + '..')
+    log.info('Creating job scripts for ' + pbconf['name'] + '..')
     
     jobscript_filename = os.path.join(pbconf['setup'] + '.jobscript')
     sim_dirs = [os.path.join(os.environ['PHANTOM_DATA'], pbconf['name'], 'simulations', dir) for dir in pbconf['dirs']]
@@ -395,7 +372,7 @@ def check_phantombatch_complete(pbconf):
         return False
 
 
-def phantom_batch_monitor(pbconf):
+def phantombatch_monitor(pbconf):
     return NotImplementedError
 
 

@@ -64,4 +64,5 @@ def save_phantom_output(output, pbconf):
 
     # if os.path.exists(output_filename):
     with open(output_filename, 'wb') as f:
-        pickle.dump(output, f)
+        pickle.load(f)
+        f.write(output)

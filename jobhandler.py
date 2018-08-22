@@ -64,7 +64,7 @@ def decipher_pbs_output(pbs_output, pbconf):
 
 
 def check_running_jobs(pbconf):
-    log.debug('Checking jobs currently running..')
+    log.info('Checking jobs currently running..')
 
     my_jobs = None
     if pbconf['job_scheduler'] == 'slurm':
@@ -84,7 +84,7 @@ def check_running_jobs(pbconf):
 def submit_job(pbconf, directory, jobscript_name):
     """ Submit a job to the cluster. Both SLURM and PBS job schedulers are supported. """
 
-    log.debug('Submitting job in directory ' + directory)
+    log.info('Submitting job in directory ' + directory)
 
     os.chdir(directory)
 
@@ -114,7 +114,7 @@ def submit_job(pbconf, directory, jobscript_name):
 
 def cancel_job(pbconf, job_number):
     """ Cancel a single job. """
-    log.debug('Cancelling job ' + str(job_number))
+    log.info('Cancelling job ' + str(job_number))
 
     if pbconf['job_scheduler'] == 'slurm':
         output = subprocess.check_output('scancel ' + str(job_number), stderr=subprocess.STDOUT,
