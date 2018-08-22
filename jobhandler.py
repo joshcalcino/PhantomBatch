@@ -233,7 +233,10 @@ def check_completed_jobs(pbconf):
                 log.warning('You have not specified the number of dump files you would like for each simulation. '
                             'Please specify this in your .config file with the \'num_dumps\' key.')
 
-        log.info('There are now ' + str(len()))
+        log.info('There are now ' + str(len(current_jobs)) + ' still running.')
+        log.info('There are now ' + str(len(pbconf['completed_jobs'])) + ' finished.')
+        log.info('There are now ' + str(len(pbconf['job_names']) - len(current_jobs) - pbconf['completed_jobs']) +
+                 ' to be started.')
 
         i += 1
 
