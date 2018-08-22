@@ -584,7 +584,7 @@ def check_completed_jobs(pbconf):
             print('num_dumps' in pbconf and (len(job_list) >= pbconf['num_dumps']))
             print(len(job_list))
 
-            if 'num_dumps' in pbconf and (len(job_list) >= pbconf['num_dumps']):
+            if 'num_dumps' in pbconf and (len(job_list) >= pbconf['num_dumps'] + 1):  # + 1 for _0000 dump
                 """ Check if the number of dumps in the given directory is at least as many as the requested 
                 number of dump files for each simulation, and if so, save the job name in the completed list. """
 
@@ -637,6 +637,6 @@ if __name__ == "__main__":
     run_batch_jobs(phantombatch_config)
     os.system('qstat')
     print('Sleeping..')
-    time.sleep(30)
+    time.sleep(120)
     check_completed_jobs(phantombatch_config)
     cancel_all_submitted_jobs(phantombatch_config)
