@@ -383,8 +383,6 @@ def phantombatch_monitor(pconf, pbconf):
     jobhandler.check_completed_jobs(pbconf)
     jobhandler.cancel_all_submitted_jobs(pbconf)
 
-    sleep_time = pbconf['sleep_time']
-
     completed = False
 
     while not completed:
