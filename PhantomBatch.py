@@ -380,8 +380,7 @@ def phantombatch_monitor(pconf, pbconf):
     create_job_scripts(pconf, pbconf)
     jobhandler.check_running_jobs(pbconf)
     jobhandler.run_batch_jobs(pbconf)
-    jobhandler.check_completed_jobs(pbconf)
-    jobhandler.cancel_all_submitted_jobs(pbconf)
+    # jobhandler.check_completed_jobs(pbconf)
 
     completed = False
 
