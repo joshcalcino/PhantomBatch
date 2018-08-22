@@ -63,6 +63,6 @@ def save_phantom_output(output, pbconf):
     output_filename = os.path.join(os.environ['PHANTOM_DATA'], pbconf['name'], 'phantom_output')
 
     # if os.path.exists(output_filename):
-    with open(output_filename, 'wb') as f:
+    with open(output_filename, 'w') as f:
         # pickle.load(f)
         f.write(output)
