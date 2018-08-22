@@ -480,7 +480,7 @@ def run_phantom_setup(pbconf):
 
 def cancel_job(pbconf, job_number):
     """ Cancel a single job. """
-    verboseprint('Cancelling job ' + job_number)
+    verboseprint('Cancelling job ' + str(job_number))
 
     if pbconf['job_scheduler'] == 'slurm':
         output = subprocess.check_output('scancel ' + job_number, stderr=subprocess.STDOUT,
