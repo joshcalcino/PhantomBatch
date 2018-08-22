@@ -483,12 +483,12 @@ def cancel_job(pbconf, job_number):
     verboseprint('Cancelling job ' + str(job_number))
 
     if pbconf['job_scheduler'] == 'slurm':
-        output = subprocess.check_output('scancel ' + job_number, stderr=subprocess.STDOUT,
+        output = subprocess.check_output('scancel ' + str(job_number), stderr=subprocess.STDOUT,
                                          universal_newlines=True, shell=True)
         verboseprint(output.rstrip())
 
     elif pbconf['job_scheduler'] == 'pbs':
-        output = subprocess.check_output('qdel ' + job_number, stderr=subprocess.STDOUT,
+        output = subprocess.check_output('qdel ' + str(job_number), stderr=subprocess.STDOUT,
                                          universal_newlines=True, shell=True)
         verboseprint(output.rstrip())
 
@@ -521,18 +521,18 @@ def run_batch_jobs(pbconf):
             job_number = submit_job(pbconf, pbconf['sim_dirs'][i], pbconf['setup'] + '.jobscript')
 
             if 'submitted_job_numbers' in pbconf:
-                pbconf['submitted_job_numbers'].append(job_number)  # Save the submitted job numbers for later reference
+                pbconf['submitted_job_numbers'].append(str(job_number))  # Save the submitted job numbers for later reference
 
             else:
                 pbconf['submitted_job_numbers'] = []
-                pbconf['submitted_job_numbers'].append(job_number)
+                pbconf['submitted_job_numbers'].append(str(job_number))
 
             if 'submitted_job_names' in pbconf:
                 pbconf['submitted_job_names'].append(job)  # As above but for the job names
 
             else:
                 pbconf['submitted_job_names'] = []
-                pbconf['submitted_job_names'].append(job_number)
+                pbconf['submitted_job_names'].append(str(job_number))
 
         elif 'job_limit' in pbconf and (len(current_jobs) > pbconf['job_limit']):
             verboseprint('Hit maximum number of allowed jobs.')
