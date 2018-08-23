@@ -293,6 +293,7 @@ def create_job_scripts(pconf, pbconf):
 def write_to_setup(new_setup, ref_setup, setup_strings, pconf, index):
     """ Write to the setup file. """
 
+    key_added = False
     for line in ref_setup:
         for key in pconf:
             key_added = False
