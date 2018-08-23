@@ -150,6 +150,8 @@ def initiliase_phantom(pbconf):
 
 
 def setup_from_array(setup_strings, string, dict_arr):
+    """ Create strings for the parameter arrays provided in pconf. """
+
     if len(setup_strings) is 0:
         setup_strings = [string + ' = ' + str(i) for i in dict_arr]
         return setup_strings
@@ -179,10 +181,10 @@ def get_setup_strings(pconf):
             if key == 'm2':
                 setup_strings = setup_from_array(setup_strings, key, pconf[key])
 
-            if key == 'alphaSS':
+            if key == 'binary_i':
                 setup_strings = setup_from_array(setup_strings, key, pconf[key])
 
-            if key == 'binary_i':
+            if key == 'alphaSS':
                 setup_strings = setup_from_array(setup_strings, key, pconf[key])
 
     return setup_strings
@@ -288,6 +290,38 @@ def create_job_scripts(pconf, pbconf):
     log.info('Completed.')
 
 
+def write_to_setup(new_setup, ref_setup, setup_strings, pconf, index):
+    """ Write to the setup file. """
+
+    for line in ref_setup:
+        key_added = False
+        for key in pconf:
+            if isinstance(pconf[key], list):
+                for string in setup_strings[index]:  # loop over the strings that need to be written into setup file
+                    if key in line and key in string:
+                        log.debug('Writing to setup file..')
+                        new_setup.write(string + write_setup_comment(key) + '\n')
+                        key_added = True
+            else:
+                key_added = False
+                if key in line:
+                    new_setup.write(key + ' = ' + str(pconf[key]) + write_setup_comment(key) + '\n')
+                    key_added = True
+
+        if not key_added:
+            new_setup.write(line)
+
+
+def add_planet_to_setup(new_setup, planet_number, setup_strings, pconf, index):
+    """ Add in the several lines that specify planet parameters into new_setup with the user defined values written """
+
+    with open('setup/planet.setup', 'r') as planet_setup:
+        for line in planet_setup:
+            line.replace('N', str(planet_number))
+
+        write_to_setup(new_setup, planet_setup, setup_strings, pconf, index)
+
+
 def create_setups(pconf, pbconf):
     """ This function will create all of the setup files for the simulation parameters specified in the phantom config
     dictionary, pconf. """
@@ -298,34 +332,25 @@ def create_setups(pconf, pbconf):
     pbconf['sim_dirs'] = setup_dirs
     setup_strings = get_setup_strings(pconf)
 
-    i = 0
+    index = 0
     for dir in setup_dirs:
         filename = os.path.join(dir, setup_filename)
         with open(filename, 'w') as new_setup:
             log.debug('Entering ' + filename + '..')
-            if 'binary' in pbconf:
-                if pbconf['binary']:
-                    binary_setup = open('data/setup/binary.setup', 'r')
-                    for line in binary_setup:
-                        key_added = False
-                        for key in pconf:
-                            if isinstance(pconf[key], list):
-                                for string in setup_strings[i]:
-                                    if key in line and key in string:
-                                        log.debug('Writing to setup file..')
-                                        new_setup.write(string + write_setup_comment(key) + '\n')
-                                        key_added = True
-                            else:
-                                key_added = False
-                                if key in line:
-                                    new_setup.write(key + ' = ' + str(pconf[key]) + write_setup_comment(key) + '\n')
-                                    key_added = True
+            """ This is where all of the different set ups will need to be defined. """
 
-                        if not key_added:
-                            new_setup.write(line)
+            if 'binary' in pbconf and pbconf['binary']:
+                with open('setup/binary.setup', 'r') as binary_setup:
+                    write_to_setup(new_setup, binary_setup, setup_strings, pconf, index)
 
-            new_setup.close()
-            i += 1
+            if 'add_planets' in pbconf and pbconf['add_planets']:
+                if 'num_planets' in pbconf:
+                    for planet_number in range(0, int(pbconf['num_planets'])):
+                        add_planet_to_setup(new_setup, planet_number, setup_strings, pconf, index)
+                else:
+                    add_planet_to_setup(new_setup, 1, setup_strings, pconf, index)
+
+            index += 1
 
     log.info('Completed.')
 
