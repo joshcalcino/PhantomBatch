@@ -156,7 +156,7 @@ def setup_from_array(setup_strings, string, dict_arr):
         setup_strings = [string + ' = ' + str(i) for i in dict_arr]
         return setup_strings
 
-    # setup_strings = setup_strings * len(dict_arr)
+    setup_strings = setup_strings * len(dict_arr)
 
     tmp_setup_strings = ['']*len(dict_arr)
     for i in range(0, len(dict_arr)):
