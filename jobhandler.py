@@ -95,7 +95,7 @@ def check_running_jobs(pbconf):
 def submit_job(pbconf, directory, jobscript_name):
     """ Submit a job to the cluster. Both SLURM and PBS job schedulers are supported. """
 
-    log.info('Submitting job in directory ' + directory)
+    log.debug('Submitting job in directory ' + directory)
 
     os.chdir(directory)
 
@@ -103,7 +103,7 @@ def submit_job(pbconf, directory, jobscript_name):
         log.debug('Attempting to submit job..')
         output = subprocess.check_output('sbatch ' + jobscript_name, stderr=subprocess.STDOUT,
                                          universal_newlines=True, shell=True).rstrip()
-        log.debug(output)
+        log.info(output)
         len_slurm_output = len('Submitted batch job ')  # Change this string if your slurm prints something else out
         job_number = output[len_slurm_output:]
 
@@ -202,8 +202,6 @@ def check_completed_jobs(pbconf):
 
     current_jobs = check_running_jobs(pbconf)
 
-    print(pbconf['job_names'])
-
     if 'completed_jobs' not in pbconf:
         pbconf['completed_jobs'] = []
 
@@ -237,11 +235,11 @@ def check_completed_jobs(pbconf):
                 log.warning('You have not specified the number of dump files you would like for each simulation. '
                             'Please specify this in your .config file with the \'num_dumps\' key.')
 
-        log.info('There are now ' + str(len(current_jobs)) + ' still running.')
-        log.info('There are now ' + str(len(pbconf['completed_jobs'])) + ' finished.')
+        log.info('There are now ' + str(len(current_jobs)) + ' jobs still running.')
+        log.info('There are now ' + str(len(pbconf['completed_jobs'])) + ' jobs finished.')
         print(pbconf['completed_jobs'])
         log.info('There are now ' + str(len(pbconf['job_names']) - len(current_jobs) - len(pbconf['completed_jobs'])) +
-                 ' to be started.')
+                 ' jobs to be started.')
 
         i += 1
 

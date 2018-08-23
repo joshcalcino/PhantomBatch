@@ -18,7 +18,7 @@ def save_config(pbconf):
 
     log.debug('Saving PhantomBatch config to disk.')
 
-    with open(pbconf['name'] + '_pbconf.pkl', 'wb') as f:
+    with open(pbconf['name'] + '/' + pbconf['name'] + '_pbconf.pkl', 'wb') as f:
         pickle.dump(pbconf, f, pickle.HIGHEST_PROTOCOL)
 
 
@@ -28,7 +28,7 @@ def load_config(pbconf):
 
     log.debug('Loading in a saved copy of PhantomBatch config..')
 
-    with open(pbconf['name'] + '_pbconf.pkl', 'rb') as f:
+    with open(pbconf['name'] + '/' + pbconf['name'] + '_pbconf.pkl', 'rb') as f:
         return pickle.load(f)
 
 
