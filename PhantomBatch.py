@@ -298,7 +298,7 @@ def write_to_setup(new_setup, ref_setup, setup_strings, pconf, index):
         for key in pconf:
             if isinstance(pconf[key], list):
                 for string in setup_strings[index]:  # loop over the strings that need to be written into setup file
-                    if key in line and key in string:
+                    if key in line and (key in string):
                         log.debug('Writing to setup file..')
                         new_setup.write(string + write_setup_comment(key) + '\n')
                         key_added = True
@@ -346,6 +346,7 @@ def create_setups(pconf, pbconf):
             if 'add_planets' in pbconf and pbconf['add_planets']:
                 if 'num_planets' in pbconf:
                     for planet_number in range(0, int(pbconf['num_planets'])):
+                        print("Trying to add in planets?")
                         add_planet_to_setup(new_setup, planet_number, setup_strings, pconf, index)
                 else:
                     add_planet_to_setup(new_setup, 1, setup_strings, pconf, index)
