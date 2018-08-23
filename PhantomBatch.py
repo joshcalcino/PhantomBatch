@@ -300,13 +300,15 @@ def write_to_setup(new_setup, ref_setup, setup_strings, pconf, index):
                 for string in setup_strings[index]:  # loop over the strings that need to be written into setup file
                     if key in line and (key in string):
                         log.debug('Writing to setup file..')
-                        new_setup.write(string + write_setup_comment(key) + '\n')
                         key_added = True
+                        new_setup.write(string + write_setup_comment(key) + '\n')
+                        break
             else:
                 key_added = False
                 if key in line:
                     new_setup.write(key + ' = ' + str(pconf[key]) + write_setup_comment(key) + '\n')
                     key_added = True
+                    break
 
         if not key_added:
             new_setup.write(line)
