@@ -161,8 +161,10 @@ def setup_from_array(setup_strings, string, dict_arr):
     tmp_setup_strings = ['']*len(dict_arr)
     for i in range(0, len(dict_arr)):
         tmp_setup_strings[i] = string + ' = ' + str(dict_arr[i])
+
     setup_strings = [[setup_strings[i], tmp_setup_strings[j]] for i in range(0, len(setup_strings))
                      for j in range(0, len(tmp_setup_strings))]
+    print(setup_strings)
     return setup_strings
 
 
@@ -298,7 +300,7 @@ def write_to_setup(new_setup, ref_setup, setup_strings, pconf, index):
         for key in pconf:
             if isinstance(pconf[key], list):
                 for string in setup_strings[index]:  # loop over the strings that need to be written into setup file
-                    print(string)
+                    # print(string)
                     if (key in line) and (key in string):
                         log.debug('Writing to setup file..')
                         key_added = True
@@ -311,7 +313,7 @@ def write_to_setup(new_setup, ref_setup, setup_strings, pconf, index):
                     key_added = True
 
         if not key_added:
-            print(line)
+            # print(line)
             new_setup.write(line)
 
 
