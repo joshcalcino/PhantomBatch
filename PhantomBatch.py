@@ -313,6 +313,8 @@ def write_to_setup(new_setup, ref_setup, setup_strings, pconf, index):
         if not key_added:
             new_setup.write(line)
 
+        return new_setup
+
 
 def add_planet_to_setup(new_setup, planet_number, setup_strings, pconf, index):
     """ Add in the several lines that specify planet parameters into new_setup with the user defined values written """
@@ -343,7 +345,7 @@ def create_setups(pconf, pbconf):
 
             if 'binary' in pbconf and pbconf['binary']:
                 with open('setup/binary.setup', 'r') as binary_setup:
-                    write_to_setup(new_setup, binary_setup, setup_strings, pconf, index)
+                    new_setup = write_to_setup(new_setup, binary_setup, setup_strings, pconf, index)
 
             if 'add_planets' in pbconf and pbconf['add_planets']:
                 if 'num_planets' in pbconf:
