@@ -309,6 +309,7 @@ def write_to_setup(new_setup, ref_setup, setup_strings, pconf, index):
                     key_added = True
 
         if not key_added:
+            print('Key not added for')
             new_setup.write(line)
 
 
