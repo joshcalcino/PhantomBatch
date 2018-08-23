@@ -345,8 +345,8 @@ def create_setups(pconf, pbconf):
 
             if 'add_planets' in pbconf and pbconf['add_planets']:
                 if 'num_planets' in pbconf:
-                    for planet_number in range(0, int(pbconf['num_planets'])):
-                        print("Trying to add in planets?")
+                    for planet_number in range(0+1, int(pbconf['num_planets'])):
+                        print("Trying to add in planet " + str(planet_number))
                         add_planet_to_setup(new_setup, planet_number, setup_strings, pconf, index)
                 else:
                     add_planet_to_setup(new_setup, 1, setup_strings, pconf, index)
