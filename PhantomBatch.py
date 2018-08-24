@@ -354,11 +354,15 @@ def add_planet(new_setup, planet_number, setup_strings, pconf, index):
         write_to_setup(new_setup, planet_setup, setup_strings, pconf, index)
 
 
-def add_planets_to_setup(new_setup, setup_strings, pbconf, pconf, index):
+def add_planets_to_setup(new_setup, setup_strings, pconf, index):
     """ Add planets into the setup file. """
+    new_setup.write('Is this writing to the file??? \n')
+    new_setup.write('Is this writing to the file??? \n')
+    new_setup.write('Is this writing to the file??? \n')
+
     if 'nplanets' in pconf:
         new_setup.write('nplanets = ' + pconf['nplanets'] + ' ! number of planets \n')
-        for planet_number in range(0 + 1, int(pbconf['num_planets'])):
+        for planet_number in range(0 + 1, int(pconf['nplanets'])):
             log.debug("Trying to add in planet " + str(planet_number))
             add_planet(new_setup, planet_number, setup_strings, pconf, index)
     else:
@@ -388,10 +392,10 @@ def create_setups(pconf, pbconf):
                 with open('setup/binary.setup', 'r') as binary_setup:
                     write_to_setup(new_setup, binary_setup, setup_strings, pconf, index)
 
-            if 'add_planets' in pbconf and pbconf['add_planets']:
-                add_planets_to_setup(new_setup, setup_strings, pbconf, pbconf, index)
+            if 'setplanets' in pconf and pconf['setplanets']:
+                add_planets_to_setup(new_setup, setup_strings, pbconf, index)
 
-            index += 1
+        index += 1
 
     log.info('Completed.')
 
