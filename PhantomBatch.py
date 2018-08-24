@@ -344,9 +344,9 @@ def write_to_setup(new_setup, ref_setup, setup_strings, pconf, index):
 def add_planet_to_setup(new_setup, planet_number, setup_strings, pconf, index):
     """ Add in the several lines that specify planet parameters into new_setup with the user defined values written """
 
-    with open('setup/planet.setup', 'a') as planet_setup:
+    with open('setup/planet.setup', 'r') as planet_setup:
         for line in planet_setup:
-            line.replace('%', str(planet_number))
+            new_setup.write(line.replace('%', str(planet_number)).rstrip())
             print(line)
 
         write_to_setup(new_setup, planet_setup, setup_strings, pconf, index)
