@@ -351,6 +351,7 @@ def edit_setup_file(new_setup, line, setup_strings, pconf, index):
                     new_setup.write(string + write_setup_comment(key) + '\n')
 
         else:
+            print(key)
             if key in line:
                 new_setup.write(key + ' = ' + str(pconf[key]) + write_setup_comment(key) + '\n')
 
