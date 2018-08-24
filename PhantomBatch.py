@@ -357,8 +357,7 @@ def add_planet(new_setup, planet_number, setup_strings, pconf, index):
 def add_planets_to_setup(new_setup, setup_strings, pbconf, pconf, index):
     """ Add planets into the setup file. """
     if 'nplanets' in pconf:
-        # I should change the below line so that num_planets is actually read from pconf
-        new_setup.write('nplanets = ' + pconf['nplanets'] + ' ! number of planets')
+        print(new_setup.write('nplanets = ' + pconf['nplanets'] + ' ! number of planets'))
         for planet_number in range(0 + 1, int(pbconf['num_planets'])):
             log.debug("Trying to add in planet " + str(planet_number))
             add_planet(new_setup, planet_number, setup_strings, pconf, index)
