@@ -1,3 +1,4 @@
+
 # planet:%
             mplanet% =       0.200    ! planet mass (in Jupiter mass)
             rplanet% =        10.0    ! planet distance from star
