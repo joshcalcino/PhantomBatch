@@ -372,7 +372,7 @@ def add_planets_to_setup(new_setup, setup_strings, pconf, index):
 
     if 'nplanets' in pconf:
         new_setup.write('\n nplanets = ' + str(pconf['nplanets']) + ' ! number of planets \n')
-        for planet_number in range(0 + 1, int(pconf['nplanets'])):
+        for planet_number in range(0 + 1, int(pconf['nplanets'])+1):
             log.debug("Trying to add in planet " + str(planet_number))
             add_planet(new_setup, planet_number, setup_strings, pconf, index)
     else:
