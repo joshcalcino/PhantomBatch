@@ -403,7 +403,7 @@ def create_setups(pconf, pbconf):
                     write_to_setup(new_setup, binary_setup, setup_strings, pconf, index)
 
             if 'setplanets' in pconf and pconf['setplanets']:
-                add_planets_to_setup(new_setup, setup_strings, pbconf, index)
+                add_planets_to_setup(new_setup, setup_strings, pconf, index)
 
         index += 1
 
