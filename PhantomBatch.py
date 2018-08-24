@@ -347,6 +347,7 @@ def add_planet_to_setup(new_setup, planet_number, setup_strings, pconf, index):
     with open('setup/planet.setup', 'r') as planet_setup:
         for line in planet_setup:
             line.replace('N', str(planet_number))
+            print(line)
 
         write_to_setup(new_setup, planet_setup, setup_strings, pconf, index)
 
@@ -375,9 +376,10 @@ def create_setups(pconf, pbconf):
             if 'add_planets' in pbconf and pbconf['add_planets']:
                 if 'num_planets' in pbconf:
                     for planet_number in range(0+1, int(pbconf['num_planets'])):
-                        print("Trying to add in planet " + str(planet_number))
+                        log.debug("Trying to add in planet " + str(planet_number))
                         add_planet_to_setup(new_setup, planet_number, setup_strings, pconf, index)
                 else:
+                    log.debug("Trying to add in planet")
                     add_planet_to_setup(new_setup, 1, setup_strings, pconf, index)
 
             index += 1
