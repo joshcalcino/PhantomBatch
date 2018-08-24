@@ -348,7 +348,7 @@ def add_planet_to_setup(new_setup, planet_number, setup_strings, pconf, index):
         for line in planet_setup:
             line.replace('N', str(planet_number))
 
-        # write_to_setup(new_setup, planet_setup, setup_strings, pconf, index)
+        write_to_setup(new_setup, planet_setup, setup_strings, pconf, index)
 
 
 def create_setups(pconf, pbconf):

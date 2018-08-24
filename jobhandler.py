@@ -72,7 +72,6 @@ def check_running_jobs(pbconf):
         my_jobs = decipher_slurm_output(jobs, pbconf)
 
         for line in my_jobs:
-            print(line)
             if any([job in line[1] for job in pbconf['job_names']]):  # line[1] holds the name of the job in my_job
                 my_pb_jobs.append(line)
 
@@ -235,13 +234,12 @@ def check_completed_jobs(pbconf):
                 log.warning('You have not specified the number of dump files you would like for each simulation. '
                             'Please specify this in your .config file with the \'num_dumps\' key.')
 
-        log.info('There are now ' + str(len(current_jobs)) + ' jobs still running.')
-        log.info('There are now ' + str(len(pbconf['completed_jobs'])) + ' jobs finished.')
-        print(pbconf['completed_jobs'])
-        log.info('There are now ' + str(len(pbconf['job_names']) - len(current_jobs) - len(pbconf['completed_jobs'])) +
-                 ' jobs to be started.')
-
         i += 1
+
+    log.info('There are now ' + str(len(current_jobs)) + ' jobs still running.')
+    log.info('There are now ' + str(len(pbconf['completed_jobs'])) + ' jobs finished.')
+    log.info('There are now ' + str(len(pbconf['job_names']) - len(pbconf['submitted_job_names'])) +
+             ' jobs to be started.')
 
     util.save_config(pbconf)
 
