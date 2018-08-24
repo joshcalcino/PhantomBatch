@@ -337,9 +337,9 @@ def write_to_setup(new_setup, ref_setup, setup_strings, pconf, index):
                         new_setup.write(key + ' = ' + str(pconf[key]) + write_setup_comment(key) + '\n')
                         key_added = True
 
-        if not key_added:
-            # print(line)
-            new_setup.write(line)
+            if not key_added:
+                # print(line)
+                new_setup.write(line)
 
 
 def add_planet_to_setup(new_setup, planet_number, setup_strings, pconf, index):
