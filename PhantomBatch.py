@@ -319,20 +319,23 @@ def write_to_setup(new_setup, ref_setup, setup_strings, pconf, index):
 
     for line in ref_setup:
         key_added = False
-        for key in pconf:
-            if isinstance(pconf[key], list):
-                for string in setup_strings[index]:  # loop over the strings that need to be written into setup file
-                    # print(string)
-                    if (key in line) and (key in string):
-                        log.debug('Writing to setup file..')
-                        key_added = True
-                        new_setup.write(string + write_setup_comment(key) + '\n')
+        if line.startswith('# '):
+            new_setup.write(line)
+        else:
+            for key in pconf:
+                if isinstance(pconf[key], list):
+                    for string in setup_strings[index]:  # loop over the strings that need to be written into setup file
+                        # print(string)
+                        if (key in line) and (key in string):
+                            log.debug('Writing to setup file..')
+                            key_added = True
+                            new_setup.write(string + write_setup_comment(key) + '\n')
 
-            else:
-                key_added = False
-                if key in line:
-                    new_setup.write(key + ' = ' + str(pconf[key]) + write_setup_comment(key) + '\n')
-                    key_added = True
+                else:
+                    key_added = False
+                    if key in line:
+                        new_setup.write(key + ' = ' + str(pconf[key]) + write_setup_comment(key) + '\n')
+                        key_added = True
 
         if not key_added:
             # print(line)
