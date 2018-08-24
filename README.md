@@ -7,7 +7,7 @@ PhantomBatch config file, and forget since PhantomBatch will create, submit, che
 Below is a list of features that have been added, or that I have already added, in no particular order of importance.
 
 # Features to add:
-- Proper support for planets
+- Support for looping over planet parameters (should be easy to implement)
 - Support for dust
 - Support for all disc setups
 - Support for non-disc setups
@@ -18,3 +18,4 @@ Below is a list of features that have been added, or that I have already added, 
 
 # Current features:
 - Binary simulations, gas only for now
+- Adding in planets

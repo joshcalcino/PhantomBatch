@@ -242,4 +242,3 @@ def check_completed_jobs(pbconf):
              ' jobs to be started.')
 
     util.save_config(pbconf)
-
