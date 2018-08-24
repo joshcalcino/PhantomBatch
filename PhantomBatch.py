@@ -159,16 +159,17 @@ def setup_from_array(setup_strings, string, dict_arr):
     # setup_strings = setup_strings * len(dict_arr)
 
     tmp_setup_strings = ['']*len(dict_arr)
+
     for i in range(0, len(dict_arr)):
         tmp_setup_strings[i] = string + ' = ' + str(dict_arr[i])
 
-    if len(setup_strings[0]) > 1:
-        setup_strings = [[item].append(tmp_setup_strings[j]) for item in setup_strings
-                         for j in range(0, len(tmp_setup_strings))]
+    # if len(setup_strings[0]) > 1:
+    setup_strings = [[item].append(tmp_setup_strings[j]) for item in setup_strings
+                     for j in range(0, len(tmp_setup_strings))]
 
-    else:
-        setup_strings = [[setup_strings[i], tmp_setup_strings[j]] for i in range(0, len(setup_strings))
-                         for j in range(0, len(tmp_setup_strings))]
+    # else:
+    #     setup_strings = [[setup_strings[i], tmp_setup_strings[j]] for i in range(0, len(setup_strings))
+    #                      for j in range(0, len(tmp_setup_strings))]
     print(setup_strings)
     return setup_strings
 
