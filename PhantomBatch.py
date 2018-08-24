@@ -168,7 +168,7 @@ def setup_from_array(setup_strings, string, dict_arr):
 
     if isinstance(setup_strings[0], list):
         setup_strings = setup_strings * len(dict_arr)
-        setup_strings = [[[setup_strings[i]], [tmp_setup_strings[j]]] for i in range(0, len(setup_strings))
+        setup_strings = [setup_strings[i] + [tmp_setup_strings[j]] for i in range(0, len(setup_strings))
                          for j in range(0, len(tmp_setup_strings))]
 
     else:
