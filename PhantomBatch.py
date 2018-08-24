@@ -364,9 +364,7 @@ def add_planet(new_setup, planet_number, setup_strings, pconf, index):
 
     with open('setup/planet.setup', 'r') as planet_setup:
         for line in planet_setup:
-            line.replace('%', str(planet_number))
-            print(line)
-            edit_setup_file(new_setup, line, setup_strings, pconf, index)
+            edit_setup_file(new_setup, line.replace('%', str(planet_number)), setup_strings, pconf, index)
 
 
 def add_planets_to_setup(new_setup, setup_strings, pconf, index):
