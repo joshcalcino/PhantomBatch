@@ -332,7 +332,6 @@ def write_to_setup(new_setup, ref_setup, setup_strings, pconf, index):
                             new_setup.write(string + write_setup_comment(key) + '\n')
 
                 else:
-                    key_added = False
                     if key in line:
                         new_setup.write(key + ' = ' + str(pconf[key]) + write_setup_comment(key) + '\n')
                         key_added = True
