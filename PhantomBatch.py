@@ -425,19 +425,19 @@ def phantombatch_monitor(pconf, pbconf):
     create_setups(pconf, pbconf)
     run_phantom_setup(pbconf)
     create_job_scripts(pconf, pbconf)
-    # jobhandler.run_batch_jobs(pbconf)
-    #
-    # completed = False
-    #
-    # while not completed:
-    #     jobhandler.run_batch_jobs(pbconf)
-    #
-    #     log.info('PhantomBatch will now sleep for ' + str(pbconf['sleep_time']) + ' minutes.')
-    #     time.sleep(pbconf['sleep_time']*60)
-    #
-    #     jobhandler.check_completed_jobs(pbconf)
-    #
-    #     completed = check_phantombatch_complete(pbconf)
+    jobhandler.run_batch_jobs(pbconf)
+
+    completed = False
+
+    while not completed:
+        jobhandler.run_batch_jobs(pbconf)
+
+        log.info('PhantomBatch will now sleep for ' + str(pbconf['sleep_time']) + ' minutes.')
+        time.sleep(pbconf['sleep_time']*60)
+
+        jobhandler.check_completed_jobs(pbconf)
+
+        completed = check_phantombatch_complete(pbconf)
 
 
 if __name__ == "__main__":
