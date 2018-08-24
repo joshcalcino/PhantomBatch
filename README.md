@@ -8,11 +8,13 @@ Below is a list of features that have been added, or that I have already added, 
 
 # Features to add:
 - Proper support for planets
-- More setups
+- Support for dust
+- Support for all disc setups
+- Support for non-disc setups
 - Ability to pick up where it left off if accidentally aborted
 - Ability to render splash images/movies
-- Support for other job schedulers aside from SLURM
+- Support for other job schedulers aside from SLURM (e.g. PBS)
 - Ability to stop simulations, moddump, and restart.
 
-# Completed features:
-
+# Current features:
+- Binary simulations, gas only for now

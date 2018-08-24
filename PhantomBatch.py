@@ -341,15 +341,31 @@ def write_to_setup(new_setup, ref_setup, setup_strings, pconf, index):
                 new_setup.write(line)
 
 
-def add_planet_to_setup(new_setup, planet_number, setup_strings, pconf, index):
-    """ Add in the several lines that specify planet parameters into new_setup with the user defined values written """
+def add_planet(new_setup, planet_number, setup_strings, pconf, index):
+    """ Add in the several lines that specify planet parameters into new_setup with the user defined values written.
+     Certainly a better way to do this, but may as well reduce the number of functions where possible.
+
+     """
 
     with open('setup/planet.setup', 'r') as planet_setup:
         for line in planet_setup:
             new_setup.write(line.replace('%', str(planet_number)))
-            print(line)
 
         write_to_setup(new_setup, planet_setup, setup_strings, pconf, index)
+
+
+def add_planets_to_setup(new_setup, setup_strings, pbconf, pconf, index):
+    """ Add planets into the setup file. """
+    if 'nplanets' in pconf:
+        # I should change the below line so that num_planets is actually read from pconf
+        new_setup.write('nplanets = ' + pconf['nplanets'] + ' ! number of planets')
+        for planet_number in range(0 + 1, int(pbconf['num_planets'])):
+            log.debug("Trying to add in planet " + str(planet_number))
+            add_planet(new_setup, planet_number, setup_strings, pconf, index)
+    else:
+        log.debug("Trying to add in planet")
+        new_setup.write('nplanets = 1 ! number of planets')
+        add_planet(new_setup, 1, setup_strings, pconf, index)
 
 
 def create_setups(pconf, pbconf):
@@ -374,13 +390,7 @@ def create_setups(pconf, pbconf):
                     write_to_setup(new_setup, binary_setup, setup_strings, pconf, index)
 
             if 'add_planets' in pbconf and pbconf['add_planets']:
-                if 'num_planets' in pbconf:
-                    for planet_number in range(0+1, int(pbconf['num_planets'])):
-                        log.debug("Trying to add in planet " + str(planet_number))
-                        add_planet_to_setup(new_setup, planet_number, setup_strings, pconf, index)
-                else:
-                    log.debug("Trying to add in planet")
-                    add_planet_to_setup(new_setup, 1, setup_strings, pconf, index)
+                add_planets_to_setup(new_setup, setup_strings, pbconf, pbconf, index)
 
             index += 1
 
