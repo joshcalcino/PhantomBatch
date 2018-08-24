@@ -254,6 +254,10 @@ def write_setup_comment(key):
         return ' ! binary semi-major axis'
     if key == 'binary_e':
         return ' ! binary eccentricity'
+    if key == 'binary_i':
+        return ' ! i, inclination (deg)'
+    else:
+        return ''
 
 
 def create_job_scripts(pconf, pbconf):
