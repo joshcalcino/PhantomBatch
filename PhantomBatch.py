@@ -365,6 +365,7 @@ def add_planet(new_setup, planet_number, setup_strings, pconf, index):
     with open('setup/planet.setup', 'r') as planet_setup:
         for line in planet_setup:
             line.replace('%', str(planet_number))
+            print(line)
             edit_setup_file(new_setup, line, setup_strings, pconf, index)
 
 
@@ -374,6 +375,7 @@ def add_planets_to_setup(new_setup, setup_strings, pconf, index):
     if 'nplanets' in pconf:
         new_setup.write('\n nplanets = ' + str(pconf['nplanets']) + ' ! number of planets \n')
         for planet_number in range(0 + 1, int(pconf['nplanets'])+1):
+            print(planet_number)
             log.debug("Trying to add in planet " + str(planet_number))
             add_planet(new_setup, planet_number, setup_strings, pconf, index)
     else:
