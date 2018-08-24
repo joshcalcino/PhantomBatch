@@ -351,8 +351,6 @@ def edit_setup_file(new_setup, line, setup_strings, pconf, index):
                     new_setup.write(string + write_setup_comment(key) + '\n')
 
         else:
-            print(key)
-            print(line)
             if key in line:
                 new_setup.write(key + ' = ' + str(pconf[key]) + write_setup_comment(key) + '\n')
 
@@ -373,7 +371,6 @@ def add_planets_to_setup(new_setup, setup_strings, pconf, index):
     if 'nplanets' in pconf:
         new_setup.write('\n nplanets = ' + str(pconf['nplanets']) + ' ! number of planets \n')
         for planet_number in range(0 + 1, int(pconf['nplanets'])+1):
-            print(planet_number)
             log.debug("Trying to add in planet " + str(planet_number))
             add_planet(new_setup, planet_number, setup_strings, pconf, index)
     else:
@@ -458,7 +455,7 @@ def phantombatch_monitor(pconf, pbconf):
 
     initialise(pconf, pbconf)
     create_setups(pconf, pbconf)
-    # run_phantom_setup(pbconf)
+    run_phantom_setup(pbconf)
     # create_job_scripts(pconf, pbconf)
     # jobhandler.check_running_jobs(pbconf)
     # jobhandler.run_batch_jobs(pbconf)
