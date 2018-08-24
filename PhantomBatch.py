@@ -241,23 +241,6 @@ def get_jobscript_names(pconf, pbconf):
         log.warning('Job names are too long. Consider adding in a \'short_name\' to phantombatch config.')
 
     return jobscript_names
-    
-
-def write_setup_comment(key):
-    if key == 'np':
-        return ' ! number of gas particles'
-    if key == 'dist_unit':
-        return ' ! distance unit (e.g. au,pc,kpc,0.1pc)'
-    if key == 'primary_mass':
-        return ' ! primary mass'
-    if key == 'binary_a':
-        return ' ! binary semi-major axis'
-    if key == 'binary_e':
-        return ' ! binary eccentricity'
-    if key == 'binary_i':
-        return ' ! i, inclination (deg)'
-    else:
-        return ''
 
 
 def create_job_scripts(pconf, pbconf):
@@ -329,11 +312,11 @@ def write_to_setup(new_setup, ref_setup, setup_strings, pconf, index):
                         if (key in line) and (key in string):
                             log.debug('Writing to setup file..')
                             key_added = True
-                            new_setup.write(string + write_setup_comment(key) + '\n')
+                            new_setup.write(string + '\n')
 
                 else:
                     if key in line:
-                        new_setup.write(key + ' = ' + str(pconf[key]) + write_setup_comment(key) + '\n')
+                        new_setup.write(key + ' = ' + str(pconf[key]) + '\n')
                         key_added = True
 
             if not key_added:
@@ -348,11 +331,11 @@ def edit_setup_file(new_setup, line, setup_strings, pconf, index):
             for string in setup_strings[index]:  # loop over the strings that need to be written into setup file
                 if (key in line) and (key in string):
                     log.debug('Editing setup file..')
-                    new_setup.write(string + write_setup_comment(key) + '\n')
+                    new_setup.write(string + '\n')
 
         else:
             if key in line:
-                new_setup.write(key + ' = ' + str(pconf[key]) + write_setup_comment(key) + '\n')
+                new_setup.write(key + ' = ' + str(pconf[key]) + '\n')
 
 
 def add_planet(new_setup, planet_number, setup_strings, pconf, index):
@@ -381,7 +364,7 @@ def add_planets_to_setup(new_setup, setup_strings, pconf, index):
 
 def create_setups(pconf, pbconf):
     """ This function will create all of the setup files for the simulation parameters specified in the phantom config
-    dictionary, pconf. """
+    dictionary, pconf. It does not matter if this is adding in a messy fashion, as phantomsetup solves it for us. """
 
     log.info('Creating the Phantom setup files for ' + pbconf['name'] + '..')
     setup_filename = os.path.join(pbconf['setup'] + '.setup')
