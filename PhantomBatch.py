@@ -444,7 +444,7 @@ def phantombatch_monitor(pconf, pbconf):
 
     initialise(pconf, pbconf)
     create_setups(pconf, pbconf)
-    # run_phantom_setup(pbconf)d
+    run_phantom_setup(pbconf)
     # create_job_scripts(pconf, pbconf)
     # jobhandler.check_running_jobs(pbconf)
     # jobhandler.run_batch_jobs(pbconf)
