@@ -159,12 +159,6 @@ def setup_from_array(setup_strings, string, dict_arr):
     tmp_setup_strings = ['']*len(dict_arr)
     for i in range(0, len(dict_arr)):
         tmp_setup_strings[i] = string + ' = ' + str(dict_arr[i])
-    print(len(tmp_setup_strings))
-
-    # if setup_strings[]
-    #
-    # setup_strings = [[setup_strings[i]] + tmp_setup_strings[j] for i in range(0, len(setup_strings))
-    #                  for j in range(0, len(tmp_setup_strings))]
 
     if isinstance(setup_strings[0], list):
         setup_strings = setup_strings * len(dict_arr)
@@ -174,15 +168,6 @@ def setup_from_array(setup_strings, string, dict_arr):
     else:
         setup_strings = [[setup_strings[i], tmp_setup_strings[j]] for i in range(0, len(setup_strings))
                          for j in range(0, len(tmp_setup_strings))]
-
-    # if isinstance(setup_strings[0], list):
-    #     setup_strings = setup_strings * len(dict_arr)
-    #     [setup_strings[i].extend(tmp_setup_strings[j]) for i in range(0, len(setup_strings)) for j in range(0, len(tmp_setup_strings))]
-    #
-    # else:
-    #     setup_strings = [[setup_strings[i], tmp_setup_strings[j]] for i in range(0, len(setup_strings))
-    #                      for j in range(0, len(tmp_setup_strings))]
-    print(setup_strings)
     return setup_strings
 
 
@@ -353,7 +338,7 @@ def add_planets_to_setup(new_setup, setup_strings, pconf, index):
 
     if 'nplanets' in pconf:
         new_setup.write('\n nplanets = ' + str(pconf['nplanets']) + ' ! number of planets \n')
-        for planet_number in range(0 + 1, int(pconf['nplanets'])+1):
+        for planet_number in range(1, int(pconf['nplanets'])+1):
             log.debug("Trying to add in planet " + str(planet_number))
             add_planet(new_setup, planet_number, setup_strings, pconf, index)
     else:
