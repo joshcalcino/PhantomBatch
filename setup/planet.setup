@@ -1,5 +1,5 @@
-# planet:N
-            mplanetN =       0.200    ! planet mass (in Jupiter mass)
-            rplanetN =        10.0    ! planet distance from star
-         inclplanetN =       0.000    ! planet orbital inclination (deg)
-         accrplanetN =       0.250    ! planet radius
+# planet:%
+            mplanet% =       0.200    ! planet mass (in Jupiter mass)
+            rplanet% =        10.0    ! planet distance from star
+         inclplanet% =       0.000    ! planet orbital inclination (deg)
+         accrplanet% =       0.250    ! planet radius
