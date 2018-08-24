@@ -341,18 +341,29 @@ def write_to_setup(new_setup, ref_setup, setup_strings, pconf, index):
                 new_setup.write(line)
 
 
+def edit_setup_file(new_setup, line, setup_strings, pconf, index):
+
+    for key in pconf:
+        if isinstance(pconf[key], list):
+            for string in setup_strings[index]:  # loop over the strings that need to be written into setup file
+                if (key in line) and (key in string):
+                    log.debug('Editing setup file..')
+                    new_setup.write(string + write_setup_comment(key) + '\n')
+
+        else:
+            if key in line:
+                new_setup.write(key + ' = ' + str(pconf[key]) + write_setup_comment(key) + '\n')
+
+
 def add_planet(new_setup, planet_number, setup_strings, pconf, index):
     """ Add in the several lines that specify planet parameters into new_setup with the user defined values written.
-     Certainly a better way to do this, but may as well reduce the number of functions where possible.
-
+     Certainly a better way to do this.
      """
 
     with open('setup/planet.setup', 'r') as planet_setup:
         for line in planet_setup:
             line.replace('%', str(planet_number))
-            new_setup.write(line)
-
-        write_to_setup(new_setup, planet_setup, setup_strings, pconf, index)
+            edit_setup_file(new_setup, line, setup_strings, pconf, index)
 
 
 def add_planets_to_setup(new_setup, setup_strings, pconf, index):
