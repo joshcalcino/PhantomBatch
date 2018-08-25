@@ -13,10 +13,11 @@ Below is a list of features that have been added, or that I have already added, 
 - Support for non-disc setups
 - Ability to pick up where it left off if aborted
 - Ability to render splash images/movies
-- Support for other job schedulers aside from SLURM (e.g. PBS, SGE)
+- Support for other job schedulers aside from SLURM and PBS (e.g. SGE)
 - Ability to stop simulations, moddump, and restart.
 
 # Current features:
+- Support for SLURM and PBS job schedulers
 - Binary simulations, gas only for now
 - Adding in planets
 - Terminates jobs if PhantomBatch is interrupted
