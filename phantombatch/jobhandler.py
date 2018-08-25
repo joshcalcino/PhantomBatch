@@ -162,6 +162,7 @@ def run_batch_jobs(pbconf):
     for job in pbconf['job_names']:
         current_jobs = check_running_jobs(pbconf)
         print(current_jobs)
+        print(len(current_jobs))
         if not any(job in cjob for cjob in current_jobs) and \
                 ('job_limit' in pbconf and (len(current_jobs) < pbconf['job_limit'])):
 
