@@ -153,6 +153,7 @@ class PhantomBatch(object):
                 """ This is where all of the different set ups will need to be defined. """
 
                 if 'binary' in self.pbconf and self.pbconf['binary']:
+                    os.system('pwd')
                     with open('../setups/binary.setup', 'r') as binary_setup:
                         setuphandler.write_to_setup(new_setup, binary_setup, setup_strings[index], self.pconf)
 
