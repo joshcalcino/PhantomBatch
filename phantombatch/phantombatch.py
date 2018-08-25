@@ -95,6 +95,7 @@ class PhantomBatch(object):
 
                 if 'make_setup_options' in self.pbconf and (len(self.pbconf['make_setup_options']) is not 0):
                     log.debug('Compiling with pbconf[\'make_setup_options\']')
+
                     output = subprocess.check_output('make setup ' + self.pbconf['make_setup_options'],
                                                      stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
                 else:
@@ -115,7 +116,9 @@ class PhantomBatch(object):
 
                 except KeyError:
                     log.warning('SYSTEM environment variable is not set, jobscript may not be created.')
-                    log.debug('You should make sure that your SYSTEM variable is defined in the Phantom Makefile.')
+                    log.info('You should make sure that your SYSTEM variable is defined in the Phantom Makefile.')
+                    log.info('This will make sure that the correct Fortran compiler and system job scheduler '
+                             'is selected by make qscript.')
 
                     output = subprocess.check_output('make qscript INFILE=' + self.pbconf['setup']+'.in' +
                                                      self.pbconf['make_options'] + ' > ' +
