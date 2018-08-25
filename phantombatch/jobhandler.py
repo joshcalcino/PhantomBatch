@@ -119,6 +119,8 @@ def check_running_jobs(pbconf):
     my_pb_jobs = []
     my_jobs = []
 
+    print(pbconf['job_scheduler'])
+
     if pbconf['job_scheduler'] == 'slurm':
         #  Could probably consolidate jobs since both pbs and slurm use qstat?
         jobs = subprocess.check_output('qstat', stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
