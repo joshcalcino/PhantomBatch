@@ -28,7 +28,7 @@ def create_job_scripts(pconf, pbconf):
                     print(('#SBATCH --nodes=1 --ntasks=' + str(pbconf['ncpus'])).rstrip())
 
                 elif '#SBATCH --job-name' in line:
-                    print(('#SBATCH --job-name= ' + job_script_names[i]).rstrip())
+                    print(('#SBATCH --job-name=' + job_script_names[i]).rstrip())
 
                 elif '#SBATCH --mail' in line and 'no_email' in pbconf and pbconf['no_email']:
                     print(''.rstrip())
