@@ -218,9 +218,11 @@ class PhantomBatch(object):
 
         current_jobs = jobhandler.check_running_jobs(self.pbconf)
         jobhandler.check_completed_jobs(self.pbconf)
-        log.debug('Priting \'job_names\', \'submitted_job_names\', and \'completed_jobs\'')
+        log.debug('Printing \'job_names\'')
         log.debug(self.pbconf['job_names'])
+        log.debug('\'submitted_job_names\'')
         log.debug(self.pbconf['submitted_job_names'])
+        log.debug('\'completed_jobs\'')
         log.debug(self.pbconf['completed_job_names'])
 
         if len(self.pbconf['job_names']) == len(self.pbconf['completed_job_names']):
