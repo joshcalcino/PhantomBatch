@@ -109,7 +109,7 @@ def decipher_pbs_output(pbs_output, pbconf):
                 my_jobs.append(line_array)
 
     print('Printing Job names..')
-    print(job_name)
+    print(my_jobs)
     return my_jobs
 
 

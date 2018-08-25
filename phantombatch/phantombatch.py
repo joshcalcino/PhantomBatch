@@ -217,6 +217,7 @@ class PhantomBatch(object):
         log.info('Checking if PhantomBatch has completed all requested jobs.')
 
         current_jobs = jobhandler.check_running_jobs(self.pbconf)
+        jobhandler.check_completed_jobs(self.pbconf)
         log.debug('Priting \'job_names\', \'submitted_job_names\', and \'completed_jobs\'')
         log.debug(self.pbconf['job_names'])
         log.debug(self.pbconf['submitted_job_names'])
@@ -252,7 +253,5 @@ class PhantomBatch(object):
             log.info('PhantomBatch will now sleep for ' + str(self.pbconf['sleep_time']) + ' minutes.')
             time.sleep(self.pbconf['sleep_time']*60)
 
-            jobhandler.check_completed_jobs(self.pbconf)
             jobhandler.run_batch_jobs(self.pbconf)
-
             completed = self.check_phantombatch_complete()
