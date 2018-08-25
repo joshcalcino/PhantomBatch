@@ -84,6 +84,7 @@ class PhantomBatch(object):
                 os.chdir(setup_dir)
 
                 if 'make_options' in self.pbconf and (len(self.pbconf['make_options']) is not 0):
+                    log.debug('Compiling with pbconf[\'make_setup\']')
                     output = subprocess.check_output('make ' + self.pbconf['make_options'],
                                                      stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
                 else:
@@ -93,6 +94,7 @@ class PhantomBatch(object):
                 util.save_phantom_output(output.rstrip(), self.pbconf)
 
                 if 'make_setup_options' in self.pbconf and (len(self.pbconf['make_setup_options']) is not 0):
+                    log.debug('Compiling with pbconf[\'make_setup_options\']')
                     output = subprocess.check_output('make setup ' + self.pbconf['make_setup_options'],
                                                      stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
                 else:
