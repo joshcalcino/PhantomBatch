@@ -72,7 +72,6 @@ def check_running_jobs(pbconf):
     if pbconf['job_scheduler'] == 'slurm':
         jobs = subprocess.check_output('qstat', stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
         my_jobs = decipher_slurm_output(jobs, pbconf)
-        print(my_jobs)
 
     elif pbconf['job_scheduler'] == 'pbs':
         jobs = subprocess.check_output('qstat', stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
@@ -85,13 +84,14 @@ def check_running_jobs(pbconf):
         if any([job in line[1] for job in pbconf['job_names']]):  # line[1] holds the name of the job in my_job
             my_pb_jobs.append(line)
 
+    print(my_pb_jobs)
     return my_pb_jobs
 
 
 def submit_job(pbconf, directory, jobscript_name):
     """ Submit a job to the cluster. Both SLURM and PBS job schedulers are supported. """
 
-    log.debug('Submitting job in directory ' + directory)
+    log.debug('Attempting to submit job in directory ' + directory)
 
     os.chdir(directory)
 
@@ -104,7 +104,10 @@ def submit_job(pbconf, directory, jobscript_name):
         job_number = output[len_slurm_output:]
 
     elif pbconf['job_scheduler'] == 'pbs':
-        subprocess.check_output('qsub ' + jobscript_name, stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
+        output = subprocess.check_output('qsub ' + jobscript_name, stderr=subprocess.STDOUT,
+                                         universal_newlines=True, shell=True)
+
+        log.info(output)
 
     else:
         log.error('Job scheduler not recognised, cannot submit jobs!')
