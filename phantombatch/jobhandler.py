@@ -107,6 +107,7 @@ def decipher_pbs_output(pbs_output, pbconf):
                 queue = line[job_id_len+name_len+username_len+time_len+status_len:line_length].rstrip()
                 line_array = [job_id, job_name, username, run_time, status, queue]
                 my_jobs.append(line_array)
+
     print('Printing Job names..')
     print(job_name)
     return my_jobs
