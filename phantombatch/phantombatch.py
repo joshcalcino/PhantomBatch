@@ -85,10 +85,13 @@ class PhantomBatch(object):
 
                 output = subprocess.check_output('make ' + self.pbconf['make_options'],
                                                  stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
+                print(output)
+
                 util.save_phantom_output(output.rstrip(), self.pbconf)
 
                 output = subprocess.check_output('make setup ' + self.pbconf['make_setup_options'],
                                                  stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
+
                 util.save_phantom_output(output.rstrip(), self.pbconf)
 
                 log.debug('Writing jobscript template.')
