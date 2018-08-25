@@ -71,6 +71,9 @@ def edit_pbs_jobscript(pbconf, job_script_filename, job_script_names):
         elif '#PBS -N' in line:
             print(('#PBS -N ' + job_script_names).rstrip())
 
+        elif '#PBS -A' in line:
+            print(('#PBS -A ' + pbconf['user']).rstrip())
+
         elif '#PBS -M' in line and ('no_email' in pbconf) and (pbconf['no_email']):
             print('##PBS -M'.rstrip())
 
