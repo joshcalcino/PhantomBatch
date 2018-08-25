@@ -8,17 +8,18 @@ Below is a list of features that have been added, or that I have already added, 
 
 # Features to add:
 - Support for looping over planet parameters (should be easy to implement)
-- Support for dust
+- Support for dust on start up
 - Support for all disc setups
 - Support for non-disc setups
-- Ability to pick up where it left off if accidentally aborted
+- Ability to pick up where it left off if aborted
 - Ability to render splash images/movies
-- Support for other job schedulers aside from SLURM (e.g. PBS)
+- Support for other job schedulers aside from SLURM (e.g. PBS, SGE)
 - Ability to stop simulations, moddump, and restart.
 
 # Current features:
 - Binary simulations, gas only for now
 - Adding in planets
+- Terminates jobs if PhantomBatch is interrupted
 
 Excessive number of commits is due to me writing the code on my laptop, but running on a cluster. I will eventually
-make a new branch for testing and implementing changes to prevent this interfering with any users in the future.
+make a new branch for testing and implementing changes to prevent this interfering with users in the future.
