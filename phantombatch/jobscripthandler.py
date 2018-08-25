@@ -18,45 +18,79 @@ def create_job_scripts(pconf, pbconf):
     job_script_names = get_job_script_names(pconf, pbconf)
     pbconf['job_names'] = job_script_names
 
-    i = 0
+    index = 0
 
-    for dir in sim_dirs:
-        filename = os.path.join(dir, job_script_filename)
-        for line in fileinput.input(filename, inplace=True):
-            if pbconf['job_scheduler'] == 'slurm':
-                if '#SBATCH --nodes' in line and ('ncpus' in pbconf):
-                    print(('#SBATCH --nodes=1 --ntasks=' + str(pbconf['ncpus'])).rstrip())
+    for tmp_dir in sim_dirs:
+        filename = os.path.join(tmp_dir, job_script_filename)
+        if pbconf['job_scheduler'] == 'slurm':
+            edit_slurm_jobscript(pbconf, filename, job_script_names[index])
 
-                elif '#SBATCH --job-name' in line:
-                    print(('#SBATCH --job-name=' + job_script_names[i]).rstrip())
+        elif pbconf['job_scheduler'] == 'pbs':
+            edit_pbs_jobscript(pbconf, filename, job_script_names[index])
 
-                elif '#SBATCH --mail' in line and 'no_email' in pbconf and pbconf['no_email']:
-                    print(''.rstrip())
-
-                elif '#SBATCH --output' in line:
-                    print(('#SBATCH --output=' + pbconf['setup'] + '.out').rstrip())
-
-                elif '#SBATCH --time' in line and ('walltime' in pbconf):
-                    print(('#SBATCH --time=' + pbconf['walltime']).rstrip())
-
-                elif '#SBATCH --mem' in line and ('memory' in pbconf):
-                    print(('#SBATCH --mem=' + pbconf['memory']).rstrip())
-
-                elif 'export OMP_NUM_THREADS' in line and ('ncpus' in pbconf or 'omp_threads' in pbconf):
-                    if 'omp_threads' in pbconf:
-                        print(('export OMP_NUM_THREADS=' + pbconf['omp_threads']).rstrip())
-                    else:
-                        print(('export OMP_NUM_THREADS=' + pbconf['ncpus']).rstrip())
-
-                else:
-                    print(line.rstrip())
-
-            elif pbconf['job_scheduler'] == 'pbs':
-                raise NotImplementedError
-
-        i += 1
+        index += 1
 
     log.info('Completed.')
+
+
+def edit_slurm_jobscript(pbconf, job_script_filename, job_script_names):
+    for line in fileinput.input(job_script_filename, inplace=True):
+        if '#SBATCH --nodes' in line and ('ncpus' in pbconf):
+            print(('#SBATCH --nodes=1 --ntasks=' + str(pbconf['ncpus'])).rstrip())
+
+        elif '#SBATCH --job-name' in line:
+            print(('#SBATCH --job-name=' + job_script_names).rstrip())
+
+        elif '#SBATCH --mail' in line and 'no_email' in pbconf and pbconf['no_email']:
+            print(''.rstrip())
+
+        elif '#SBATCH --output' in line:
+            print(('#SBATCH --output=' + pbconf['setup'] + '.out').rstrip())
+
+        elif '#SBATCH --time' in line and ('walltime' in pbconf):
+            print(('#SBATCH --time=' + pbconf['walltime']).rstrip())
+
+        elif '#SBATCH --mem' in line and ('memory' in pbconf):
+            print(('#SBATCH --mem=' + pbconf['memory']).rstrip())
+
+        elif 'export OMP_NUM_THREADS' in line and ('ncpus' in pbconf or 'omp_threads' in pbconf):
+            if 'omp_threads' in pbconf:
+                print(('export OMP_NUM_THREADS=' + pbconf['omp_threads']).rstrip())
+            else:
+                print(('export OMP_NUM_THREADS=' + pbconf['ncpus']).rstrip())
+
+        else:
+            print(line.rstrip())
+
+
+def edit_pbs_jobscript(pbconf, job_script_filename, job_script_names):
+    for line in fileinput.input(job_script_filename, inplace=True):
+        if '#PBS -l nodes' in line and ('ncpus' in pbconf):
+            print(('#PBS -l nodes=1:ppn=' + str(pbconf['ncpus'])).rstrip())
+
+        elif '#PBS -N' in line:
+            print(('#PBS -N ' + job_script_names).rstrip())
+
+        elif '#PBS -M' in line and ('no_email' in pbconf) and (pbconf['no_email']):
+            print('##PBS -M'.rstrip())
+
+        elif '#PBS -o' in line:
+            print(('#PBS -o ' + pbconf['setup'] + '.out').rstrip())
+
+        elif '#PBS -l walltime' in line and ('walltime' in pbconf):
+            print(('#PBS -l walltime=' + pbconf['walltime']).rstrip())
+
+        elif '#PBS -l mem' in line and ('memory' in pbconf):
+            print(('#PBS -l mem=' + pbconf['memory']).rstrip())
+
+        elif 'export OMP_NUM_THREADS' in line and ('ncpus' in pbconf or 'omp_threads' in pbconf):
+            if 'omp_threads' in pbconf:
+                print(('export OMP_NUM_THREADS=' + pbconf['omp_threads']).rstrip())
+            else:
+                print(('export OMP_NUM_THREADS=' + pbconf['ncpus']).rstrip())
+
+        else:
+            print(line.rstrip())
 
 
 def get_job_script_names(pconf, pbconf):

@@ -72,11 +72,13 @@ class PhantomBatch(object):
                 os.mkdir(setup_dir)
 
             if not os.path.exists(os.path.join(setup_dir, 'Makefile')):
-                log.debug('Setting up Phantom.. This may take a few moments.')
+                log.info('Setting up Phantom.. This may take a few moments.')
 
-                output = subprocess.check_output(os.path.join(os.environ['PHANTOM_DIR'], 'scripts', 'writemake.sh') + ' ' +
-                                                 self.pbconf['setup'] + ' > ' + os.path.join(setup_dir, 'Makefile'),
+                output = subprocess.check_output(os.path.join(os.environ['PHANTOM_DIR'], 'scripts', 'writemake.sh') +
+                                                 ' ' + self.pbconf['setup'] + ' > ' +
+                                                 os.path.join(setup_dir, 'Makefile'),
                                                  stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
+
                 util.save_phantom_output(output.rstrip(), self.pbconf)
 
                 os.chdir(setup_dir)
@@ -92,19 +94,22 @@ class PhantomBatch(object):
                 log.debug('Writing jobscript template.')
 
                 try:
-                    os.environ['SYSTEM']
+                    sys_environ = os.environ['SYSTEM']
                     output = subprocess.check_output('make qscript INFILE=' + self.pbconf['setup'] + '.in' + ' > '
                                                      + self.pbconf['setup'] + '.jobscript',
                                                      stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
+
                     util.save_phantom_output(output.rstrip(), self.pbconf)
 
                 except KeyError:
                     log.warning('SYSTEM environment variable is not set, jobscript may not be created.')
                     log.debug('You should make sure that your SYSTEM variable is defined in the Phantom Makefile.')
 
-                    output = subprocess.check_output('make qscript INFILE=' + self.pbconf['setup']+'.in' + self.pbconf['make_options']
-                                                     + ' > ' + self.pbconf['setup'] + '.jobscript',
+                    output = subprocess.check_output('make qscript INFILE=' + self.pbconf['setup']+'.in' +
+                                                     self.pbconf['make_options'] + ' > ' +
+                                                     self.pbconf['setup'] + '.jobscript',
                                                      stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
+
                     util.save_phantom_output(output.rstrip(), self.pbconf)
 
                 if 'make_moddump_options' in self.pbconf:
@@ -143,7 +148,7 @@ class PhantomBatch(object):
 
     def create_setups(self):
         """ This function will create all of the setup files for the simulation parameters specified in the phantom config
-        dictionary, pconf. It does not matter if this is adding in a messy fashion, as phantomsetup solves it for us. """
+        dictionary, pconf. It does not matter if this is adding in a messy fashion, as phantomsetup solves it for us."""
 
         log.info('Creating the Phantom setup files for ' + self.pbconf['name'] + '..')
         setup_filename = os.path.join(self.pbconf['setup'] + '.setup')
@@ -179,9 +184,9 @@ class PhantomBatch(object):
 
         setup_dirs = self.pbconf['sim_dirs']
 
-        for dir in setup_dirs:
-            log.debug('Changing directory to ' + dir)
-            os.chdir(dir)
+        for tmp_dir in setup_dirs:
+            log.debug('Changing directory to ' + tmp_dir)
+            os.chdir(tmp_dir)
             output = subprocess.check_output('./phantomsetup ' + self.pbconf['setup'], stderr=subprocess.STDOUT,
                                              universal_newlines=True, shell=True)
 

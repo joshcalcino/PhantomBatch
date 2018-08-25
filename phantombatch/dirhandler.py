@@ -33,8 +33,8 @@ def create_dirs(pconf, pbconf):
 
     dirs = loop_keys_dir(pconf)
 
-    for dir in dirs:
-        cdir = os.path.join(suite_directory, 'simulations', dir)
+    for tmp_dir in dirs:
+        cdir = os.path.join(suite_directory, 'simulations', tmp_dir)
         if not os.path.exists(cdir):
             os.mkdir(cdir)
 

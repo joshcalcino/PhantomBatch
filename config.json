@@ -23,7 +23,7 @@
         "memory": "6G",
         "user": "uqjcalci",
         "no_email": 1,
-        "job_limit": 2,
+        "job_limit": 5,
         "binary": 1,
         "add_dust": 0,
         "add_planets": 1,

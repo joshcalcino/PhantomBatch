@@ -7,7 +7,7 @@ import glob
 
 
 def decipher_slurm_output(slurm_output, pbconf):
-    """ This hacky function deciphers the output from executing qstat in the terminal so that we have a usable list
+    """ This function deciphers the output from executing 'qstat' in the terminal so that we have a usable list
     of all jobs currently running on the cluster. """
 
     tally = 0
@@ -48,19 +48,67 @@ def decipher_slurm_output(slurm_output, pbconf):
                 job_id = line[0:job_id_len].rstrip()
                 job_name = line[job_id_len:job_id_len+name_len].rstrip()
                 username = line[job_id_len+name_len:job_id_len+name_len+username_len].rstrip()
-                time = line[job_id_len+name_len+username_len:
-                            job_id_len+name_len+username_len+time_len].rstrip()
+                run_time = line[job_id_len+name_len+username_len:
+                                job_id_len+name_len+username_len+time_len].rstrip()
                 status = line[job_id_len+name_len+username_len+time_len:
                               job_id_len+name_len+username_len+time_len+status_len].rstrip()
                 queue = line[job_id_len+name_len+username_len+time_len+status_len:line_length].rstrip()
-                line_array = [job_id, job_name, username, time, status, queue]
+                line_array = [job_id, job_name, username, run_time, status, queue]
                 my_jobs.append(line_array)
 
     return my_jobs
 
 
 def decipher_pbs_output(pbs_output, pbconf):
-    return NotImplementedError
+    """ This function deciphers the output from pbs in the terminal """
+
+    tally = 0
+    tally_arr = []
+    found_dash = False
+
+    for char in pbs_output:
+        #  Check each character in the pbs output to determine the output column widths
+        if char == '-':
+            tally += 1
+            found_dash = True
+        elif char == ' ' and found_dash:
+            tally += 1
+            tally_arr.append(tally)
+            tally = 0
+        elif char == '_' and found_dash:
+            tally += 1
+            tally_arr.append(tally)
+            tally = 0
+        elif char.isdigit():
+            tally += 1
+            tally_arr.append(tally)
+            break
+
+    job_id_len, name_len, username_len = tally_arr[0], tally_arr[1], tally_arr[2]
+    time_len, status_len, queue_len = tally_arr[3], tally_arr[4], tally_arr[5]
+
+    line_length = job_id_len + name_len + username_len + time_len + status_len + queue_len
+    slurm_lines = []
+
+    for i in range(0, int(len(pbs_output)/line_length)):
+        slurm_lines.append(pbs_output[i*line_length:(i+1)*line_length])
+
+    my_jobs = []
+    for line in slurm_lines:
+        if pbconf['user'] in line:
+            if 'C' not in line:
+                job_id = line[0:job_id_len].rstrip()
+                job_name = line[job_id_len:job_id_len+name_len].rstrip()
+                username = line[job_id_len+name_len:job_id_len+name_len+username_len].rstrip()
+                run_time = line[job_id_len+name_len+username_len:
+                                job_id_len+name_len+username_len+time_len].rstrip()
+                status = line[job_id_len+name_len+username_len+time_len:
+                              job_id_len+name_len+username_len+time_len+status_len].rstrip()
+                queue = line[job_id_len+name_len+username_len+time_len+status_len:line_length].rstrip()
+                line_array = [job_id, job_name, username, run_time, status, queue]
+                my_jobs.append(line_array)
+
+    return my_jobs
 
 
 def check_running_jobs(pbconf):
@@ -95,6 +143,8 @@ def submit_job(pbconf, directory, jobscript_name):
 
     os.chdir(directory)
 
+    job_number = None
+
     if pbconf['job_scheduler'] == 'slurm':
         log.debug('Attempting to submit job..')
         output = subprocess.check_output('sbatch ' + jobscript_name, stderr=subprocess.STDOUT,
@@ -116,10 +166,11 @@ def submit_job(pbconf, directory, jobscript_name):
 
     os.chdir(os.environ['PHANTOM_DATA'])
 
-    try:
-        return job_number
-    except NameError:
+    if job_number is None:
         log.error('Unable to submit job.')
+        exit()
+    else:
+        return job_number
 
 
 def cancel_job(pbconf, job_number):
@@ -161,8 +212,6 @@ def run_batch_jobs(pbconf):
     time.sleep(1)
     for job in pbconf['job_names']:
         current_jobs = check_running_jobs(pbconf)
-        print(current_jobs)
-        print(len(current_jobs))
         if not any(job in cjob for cjob in current_jobs) and \
                 ('job_limit' in pbconf and (len(current_jobs) < pbconf['job_limit'])):
 
@@ -170,7 +219,6 @@ def run_batch_jobs(pbconf):
                 pass
 
             else:
-                # print('Would have tried to submit job '+pbconf['sim_dirs'][i])
                 job_number = submit_job(pbconf, pbconf['sim_dirs'][i], pbconf['setup'] + '.jobscript')
 
                 if 'submitted_job_numbers' in pbconf:
@@ -210,15 +258,15 @@ def check_completed_jobs(pbconf):
     for job in pbconf['job_names']:
 
         if util.check_pbconf_sim_dir_consistency(job, pbconf['sim_dirs'][i], pbconf):
-            """ This check makes sure that we keep ordering in place. Currently, pbconf['sim_dirs'][i] corrosponds to
-            the directory that stores pbconf['job_names'][i] """
+            #  This check makes sure that we keep ordering in place. Currently, pbconf['sim_dirs'][i] corrosponds to
+            #  the directory that stores pbconf['job_names'][i]
 
-            """ Make a list of all of the dump files in the simulation directory. """
+            #  Make a list of all of the dump files in the simulation directory
             job_list = glob.glob(pbconf['sim_dirs'][i] + '/' + pbconf['setup'] + '_*')
 
             if 'num_dumps' in pbconf and (len(job_list) >= pbconf['num_dumps'] + 1):  # + 1 for _0000 dump
-                """ Check if the number of dumps in the given directory is at least as many as the requested 
-                number of dump files for each simulation, and if so, save the job name in the completed list. """
+                #  Check if the number of dumps in the given directory is at least as many as the requested
+                #  number of dump files for each simulation, and if so, save the job name in the completed list
 
                 log.debug('Job ' + job + ' has reached the desired number of dump files.')
 
