@@ -107,7 +107,8 @@ def decipher_pbs_output(pbs_output, pbconf):
                 queue = line[job_id_len+name_len+username_len+time_len+status_len:line_length].rstrip()
                 line_array = [job_id, job_name, username, run_time, status, queue]
                 my_jobs.append(line_array)
-
+    print('Printing Job names..')
+    print(job_name)
     return my_jobs
 
 
@@ -118,6 +119,7 @@ def check_running_jobs(pbconf):
     my_jobs = []
 
     if pbconf['job_scheduler'] == 'slurm':
+        #  Could probably consolidate jobs since both pbs and slurm use qstat?
         jobs = subprocess.check_output('qstat', stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
         my_jobs = decipher_slurm_output(jobs, pbconf)
 
@@ -132,6 +134,7 @@ def check_running_jobs(pbconf):
         if any([job in line[1] for job in pbconf['job_names']]):  # line[1] holds the name of the job in my_job
             my_pb_jobs.append(line)
 
+    print('Printing phantombatch jobs..')
     print(my_pb_jobs)
     return my_pb_jobs
 
