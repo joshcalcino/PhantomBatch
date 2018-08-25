@@ -78,6 +78,7 @@ def check_running_jobs(pbconf):
     elif pbconf['job_scheduler'] == 'pbs':
         jobs = subprocess.check_output('qstat', stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
         my_jobs = decipher_pbs_output(jobs, pbconf)
+        print(my_jobs)
 
         for line in my_jobs:
             if any([job in line[1] for job in pbconf['job_names']]):  # line[1] holds the name of the job in my_job
