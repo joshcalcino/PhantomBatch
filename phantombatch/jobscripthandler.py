@@ -79,6 +79,7 @@ def edit_pbs_jobscript(pbconf, job_script_filename, job_script_names):
 
         elif '#PBS -o' in line:
             print(('#PBS -o ' + pbconf['setup'] + '.out').rstrip())
+            print('#PBS -A'.rstrip())  # Adding this here since my PBS cluster needs an account specified
 
         elif '#PBS -l walltime' in line and ('walltime' in pbconf):
             print(('#PBS -l walltime=' + pbconf['walltime']).rstrip())
