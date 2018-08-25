@@ -151,13 +151,13 @@ def submit_job(pbconf, directory, jobscript_name):
                                          universal_newlines=True, shell=True).rstrip()
         log.info(output)
         len_slurm_output = len('Submitted batch job ')  # Change this string if your slurm prints something else out
-        job_number = output[len_slurm_output:]
+        job_number = output[len_slurm_output:].rstrip()
 
     elif pbconf['job_scheduler'] == 'pbs':
         output = subprocess.check_output('qsub ' + jobscript_name, stderr=subprocess.STDOUT,
                                          universal_newlines=True, shell=True)
-        job_number = output
-        log.info(output)
+        job_number = output.rstrip()
+        log.info(output.rstrip())
 
     else:
         log.error('Job scheduler not recognised, cannot submit jobs!')
