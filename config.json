@@ -2,14 +2,14 @@
 "phantom_setup": {
         "np": 10000,
         "binary_e": [0, 0.1],
-        "binary_a": [10, 20],
+        "binary_a": [10, 15],
         "binary_i": [0, 10],
         "setplanets": 1,
         "nplanets": 1,
         "mplanet1": 1,
-        "rplanet1": 10,
+        "rplanet1": 30,
         "inclplanet1": 0,
-        "accrplanet1": 0.5
+        "accrplanet1": 1.0
         },
 
 "phantom_batch_setup": {
