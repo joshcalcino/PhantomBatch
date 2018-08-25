@@ -3,6 +3,7 @@ import logging as log
 import subprocess
 from phantombatch import setuphandler, jobscripthandler, dirhandler, jobhandler, util
 import time
+import atexit
 
 
 __all__ = ["PhantomBatch"]
@@ -10,13 +11,17 @@ __all__ = ["PhantomBatch"]
 
 class PhantomBatch(object):
 
-    def __init__(self, config_filename, verbose=False):
+    def __init__(self, config_filename, verbose=False, terminate_at_exit=True):
 
         #  Set up the level of verbosity
         if verbose:
             log.basicConfig(level=log.DEBUG)
         else:
             log.basicConfig(level=log.info)
+
+        #  Terminate jobs if PhantomBatch is interrupted
+        if terminate_at_exit:
+            atexit.register(self.terminate_jobs_at_exit)
 
         #  Load in config file
         config = util.load_init_config(config_filename)
@@ -108,6 +113,9 @@ class PhantomBatch(object):
                     util.save_phantom_output(output.rstrip(), self.pbconf)
 
                 os.chdir(os.environ['PHANTOM_DATA'])
+
+    def terminate_jobs_at_exit(self):
+        jobhandler.cancel_all_submitted_jobs(self.pbconf)
 
     def add_planet_to_setup(self, new_setup, planet_number, setup_strings):
         """ Add in the several lines that specify planet parameters into new_setup with the user defined values written.
