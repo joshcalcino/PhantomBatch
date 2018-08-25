@@ -132,7 +132,7 @@ def check_running_jobs(pbconf):
         if any([job in line[1] for job in pbconf['job_names']]):  # line[1] holds the name of the job in my_job
             my_pb_jobs.append(line)
 
-    # print(my_pb_jobs)
+    print(my_pb_jobs)
     return my_pb_jobs
 
 
