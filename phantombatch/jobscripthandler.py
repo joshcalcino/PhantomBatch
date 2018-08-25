@@ -1,7 +1,7 @@
 import os
 import logging as log
 import fileinput
-import dirhandler
+from phantombatch import dirhandler
 
 
 def create_job_scripts(pconf, pbconf):

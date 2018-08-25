@@ -19,3 +19,6 @@ Below is a list of features that have been added, or that I have already added, 
 # Current features:
 - Binary simulations, gas only for now
 - Adding in planets
+
+Excessive number of commits is due to me writing the code on my laptop, but running on a cluster. I will eventually
+make a new branch for testing and implementing changes to prevent this interfering with any users in the future.

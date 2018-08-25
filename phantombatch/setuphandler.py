@@ -1,7 +1,7 @@
 import logging as log
 
 
-def write_to_setup(new_setup, ref_setup, setup_strings, pconf, index):
+def write_to_setup(new_setup, ref_setup, setup_strings, pconf):
     """ Write to the setup file. """
 
     for line in ref_setup:
@@ -11,7 +11,7 @@ def write_to_setup(new_setup, ref_setup, setup_strings, pconf, index):
         else:
             for key in pconf:
                 if isinstance(pconf[key], list):
-                    for string in setup_strings[index]:  # loop over the strings that need to be written into setup file
+                    for string in setup_strings:  # loop over the strings that need to be written into setup file
                         # print(string)
                         if (key in line) and (key in string):
                             log.debug('Writing to setup file..')
@@ -50,11 +50,11 @@ def setup_from_array(setup_strings, string, dict_arr):
     return setup_strings
 
 
-def edit_setup_file(new_setup, line, setup_strings, pconf, index):
+def edit_setup_file(new_setup, line, setup_strings, pconf):
 
     for key in pconf:
         if isinstance(pconf[key], list):
-            for string in setup_strings[index]:  # loop over the strings that need to be written into setup file
+            for string in setup_strings:  # loop over the strings that need to be written into setup file
                 if (key in line) and (key in string):
                     log.debug('Editing setup file..')
                     new_setup.write(string + '\n')
