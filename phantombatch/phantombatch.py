@@ -40,10 +40,12 @@ class PhantomBatch(object):
         self.initiliase_phantom()
         dirhandler.create_dirs(self.pconf, self.pbconf)
 
-        for dir in self.pbconf['dirs']:
-            output = subprocess.check_output('cp ' + os.path.join(os.environ['PHANTOM_DATA'], self.pbconf['name'], 'phantom_' +
-                                                                  self.pbconf['setup']) + '/* ' + os.path.join(sims_dir, dir),
-                                             stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
+        for tmp_dir in self.pbconf['dirs']:
+            output = subprocess.check_output('cp ' + os.path.join(os.environ['PHANTOM_DATA'], self.pbconf['name'],
+                                                                  'phantom_' + self.pbconf['setup']) + '/* ' +
+                                             os.path.join(sims_dir, tmp_dir), stderr=subprocess.STDOUT,
+                                             universal_newlines=True, shell=True)
+
             util.save_phantom_output(output.rstrip(), self.pbconf)
 
     def initiliase_phantom(self):
@@ -221,4 +223,3 @@ class PhantomBatch(object):
             jobhandler.check_completed_jobs(self.pbconf)
 
             completed = self.check_phantombatch_complete()
-

@@ -12,7 +12,7 @@
         "accrplanet1": 0.5
         },
 
-"phantombatch_setup": {
+"phantom_batch_setup": {
         "name": "test",
         "short_name": "t",
         "num_dumps": 100,
