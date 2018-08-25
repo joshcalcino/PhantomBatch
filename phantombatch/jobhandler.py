@@ -156,7 +156,7 @@ def submit_job(pbconf, directory, jobscript_name):
     elif pbconf['job_scheduler'] == 'pbs':
         output = subprocess.check_output('qsub ' + jobscript_name, stderr=subprocess.STDOUT,
                                          universal_newlines=True, shell=True)
-
+        job_number = output
         log.info(output)
 
     else:
