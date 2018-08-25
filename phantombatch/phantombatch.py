@@ -114,7 +114,7 @@ class PhantomBatch(object):
          Certainly a better way to do this.
          """
 
-        with open('../setup/planet.setup', 'r') as planet_setup:
+        with open('../setups/planet.setup', 'r') as planet_setup:
             for line in planet_setup:
                 setuphandler.edit_setup_file(new_setup, line.replace('%', str(planet_number)),
                                              setup_strings, self.pconf)
@@ -153,7 +153,7 @@ class PhantomBatch(object):
                 """ This is where all of the different set ups will need to be defined. """
 
                 if 'binary' in self.pbconf and self.pbconf['binary']:
-                    with open('../setup/binary.setup', 'r') as binary_setup:
+                    with open('../setups/binary.setup', 'r') as binary_setup:
                         setuphandler.write_to_setup(new_setup, binary_setup, setup_strings[index], self.pconf)
 
                 if 'setplanets' in self.pconf and self.pconf['setplanets']:
