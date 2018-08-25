@@ -84,7 +84,7 @@ def check_running_jobs(pbconf):
         if any([job in line[1] for job in pbconf['job_names']]):  # line[1] holds the name of the job in my_job
             my_pb_jobs.append(line)
 
-    print(my_pb_jobs)
+    # print(my_pb_jobs)
     return my_pb_jobs
 
 
@@ -161,6 +161,7 @@ def run_batch_jobs(pbconf):
     time.sleep(1)
     for job in pbconf['job_names']:
         current_jobs = check_running_jobs(pbconf)
+        print(current_jobs)
         if not any(job in cjob for cjob in current_jobs) and \
                 ('job_limit' in pbconf and (len(current_jobs) < pbconf['job_limit'])):
 
