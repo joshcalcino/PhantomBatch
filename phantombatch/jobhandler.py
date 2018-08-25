@@ -67,24 +67,19 @@ def check_running_jobs(pbconf):
     log.info('Checking jobs currently running..')
 
     my_pb_jobs = []
+    my_jobs = []
     if pbconf['job_scheduler'] == 'slurm':
         jobs = subprocess.check_output('qstat', stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
         my_jobs = decipher_slurm_output(jobs, pbconf)
-
-        for line in my_jobs:
-            if any([job in line[1] for job in pbconf['job_names']]):  # line[1] holds the name of the job in my_job
-                my_pb_jobs.append(line)
+        print(my_jobs)
 
     elif pbconf['job_scheduler'] == 'pbs':
         jobs = subprocess.check_output('qstat', stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
         my_jobs = decipher_pbs_output(jobs, pbconf)
-        print(my_jobs)
 
-        for line in my_jobs:
-            if any([job in line[1] for job in pbconf['job_names']]):  # line[1] holds the name of the job in my_job
-                my_pb_jobs.append(line)
-            else:
-                print('JOB NOT PART OF PHANTOMBATCH')
+    for line in my_jobs:
+        if any([job in line[1] for job in pbconf['job_names']]):  # line[1] holds the name of the job in my_job
+            my_pb_jobs.append(line)
 
     else:
         log.error('Job scheduler not recognised!')
