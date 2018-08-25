@@ -211,6 +211,7 @@ class PhantomBatch(object):
         self.run_phantom_setup()
         jobscripthandler.create_job_scripts(self.pconf, self.pbconf)
         jobhandler.run_batch_jobs(self.pbconf)
+        print(self.pbconf['submitted_job_numbers'])
 
         completed = False
 
