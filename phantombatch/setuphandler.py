@@ -111,49 +111,51 @@ def add_planets(new_setup, setup_strings, pconf):
         add_planet_to_setup(new_setup, 1, setup_strings, pconf)
 
 
-def set_up_binary(new_setup, setup_strings, pconf):
+def set_up_binary(setup_filename, setup_strings, pconf):
     """ Set up a binary disc. """
 
-    with open('phantombatch/setups/binary.setup', 'r') as binary_setup:
-        write_to_setup(new_setup, binary_setup, setup_strings, pconf)
+    with open(setup_filename, 'w') as new_setup:
+        with open('phantombatch/setups/binary.setup', 'r') as binary_setup:
+            write_to_setup(new_setup, binary_setup, setup_strings, pconf)
 
-    if 'use_primarydisc' in pconf and (pconf['use_primarydisc'] == 'T'):
-        log.debug('Adding in a primary disc.')
-        with open('phantombatch/setups/primarydisc_binary.setup', 'r') as pd_binary_setup:
-            write_to_setup(new_setup, pd_binary_setup, setup_strings, pconf)
+        if 'use_primarydisc' in pconf and (pconf['use_primarydisc'] == 'T'):
+            log.debug('Adding in a primary disc.')
+            with open('phantombatch/setups/primarydisc_binary.setup', 'r') as pd_binary_setup:
+                write_to_setup(new_setup, pd_binary_setup, setup_strings, pconf)
 
-    if 'use_secondarydisc' in pconf and (pconf['use_secondarydisc'] == 'T'):
-        log.debug('Adding in a secondary disc.')
-        with open('phantombatch/setups/secondarydisc_binary.setup', 'r') as sd_binary_setup:
-            write_to_setup(new_setup, sd_binary_setup, setup_strings, pconf)
+        if 'use_secondarydisc' in pconf and (pconf['use_secondarydisc'] == 'T'):
+            log.debug('Adding in a secondary disc.')
+            with open('phantombatch/setups/secondarydisc_binary.setup', 'r') as sd_binary_setup:
+                write_to_setup(new_setup, sd_binary_setup, setup_strings, pconf)
 
     #  Now loop over lines in new_setup to change any additional options
-    for line in new_setup:
-        #  ----- EXPONENTIAL TAPERING FOR THE DISC -----
-        if ('itapergasbinary' in pconf) and (pconf['itapergasbinary'] == 'T') and ('itapergasbinary' in line):
-            log.debug('Adding in itapergasbinary to binary setup.')
-            new_setup.write('\n R_cbinary = ' + str(pconf['R_cbinary']) + '\n')
+    with open(setup_filename, 'w') as new_setup:
+        for line in new_setup:
+            #  ----- EXPONENTIAL TAPERING FOR THE DISC -----
+            if ('itapergasbinary' in pconf) and (pconf['itapergasbinary'] == 'T') and ('itapergasbinary' in line):
+                log.debug('Adding in itapergasbinary to binary setup.')
+                new_setup.write('\n R_cbinary = ' + str(pconf['R_cbinary']) + '\n')
 
-        if ('itapergasprimary' in pconf) and (pconf['itapergasprimary'] == 'T') and ('itapergasprimary' in line):
-            log.debug('Adding in itapergasprimary to binary setup.')
-            new_setup.write('\n R_cprimary = ' + str(pconf['R_cprimary']) + '\n')
+            if ('itapergasprimary' in pconf) and (pconf['itapergasprimary'] == 'T') and ('itapergasprimary' in line):
+                log.debug('Adding in itapergasprimary to binary setup.')
+                new_setup.write('\n R_cprimary = ' + str(pconf['R_cprimary']) + '\n')
 
-        if ('itapergassecondary' in pconf) and (pconf['itapergassecondary'] == 'T') and ('itapergassecondary' in line):
-            log.debug('Adding in itapergassecondary to binary setup.')
-            new_setup.write('\n R_csecondary = ' + str(pconf['R_csecondary']) + '\n')
+            if ('itapergassecondary' in pconf) and (pconf['itapergassecondary'] == 'T') and ('itapergassecondary' in line):
+                log.debug('Adding in itapergassecondary to binary setup.')
+                new_setup.write('\n R_csecondary = ' + str(pconf['R_csecondary']) + '\n')
 
-        # ----- DISC WARPING -----
-        if ('iwarpbinary' in pconf) and (pconf['iwarpbinary'] == 'T') and ('iwarpbinary' in line):
-            log.debug('Adding in iwarpbinary to binary setup.')
-            new_setup.write('\n R_warpbinary = ' + str(pconf['R_warpbinary']) + '\n')
-            new_setup.write('\n H_warpbinary = ' + str(pconf['H_warpbinary']) + '\n')
+            # ----- DISC WARPING -----
+            if ('iwarpbinary' in pconf) and (pconf['iwarpbinary'] == 'T') and ('iwarpbinary' in line):
+                log.debug('Adding in iwarpbinary to binary setup.')
+                new_setup.write('\n R_warpbinary = ' + str(pconf['R_warpbinary']) + '\n')
+                new_setup.write('\n H_warpbinary = ' + str(pconf['H_warpbinary']) + '\n')
 
-        if ('iwarpprimary' in pconf) and (pconf['iwarpprimary'] == 'T') and ('iwarpprimary' in line):
-            log.debug('Adding in iwarpprimary to binary setup.')
-            new_setup.write('\n R_warpprimary = ' + str(pconf['R_warpprimary']) + '\n')
-            new_setup.write('\n H_warpprimary = ' + str(pconf['H_warpprimary']) + '\n')
-        
-        if ('iwarpsecondary' in pconf) and (pconf['iwarpsecondary'] == 'T') and ('iwarpsecondary' in line):
-            log.debug('Adding in iwarpsecondary to binary setup.')
-            new_setup.write('\n R_warpsecondary = ' + str(pconf['R_warpsecondary']) + '\n')
-            new_setup.write('\n H_warpsecondary = ' + str(pconf['H_warpsecondary']) + '\n')
+            if ('iwarpprimary' in pconf) and (pconf['iwarpprimary'] == 'T') and ('iwarpprimary' in line):
+                log.debug('Adding in iwarpprimary to binary setup.')
+                new_setup.write('\n R_warpprimary = ' + str(pconf['R_warpprimary']) + '\n')
+                new_setup.write('\n H_warpprimary = ' + str(pconf['H_warpprimary']) + '\n')
+
+            if ('iwarpsecondary' in pconf) and (pconf['iwarpsecondary'] == 'T') and ('iwarpsecondary' in line):
+                log.debug('Adding in iwarpsecondary to binary setup.')
+                new_setup.write('\n R_warpsecondary = ' + str(pconf['R_warpsecondary']) + '\n')
+                new_setup.write('\n H_warpsecondary = ' + str(pconf['H_warpsecondary']) + '\n')

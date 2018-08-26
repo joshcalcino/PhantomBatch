@@ -152,16 +152,15 @@ class PhantomBatch(object):
         #  index keeps track setup_strings go into correct setup file
         index = 0
         for tmp_dir in setup_dirs:
+            #  This is where all of the different setups will be defined
             filename = os.path.join(tmp_dir, setup_filename)
-            with open(filename, 'w') as new_setup:
-                log.debug('Entering ' + filename + '..')
-                #  This is where all of the different setups will be defined
+            log.debug('Entering ' + filename + '..')
 
-                if 'binary' in self.pbconf and self.pbconf['binary']:
-                    setuphandler.set_up_binary(new_setup, setup_strings[index], self.pconf)
+            if 'binary' in self.pbconf and self.pbconf['binary']:
+                setuphandler.set_up_binary(filename, setup_strings[index], self.pconf)
 
-                if 'setplanets' in self.pconf and self.pconf['setplanets']:
-                    setuphandler.add_planets(new_setup, setup_strings[index], self.pconf)
+            if 'setplanets' in self.pconf and self.pconf['setplanets']:
+                setuphandler.add_planets(filename, setup_strings[index], self.pconf)
 
             index += 1
 
