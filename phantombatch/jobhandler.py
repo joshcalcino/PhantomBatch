@@ -42,8 +42,12 @@ def decipher_slurm_output(slurm_output, pbconf):
         slurm_lines.append(slurm_output[i*line_length:(i+1)*line_length])
 
     my_jobs = []
+
+    found_user = False
+
     for line in slurm_lines:
         if pbconf['user'] in line:
+            found_user = True
             if 'C' not in line:
                 job_id = line[0:job_id_len].rstrip()
                 job_name = line[job_id_len:job_id_len+name_len].rstrip()
@@ -55,6 +59,9 @@ def decipher_slurm_output(slurm_output, pbconf):
                 queue = line[job_id_len+name_len+username_len+time_len+status_len:line_length].rstrip()
                 line_array = [job_id, job_name, username, run_time, status, queue]
                 my_jobs.append(line_array)
+
+    if not found_user:
+        log.error('Unable to find any jobs associated with user specified in PhantomBatch config.')
 
     return my_jobs
 
@@ -123,8 +130,6 @@ def check_running_jobs(pbconf):
         #  Could probably consolidate jobs since both pbs and slurm use qstat?
         jobs = subprocess.check_output('qstat', stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
         my_jobs = decipher_slurm_output(jobs, pbconf)
-        log.debug('Printing my_jobs from check_running_jobs..')
-        log.debug(my_jobs)
 
     elif pbconf['job_scheduler'] == 'pbs':
         jobs = subprocess.check_output('qstat', stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
@@ -260,6 +265,7 @@ def check_completed_jobs(pbconf):
 
     if 'completed_jobs' not in pbconf:
         pbconf['completed_jobs'] = []
+
     log.debug('Printing pbconf[\'completed_jobs\'] in check_completed_jobs')
     log.debug(pbconf['completed_jobs'])
 
