@@ -103,6 +103,12 @@ def get_job_script_names(pconf, pbconf):
     job_script_names = []
     for key in pconf:
         if isinstance(pconf[key], list):
+            if key == 'pindex':
+                job_script_names = dirhandler.dir_func(job_script_names, 'p', pconf[key])
+
+            if key == 'qindex':
+                job_script_names = dirhandler.dir_func(job_script_names, 'q', pconf[key])
+
             if key == 'binary_e':
                 job_script_names = dirhandler.dir_func(job_script_names, 'e', pconf[key])
 
