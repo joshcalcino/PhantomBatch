@@ -51,3 +51,4 @@
 
 # timestepping
              norbits =         100    ! maximum number of binary orbits
+             deltat  =       0.100    ! output interval as fraction of orbital period
