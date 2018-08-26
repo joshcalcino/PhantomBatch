@@ -148,6 +148,7 @@ class PhantomBatch(object):
 
         self.pbconf['sim_dirs'] = setup_dirs
         setup_strings = setuphandler.get_setup_strings(self.pconf)
+        print(setup_strings)
 
         #  index keeps track setup_strings go into correct setup file
         index = 0
