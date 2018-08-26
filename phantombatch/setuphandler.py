@@ -132,28 +132,28 @@ def set_up_binary(new_setup, setup_strings, pconf):
         #  ----- EXPONENTIAL TAPERING FOR THE DISC -----
         if ('itapergasbinary' in pconf) and (pconf['itapergasbinary'] == 'T') and ('itapergasbinary' in line):
             log.debug('Adding in itapergasbinary to binary setup.')
-            new_setup.write('\n R_cbinary = ' + pconf['R_cbinary'] + '\n')
+            new_setup.write('\n R_cbinary = ' + str(pconf['R_cbinary']) + '\n')
 
         if ('itapergasprimary' in pconf) and (pconf['itapergasprimary'] == 'T') and ('itapergasprimary' in line):
             log.debug('Adding in itapergasprimary to binary setup.')
-            new_setup.write('\n R_cprimary = ' + pconf['R_cprimary'] + '\n')
+            new_setup.write('\n R_cprimary = ' + str(pconf['R_cprimary']) + '\n')
 
         if ('itapergassecondary' in pconf) and (pconf['itapergassecondary'] == 'T') and ('itapergassecondary' in line):
             log.debug('Adding in itapergassecondary to binary setup.')
-            new_setup.write('\n R_csecondary = ' + pconf['R_csecondary'] + '\n')
+            new_setup.write('\n R_csecondary = ' + str(pconf['R_csecondary']) + '\n')
 
         # ----- DISC WARPING -----
         if ('iwarpbinary' in pconf) and (pconf['iwarpbinary'] == 'T') and ('iwarpbinary' in line):
             log.debug('Adding in iwarpbinary to binary setup.')
-            new_setup.write('\n R_warpbinary = ' + pconf['R_warpbinary'] + '\n')
-            new_setup.write('\n H_warpbinary = ' + pconf['H_warpbinary'] + '\n')
+            new_setup.write('\n R_warpbinary = ' + str(pconf['R_warpbinary']) + '\n')
+            new_setup.write('\n H_warpbinary = ' + str(pconf['H_warpbinary']) + '\n')
 
         if ('iwarpprimary' in pconf) and (pconf['iwarpprimary'] == 'T') and ('iwarpprimary' in line):
             log.debug('Adding in iwarpprimary to binary setup.')
-            new_setup.write('\n R_warpprimary = ' + pconf['R_warpprimary'] + '\n')
-            new_setup.write('\n H_warpprimary = ' + pconf['H_warpprimary'] + '\n')
+            new_setup.write('\n R_warpprimary = ' + str(pconf['R_warpprimary']) + '\n')
+            new_setup.write('\n H_warpprimary = ' + str(pconf['H_warpprimary']) + '\n')
         
         if ('iwarpsecondary' in pconf) and (pconf['iwarpsecondary'] == 'T') and ('iwarpsecondary' in line):
             log.debug('Adding in iwarpsecondary to binary setup.')
-            new_setup.write('\n R_warpsecondary = ' + pconf['R_warpsecondary'] + '\n')
-            new_setup.write('\n H_warpsecondary = ' + pconf['H_warpsecondary'] + '\n')
+            new_setup.write('\n R_warpsecondary = ' + str(pconf['R_warpsecondary']) + '\n')
+            new_setup.write('\n H_warpsecondary = ' + str(pconf['H_warpsecondary']) + '\n')
