@@ -6,6 +6,12 @@ def loop_keys_dir(pconf):
     dirs = []
     for key in pconf:
         if isinstance(pconf[key], list):
+            if key == 'pindex':
+                dirs = dir_func(dirs, 'p', pconf[key])
+
+            if key == 'qindex':
+                dirs = dir_func(dirs, 'q', pconf[key])
+
             if key == 'binary_e':
                 dirs = dir_func(dirs, 'e', pconf[key])
 
