@@ -24,10 +24,10 @@ class PhantomBatch(object):
             atexit.register(self.terminate_jobs_at_exit)
 
         #  Load in config file
-        config = util.load_init_config(config_filename)
+        self.config = util.load_init_config(config_filename)
 
-        self.pconf = config['phantom_setup']
-        self.pbconf = config['phantom_batch_setup']
+        self.pconf = self.config['phantom_setup']
+        self.pbconf = self.config['phantom_batch_setup']
 
     def terminate_jobs_at_exit(self):
         jobhandler.cancel_all_submitted_jobs(self.pbconf)
@@ -37,8 +37,19 @@ class PhantomBatch(object):
 
         suite_directory = os.path.join(os.environ['PHANTOM_DATA'], self.pbconf['name'])
 
+        #  Check if the directory already exists
         if not os.path.exists(suite_directory):
             os.mkdir(suite_directory)
+
+        #  Check if there is a config file already saved in the directory
+        config_fname = os.path.join(suite_directory, self.pbconf['name'] + '_pbconf.pkl')
+
+        if os.path.isfile(config_fname):
+            self.config = util.load_config(config_fname)
+
+            #  Overwrite current config files with the saved file
+            self.pconf = self.config['phantom_setup']
+            self.pbconf = self.config['phantom_batch_setup']
 
         sims_dir = os.path.join(suite_directory, 'simulations')
 
