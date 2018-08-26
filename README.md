@@ -28,6 +28,7 @@ Below is a list of features that have been added, or that will be added, in no p
     - Primary, secondary, and circumbinary discs supported (testing)
     - Disc warping
     - Exponential disc taper
+- Circumstellar disks
 - Adding in planets
 - Terminates jobs if PhantomBatch is interrupted
 
