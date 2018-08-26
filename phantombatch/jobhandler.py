@@ -261,6 +261,7 @@ def check_completed_jobs(pbconf):
     if 'completed_jobs' not in pbconf:
         pbconf['completed_jobs'] = []
     log.debug('Printing pbconf[\'completed_jobs\'] in check_completed_jobs')
+    log.debug(pbconf['completed_jobs'])
 
     i = 0
     for job in pbconf['job_names']:
