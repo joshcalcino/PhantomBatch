@@ -115,8 +115,6 @@ def decipher_pbs_output(pbs_output, pbconf):
                 line_array = [job_id, job_name, username, run_time, status, queue]
                 my_jobs.append(line_array)
 
-    print('Printing Job names..')
-    print(my_jobs)
     return my_jobs
 
 
@@ -139,7 +137,6 @@ def check_running_jobs(pbconf):
         log.error('Job scheduler not recognised!')
 
     for line in my_jobs:
-        log.debug(line[1])
         if any([job in line[1] for job in pbconf['job_names']]):  # line[1] holds the name of the job in my_job
             my_pb_jobs.append(line)
 

@@ -29,6 +29,9 @@ class PhantomBatch(object):
         self.pconf = config['phantom_setup']
         self.pbconf = config['phantom_batch_setup']
 
+    def terminate_jobs_at_exit(self):
+        jobhandler.cancel_all_submitted_jobs(self.pbconf)
+
     def initialise(self):
         log.info('Initialising ' + self.pbconf['name'] + '..')
 
@@ -134,33 +137,6 @@ class PhantomBatch(object):
 
                 os.chdir(os.environ['PHANTOM_DATA'])
 
-    def terminate_jobs_at_exit(self):
-        jobhandler.cancel_all_submitted_jobs(self.pbconf)
-
-    def add_planet_to_setup(self, new_setup, planet_number, setup_strings):
-        """ Add in the several lines that specify planet parameters into new_setup with the user defined values written.
-         Certainly a better way to do this.
-         """
-
-        with open('phantombatch/setups/planet.setup', 'r') as planet_setup:
-            for line in planet_setup:
-                setuphandler.edit_setup_file(new_setup, line.replace('%', str(planet_number)),
-                                             setup_strings, self.pconf)
-
-    def add_planets(self, new_setup, setup_strings):
-        """ Add planets into the setup file. """
-
-        if 'nplanets' in self.pconf:
-            new_setup.write('\n nplanets = ' + str(self.pconf['nplanets']) + ' ! number of planets \n')
-            for planet_number in range(1, int(self.pconf['nplanets'])+1):
-                log.debug("Trying to add in planet " + str(planet_number))
-                self.add_planet_to_setup(new_setup, planet_number, setup_strings)
-
-        else:
-            log.debug("Trying to add in planet")
-            new_setup.write('\n nplanets = 1 ! number of planets \n')
-            self.add_planet_to_setup(new_setup, 1, setup_strings)
-
     def create_setups(self):
         """ This function will create all of the setup files for the simulation parameters specified in the phantom config
         dictionary, pconf. It does not matter if this is adding in a messy fashion, as phantomsetup solves it for us."""
@@ -173,19 +149,19 @@ class PhantomBatch(object):
         self.pbconf['sim_dirs'] = setup_dirs
         setup_strings = setuphandler.get_setup_strings(self.pconf)
 
+        #  index keeps track setup_strings go into correct setup file
         index = 0
         for tmp_dir in setup_dirs:
             filename = os.path.join(tmp_dir, setup_filename)
             with open(filename, 'w') as new_setup:
                 log.debug('Entering ' + filename + '..')
-                """ This is where all of the different set ups will need to be defined. """
+                #  This is where all of the different setups will be defined
 
                 if 'binary' in self.pbconf and self.pbconf['binary']:
-                    with open('phantombatch/setups/binary.setup', 'r') as binary_setup:
-                        setuphandler.write_to_setup(new_setup, binary_setup, setup_strings[index], self.pconf)
+                    setuphandler.set_up_binary(new_setup, setup_strings[index], self.pconf)
 
                 if 'setplanets' in self.pconf and self.pconf['setplanets']:
-                    self.add_planets(new_setup, setup_strings[index])
+                    setuphandler.add_planets(new_setup, setup_strings[index], self.pconf)
 
             index += 1
 
@@ -247,8 +223,6 @@ class PhantomBatch(object):
         self.run_phantom_setup()
         jobscripthandler.create_job_scripts(self.pconf, self.pbconf)
         jobhandler.run_batch_jobs(self.pbconf)
-        print(self.pbconf['submitted_job_numbers'])
-        print(self.pbconf['submitted_job_names'])
 
         completed = False
 

@@ -1,7 +1,7 @@
 # input file for disc setup routine
 
 # resolution
-                  np =     2000000    ! number of gas particles
+                  np =      500000    ! number of gas particles
 
 # units
            dist_unit =          au    ! distance unit (e.g. au,pc,kpc,0.1pc)
@@ -14,14 +14,14 @@
 
 # options for binary
                   m1 =       1.000    ! primary mass
-                  m2 =       0.010    ! secondary mass
-            binary_a =  18.1818182    ! binary semi-major axis
-            binary_e =       0.100    ! binary eccentricity
+                  m2 =       0.200    ! secondary mass
+            binary_a =         10.    ! binary semi-major axis
+            binary_e =       0.000    ! binary eccentricity
             binary_i =       0.000    ! i, inclination (deg)
             binary_O =       0.000    ! Omega, PA of ascending node (deg)
-            binary_w =       0.000    ! w, argument of periapsis (deg)
+            binary_w =        270.    ! w, argument of periapsis (deg)
             binary_f =        180.    ! f, initial true anomaly (deg,180=apastron)
-               accr1 =       2.000    ! primary accretion radius
+               accr1 =       1.000    ! primary accretion radius
                accr2 =       0.500    ! secondary accretion radius
 
 # options for multiple discs
@@ -32,14 +32,13 @@
 
 # options for circumbinary gas disc
       mass_setbinary =           0    ! how to set gas density profile (0=total disc mass,1=mass within annulus,2=surface density normalisation,3=surface density at reference radius,4=minimum Toomre Q)
-     itapergasbinary =           T    ! exponentially taper the outer disc profile
+     itapergasbinary =           F    ! exponentially taper the outer disc profile
     ismoothgasbinary =           F    ! smooth inner disc
          iwarpbinary =           F    ! warp disc
-          R_inbinary =         35.    ! inner radius
-         R_refbinary =         35.    ! reference radius
-         R_outbinary =        120.    ! outer radius
-           R_cbinary =        120.    ! characteristic radius of the exponential taper
-        disc_mbinary =       0.005    ! disc mass
+          R_inbinary =         25.    ! inner radius
+         R_refbinary =         25.    ! reference radius
+         R_outbinary =        125.    ! outer radius
+        disc_mbinary =       0.050    ! disc mass
         pindexbinary =       1.000    ! p index
         qindexbinary =       0.250    ! q index
        posanglbinary =       0.000    ! position angle (deg)
@@ -51,5 +50,4 @@
           setplanets =           0    ! add planets? (0=no,1=yes)
 
 # timestepping
-             norbits =       10000    ! maximum number of binary orbits
-              deltat =       1.000    ! output interval as fraction of orbital period
+             norbits =         100    ! maximum number of binary orbits

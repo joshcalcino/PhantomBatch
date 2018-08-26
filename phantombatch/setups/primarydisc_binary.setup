@@ -1,0 +1,14 @@
+# options for circumprimary gas disc
+     mass_setprimary =           0    ! how to set gas density profile (0=total disc mass,1=mass within annulus,2=surface density normalisation,3=surface density at reference radius,4=minimum Toomre Q)
+    itapergasprimary =           F    ! exponentially taper the outer disc profile
+   ismoothgasprimary =           T    ! smooth inner disc
+        iwarpprimary =           F    ! warp disc
+         R_inprimary =       1.000    ! inner radius
+        R_refprimary =       1.000    ! reference radius
+        R_outprimary =       5.000    ! outer radius
+       disc_mprimary =       0.005    ! disc mass
+       pindexprimary =       1.000    ! p index
+       qindexprimary =       0.000    ! q index
+      posanglprimary =       0.000    ! position angle (deg)
+         inclprimary =         30.    ! inclination (deg)
+          H_Rprimary =       0.011    ! H/R at R=R_ref
