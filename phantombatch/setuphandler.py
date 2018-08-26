@@ -129,7 +129,7 @@ def set_up_binary(setup_filename, setup_strings, pconf):
                 write_to_setup(new_setup, sd_binary_setup, setup_strings, pconf)
 
     #  Now loop over lines in new_setup to change any additional options
-    with open(setup_filename, 'a') as new_setup:
+    with open(setup_filename, 'r+') as new_setup:
         for line in new_setup:
             #  ----- EXPONENTIAL TAPERING FOR THE DISC -----
             if ('itapergasbinary' in pconf) and (pconf['itapergasbinary'] == 'T') and ('itapergasbinary' in line):
