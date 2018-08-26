@@ -223,9 +223,9 @@ class PhantomBatch(object):
         log.debug('\'submitted_job_names\'')
         log.debug(self.pbconf['submitted_job_names'])
         log.debug('\'completed_jobs\'')
-        log.debug(self.pbconf['completed_job_names'])
+        log.debug(self.pbconf['completed_jobs'])
 
-        if len(self.pbconf['job_names']) == len(self.pbconf['completed_job_names']):
+        if len(self.pbconf['job_names']) == len(self.pbconf['completed_jobs']):
 
             if len(current_jobs) > 0:
                 log.info('There are still jobs to be submitted.')
