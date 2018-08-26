@@ -111,6 +111,27 @@ def add_planets(new_setup, setup_strings, pconf):
         add_planet_to_setup(new_setup, 1, setup_strings, pconf)
 
 
+def set_up_disc(setup_filename, setup_strings, pconf):
+    """ Set up a disc. """
+    with open(setup_filename, 'w') as new_setup:
+        with open('phantombatch/setups/disc.setup', 'r') as disc_setup:
+            write_to_setup(new_setup, disc_setup, setup_strings, pconf)
+
+    #  Now loop over lines in new_setup to change any additional options
+    with open(setup_filename, 'r+') as new_setup:
+        for line in new_setup:
+            #  ----- EXPONENTIAL TAPERING FOR THE DISC -----
+            if ('itapergas' in pconf) and (pconf['itapergas'] == 'T') and ('itapergas' in line):
+                log.debug('Adding in itapergas to binary setup.')
+                new_setup.write('\n R_c = ' + str(pconf['R_c']) + '\n')
+
+            # ----- DISC WARPING -----
+            if ('iwarp' in pconf) and (pconf['iwarp'] == 'T') and ('iwarp' in line):
+                log.debug('Adding in iwarp to binary setup.')
+                new_setup.write('\n R_warp = ' + str(pconf['R_warp']) + '\n')
+                new_setup.write('\n H_warp = ' + str(pconf['H_warp']) + '\n')
+
+
 def set_up_binary(setup_filename, setup_strings, pconf):
     """ Set up a binary disc. """
 

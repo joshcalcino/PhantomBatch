@@ -1,19 +1,15 @@
 {
 "phantom_setup": {
   "np": 100000,
-  "binary_e": [0, 0.1],
-  "binary_a": [10, 15],
-  "binary_i": 0,
-  "R_inbinary": 40,
-  "R_cbinary": 120,
-  "R_refbinary": 40,
-  "itapergasbinary": "T",
-  "R_outbinary": 120,
-  "iwarpbinary": "T",
-  "R_warpbinary": 1.5,
-  "H_warpbinary": 20,
-  "use_primarydisc": "T",
-  "detat": 1
+  "mplanet1": 0.2,
+  "rplanet1": 10,
+  "inclplanet1": 0,
+  "accrplanet1": 0.3,
+  "mplanet2": 0.5,
+  "rplanet2": 20,
+  "inclplanet2": 0,
+  "accrplanet2": 1,
+  "detat": 0.1
   },
 
 "phantom_batch_setup": {
@@ -23,14 +19,14 @@
   "sleep_time": 1,
   "setup": "disc",
   "job_scheduler": "slurm",
-  "ncpus": 8,
+  "ncpus": 14,
   "memory": "6G",
   "user": "uqjcalci",
   "no_email": 1,
   "job_limit": 4,
   "binary": 0,
   "add_dust": 0,
-  "add_planets": 0,
+  "add_planets": 1,
   "num_planets": 2,
   "make_options": "",
   "make_setup_options": ""

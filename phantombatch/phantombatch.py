@@ -156,8 +156,11 @@ class PhantomBatch(object):
             filename = os.path.join(tmp_dir, setup_filename)
             log.debug('Entering ' + filename + '..')
 
-            if 'binary' in self.pbconf and self.pbconf['binary']:
-                setuphandler.set_up_binary(filename, setup_strings[index], self.pconf)
+            if self.pbconf['setup'] == 'disc':
+                if 'binary' in self.pbconf and self.pbconf['binary']:
+                    setuphandler.set_up_binary(filename, setup_strings[index], self.pconf)
+                else:
+                    setuphandler.set_up_disc(filename, setup_strings[index], self.pconf)
 
             if 'setplanets' in self.pconf and self.pconf['setplanets']:
                 setuphandler.add_planets(filename, setup_strings[index], self.pconf)
