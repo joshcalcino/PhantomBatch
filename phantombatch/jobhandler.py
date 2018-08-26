@@ -283,8 +283,9 @@ def check_completed_jobs(pbconf):
                 #  Check if the number of dumps in the given directory is at least as many as the requested
                 #  number of dump files for each simulation, and if so, save the job name in the completed list
 
-                log.debug('Job ' + job + ' has reached the desired number of dump files.')
-
+                log.info('Job ' + job + ' has reached the desired number of dump files.')
+                log.debug('Printing current_jobs in check_completed_jobs')
+                log.debug(current_jobs)
                 if any(job in cjob for cjob in current_jobs):
                     log.debug('Cancelling ' + job + ' since it has reached the desired number of dump files.')
 
@@ -292,8 +293,8 @@ def check_completed_jobs(pbconf):
 
                     cancel_job(pbconf, pbconf['submitted_job_numbers'][i])
 
-                if 'completed_jobs' in pbconf:
-                    pbconf['completed_jobs'].append(job)
+                    if 'completed_jobs' in pbconf:
+                        pbconf['completed_jobs'].append(job)
 
             if 'num_dumps' not in pbconf:
                 log.warning('You have not specified the number of dump files you would like for each simulation. '
