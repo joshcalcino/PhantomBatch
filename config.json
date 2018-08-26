@@ -1,6 +1,6 @@
 {
 "phantom_setup": {
-  "np": 10000,
+  "np": 100000,
   "binary_e": [0, 0.1],
   "binary_a": [10, 15],
   "binary_i": 0,
@@ -17,13 +17,13 @@
 "phantom_batch_setup": {
   "name": "example",
   "short_name": "ex",
-  "num_dumps": 100,
+  "num_dumps": 20,
   "sleep_time": 1,
   "setup": "disc",
   "job_scheduler": "slurm",
-  "ncpus": "2",
+  "ncpus": 8,
   "memory": "6G",
-  "user": "your_username",
+  "user": "uqjcalci",
   "no_email": 1,
   "job_limit": 4,
   "binary": 1,

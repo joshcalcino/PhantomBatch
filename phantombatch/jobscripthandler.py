@@ -55,9 +55,9 @@ def edit_slurm_jobscript(pbconf, job_script_filename, job_script_names):
 
         elif 'export OMP_NUM_THREADS' in line and ('ncpus' in pbconf or 'omp_threads' in pbconf):
             if 'omp_threads' in pbconf:
-                print(('export OMP_NUM_THREADS=' + pbconf['omp_threads']).rstrip())
+                print(('export OMP_NUM_THREADS=' + str(pbconf['omp_threads'])).rstrip())
             else:
-                print(('export OMP_NUM_THREADS=' + pbconf['ncpus']).rstrip())
+                print(('export OMP_NUM_THREADS=' + str(pbconf['ncpus'])).rstrip())
 
         else:
             print(line.rstrip())
@@ -91,7 +91,7 @@ def edit_pbs_jobscript(pbconf, job_script_filename, job_script_names):
             if 'omp_threads' in pbconf:
                 print(('export OMP_NUM_THREADS=' + pbconf['omp_threads']).rstrip())
             else:
-                print(('export OMP_NUM_THREADS=' + pbconf['ncpus']).rstrip())
+                print(('export OMP_NUM_THREADS=' + str(pbconf['ncpus'])).rstrip())
 
         else:
             print(line.rstrip())
