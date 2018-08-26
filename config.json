@@ -11,7 +11,9 @@
   "R_outbinary": 120,
   "iwarpbinary": "T",
   "R_warpbinary": 1.5,
-  "H_warpbinary": 20
+  "H_warpbinary": 20,
+  "use_primarydisc": "T",
+  "detat": 1
   },
 
 "phantom_batch_setup": {

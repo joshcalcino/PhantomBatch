@@ -26,8 +26,8 @@ Below is a list of features that have been added, or that will be added, in no p
     - Currently gas only
     - Sink particles only
     - Primary, secondary, and circumbinary discs supported (testing)
-    - Disc warping (testing)
-    - Exponential disc taper (testing)
+    - Disc warping
+    - Exponential disc taper
 - Adding in planets
 - Terminates jobs if PhantomBatch is interrupted
 
