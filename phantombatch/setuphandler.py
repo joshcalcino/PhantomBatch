@@ -63,31 +63,37 @@ def edit_setup_file(new_setup, line, setup_strings, pconf):
 
 
 def get_setup_strings(pconf):
-    """ This function creates the directory names for each simulation. """
+    """ This function creates the strings to go into each simulation setup file. This should be changed. """
 
     setup_strings = []
     for key in pconf:
         if isinstance(pconf[key], list):
-            if key == 'pindex':
-                setup_strings = setup_from_array(setup_strings, key, pconf[key])
+            setup_strings = setup_from_array(setup_strings, key, pconf[key])
 
-            if key == 'qindex':
-                setup_strings = setup_from_array(setup_strings, key, pconf[key])
-
-            if key == 'binary_e':
-                setup_strings = setup_from_array(setup_strings, key, pconf[key])
-
-            if key == 'binary_a':
-                setup_strings = setup_from_array(setup_strings, key, pconf[key])
-
-            if key == 'm2':
-                setup_strings = setup_from_array(setup_strings, key, pconf[key])
-
-            if key == 'binary_i':
-                setup_strings = setup_from_array(setup_strings, key, pconf[key])
-
-            if key == 'alphaSS':
-                setup_strings = setup_from_array(setup_strings, key, pconf[key])
+            # if key == 'pindex':
+            #     setup_strings = setup_from_array(setup_strings, key, pconf[key])
+            #
+            # if key == 'qindex':
+            #     setup_strings = setup_from_array(setup_strings, key, pconf[key])
+            #
+            # if key == 'binary_e':
+            #     setup_strings = setup_from_array(setup_strings, key, pconf[key])
+            #
+            # if key == 'binary_a':
+            #     setup_strings = setup_from_array(setup_strings, key, pconf[key])
+            #
+            # if key == 'm2':
+            #     setup_strings = setup_from_array(setup_strings, key, pconf[key])
+            #
+            # if key == 'binary_i':
+            #     setup_strings = setup_from_array(setup_strings, key, pconf[key])
+            #
+            # if key == 'alphaSS':
+            #     setup_strings = setup_from_array(setup_strings, key, pconf[key])
+            #
+            # #  Loop planet parameters
+            # if 'mplanet' in key:
+            #     setup_strings = setup_from_array(setup_strings, key, pconf[key])
 
     return setup_strings
 

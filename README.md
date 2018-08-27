@@ -7,7 +7,6 @@ PhantomBatch config file, and forget since PhantomBatch will create, submit, che
 Below is a list of features that have been added, or that will be added, in no particular order of importance.
 
 # Features to add:
-- Support for looping over planet parameters (should be easy to implement)
 - Full support for binary discs
     - Disc mass setting (Currently only supports total disc mass)
     - Support for potential
@@ -30,6 +29,7 @@ Below is a list of features that have been added, or that will be added, in no p
     - Exponential disc taper
 - Circumstellar disks
 - Adding in planets
+    - Support for looping over planet parameters (testing)
 - Terminates jobs if PhantomBatch is interrupted
 
 Excessive number of commits is due to me writing the code on my laptop, but running on a cluster. I will eventually

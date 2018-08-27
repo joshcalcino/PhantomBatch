@@ -27,6 +27,17 @@ def loop_keys_dir(pconf):
             if key == 'binary_i':
                 dirs = dir_func(dirs, 'i', pconf[key])
 
+            # Loop over planet parameters
+            if 'mplanet' in key:
+                #  Adding in key[-1] makes sure that we select the write planet number
+                dirs = dir_func(dirs, 'mp' + key[-1], pconf[key])
+
+            if 'rplanet' in key:
+                dirs = dir_func(dirs, 'rp' + key[-1], pconf[key])
+
+            if 'inclplanet' in key:
+                dirs = dir_func(dirs, 'ip' + key[-1], pconf[key])
+
     return dirs
 
 

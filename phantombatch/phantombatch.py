@@ -44,6 +44,7 @@ class PhantomBatch(object):
         #  Check if there is a config file already saved in the directory
         config_fname = os.path.join(suite_directory, self.pbconf['name'] + '_pbconf.pkl')
 
+        #  If there is a config file already, load it in
         if os.path.isfile(config_fname):
             self.config = util.load_config(config_fname)
 
