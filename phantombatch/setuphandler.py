@@ -108,19 +108,20 @@ def add_planet_to_setup(new_setup, planet_number, setup_strings, pconf):
             edit_setup_file(new_setup, line.replace('%', str(planet_number)), setup_strings, pconf)
 
 
-def add_planets(new_setup, setup_strings, pconf):
+def add_planets(setup_filename, setup_strings, pconf):
     """ Add planets into the setup file. """
 
-    if 'nplanets' in pconf:
-        new_setup.write('\n nplanets = ' + str(pconf['nplanets']) + ' ! number of planets \n')
-        for planet_number in range(1, int(pconf['nplanets'])+1):
-            log.debug("Trying to add in planet " + str(planet_number))
-            add_planet_to_setup(new_setup, planet_number, setup_strings, pconf)
+    with open(setup_filename, 'w') as new_setup:
+        if 'nplanets' in pconf:
+            new_setup.write('\n nplanets = ' + str(pconf['nplanets']) + ' ! number of planets \n')
+            for planet_number in range(1, int(pconf['nplanets'])+1):
+                log.debug("Trying to add in planet " + str(planet_number))
+                add_planet_to_setup(new_setup, planet_number, setup_strings, pconf)
 
-    else:
-        log.debug("Trying to add in planet")
-        new_setup.write('\n nplanets = 1 ! number of planets \n')
-        add_planet_to_setup(new_setup, 1, setup_strings, pconf)
+        else:
+            log.debug("Trying to add in planet")
+            new_setup.write('\n nplanets = 1 ! number of planets \n')
+            add_planet_to_setup(new_setup, 1, setup_strings, pconf)
 
 
 def set_up_disc(setup_filename, setup_strings, pconf):
