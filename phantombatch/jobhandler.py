@@ -260,6 +260,9 @@ def check_completed_jobs(pbconf):
 
     current_jobs = check_running_jobs(pbconf)
 
+    if len(current_jobs) == 0:
+        log.info('Could not find any running jobs for user ' + pbconf['user']+'.')
+
     if 'completed_jobs' not in pbconf:
         pbconf['completed_jobs'] = []
 
