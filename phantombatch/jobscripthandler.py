@@ -100,41 +100,40 @@ def edit_pbs_jobscript(pbconf, job_script_filename, job_script_names):
 def get_job_script_names(pconf, pbconf):
     """ This function generates a list of job script names given the suite of parameters being used in pconf. """
 
-    job_script_names = []
-    for key in pconf:
-        if isinstance(pconf[key], list):
-            if key == 'pindex':
-                job_script_names = dirhandler.dir_func(job_script_names, 'p', pconf[key])
-
-            if key == 'qindex':
-                job_script_names = dirhandler.dir_func(job_script_names, 'q', pconf[key])
-
-            if key == 'binary_e':
-                job_script_names = dirhandler.dir_func(job_script_names, 'e', pconf[key])
-
-            if key == 'binary_a':
-                job_script_names = dirhandler.dir_func(job_script_names, 'a', pconf[key])
-
-            if key == 'm2':
-                job_script_names = dirhandler.dir_func(job_script_names, 'br', pconf[key])
-
-            if key == 'alphaSS':
-                job_script_names = dirhandler.dir_func(job_script_names, 'aSS', pconf[key])
-
-            if key == 'binary_i':
-                job_script_names = dirhandler.dir_func(job_script_names, 'i', pconf[key])
-
-            # Loop over planet parameters
-            if 'mplanet' in key:
-                #  Adding in key[-1] makes sure that we select the write planet number
-                job_script_names = dirhandler.dir_func(job_script_names, 'mp' + key[-1], pconf[key])
-
-            if 'rplanet' in key:
-                job_script_names = dirhandler.dir_func(job_script_names, 'rp' + key[-1], pconf[key])
-
-            if 'inclplanet' in key:
-                job_script_names = dirhandler.dir_func(job_script_names, 'ip' + key[-1], pconf[key])
-
+    job_script_names = dirhandler.loop_keys_dir(pconf)
+    # for key in pconf:
+    #     if isinstance(pconf[key], list):
+    #         if key == 'pindex':
+    #             job_script_names = dirhandler.dir_func(job_script_names, 'p', pconf[key])
+    #
+    #         if key == 'qindex':
+    #             job_script_names = dirhandler.dir_func(job_script_names, 'q', pconf[key])
+    #
+    #         if key == 'binary_e':
+    #             job_script_names = dirhandler.dir_func(job_script_names, 'e', pconf[key])
+    #
+    #         if key == 'binary_a':
+    #             job_script_names = dirhandler.dir_func(job_script_names, 'a', pconf[key])
+    #
+    #         if key == 'm2':
+    #             job_script_names = dirhandler.dir_func(job_script_names, 'br', pconf[key])
+    #
+    #         if key == 'alphaSS':
+    #             job_script_names = dirhandler.dir_func(job_script_names, 'aSS', pconf[key])
+    #
+    #         if key == 'binary_i':
+    #             job_script_names = dirhandler.dir_func(job_script_names, 'i', pconf[key])
+    #
+    #         # Loop over planet parameters
+    #         if 'mplanet' in key:
+    #             #  Adding in key[-1] makes sure that we select the write planet number
+    #             job_script_names = dirhandler.dir_func(job_script_names, 'mp' + key[-1], pconf[key])
+    #
+    #         if 'rplanet' in key:
+    #             job_script_names = dirhandler.dir_func(job_script_names, 'rp' + key[-1], pconf[key])
+    #
+    #         if 'inclplanet' in key:
+    #             job_script_names = dirhandler.dir_func(job_script_names, 'ip' + key[-1], pconf[key])
 
     if 'short_name' in pbconf and pbconf['short_name'] is not None:
         job_script_names = [pbconf['short_name'] + '_' + name for name in job_script_names]

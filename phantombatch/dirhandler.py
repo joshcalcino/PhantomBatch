@@ -3,6 +3,7 @@ import logging as log
 
 
 def loop_keys_dir(pconf):
+    """ A function for generating both directory names and job names for the job scripts. """
     dirs = []
     for key in pconf:
         if isinstance(pconf[key], list):
