@@ -1,16 +1,18 @@
 {
 "phantom_setup": {
   "np": 100000,
-  "pindex": [1, 1.5],
-  "qindex": [0.25, 0.5],
+  "pindex": 1,
+  "qindex": 0.25,
+  "setplanets": "T",
+  "nplanets": 2,
   "mplanet1": 0.2,
   "rplanet1": 10,
   "inclplanet1": 0,
-  "accrplanet1": 0.3,
-  "mplanet2": 0.5,
-  "rplanet2": 20,
+  "accrplanet1": 1,
+  "mplanet2": 1,
+  "rplanet2": [15, 20, 25],
   "inclplanet2": 0,
-  "accrplanet2": 1,
+  "accrplanet2": 2,
   "detat": 0.1
   },
 
