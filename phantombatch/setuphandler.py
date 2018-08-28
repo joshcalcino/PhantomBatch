@@ -54,7 +54,9 @@ def edit_setup_file(new_setup, line, setup_strings, pconf):
     for key in pconf:
         if isinstance(pconf[key], list):
             for string in setup_strings:  # loop over the strings that need to be written into setup file
-                print(key, string)
+                print('KEY BELOW')
+                print(key)
+                print(string)
                 if (key in line) and (key in string):
                     log.debug('Editing setup file..')
                     new_setup.write(string + '\n')
