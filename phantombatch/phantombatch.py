@@ -175,7 +175,7 @@ class PhantomBatch(object):
                 else:
                     setuphandler.set_up_disc(filename, setup_strings[index], self.pconf)
 
-            if 'setplanets' in self.pconf and self.pconf['setplanets'] == 'T':
+            if 'setplanets' in self.pconf and (self.pconf['setplanets'] == 'T'):
                 setuphandler.add_planets(filename, setup_strings[index], self.pconf)
 
             index += 1
@@ -235,16 +235,16 @@ class PhantomBatch(object):
 
         self.initialise()
         self.create_setups()
-        self.run_phantom_setup()
-        jobscripthandler.create_job_scripts(self.pconf, self.pbconf)
-        jobhandler.run_batch_jobs(self.pbconf)
-
-        completed = False
-
-        while not completed:
-
-            log.info('PhantomBatch will now sleep for ' + str(self.pbconf['sleep_time']) + ' minutes.')
-            time.sleep(self.pbconf['sleep_time']*60)
-
-            jobhandler.run_batch_jobs(self.pbconf)
-            completed = self.check_phantombatch_complete()
+        # self.run_phantom_setup()
+        # jobscripthandler.create_job_scripts(self.pconf, self.pbconf)
+        # jobhandler.run_batch_jobs(self.pbconf)
+        #
+        # completed = False
+        #
+        # while not completed:
+        #
+        #     log.info('PhantomBatch will now sleep for ' + str(self.pbconf['sleep_time']) + ' minutes.')
+        #     time.sleep(self.pbconf['sleep_time']*60)
+        #
+        #     jobhandler.run_batch_jobs(self.pbconf)
+        #     completed = self.check_phantombatch_complete()
