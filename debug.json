@@ -13,7 +13,7 @@
   "rplanet2": 20,
   "inclplanet2": 0,
   "accrplanet2": 2,
-  "detat": 0.5
+  "deltat": 0.5
   },
 
 "phantom_batch_setup": {
