@@ -20,7 +20,7 @@ def write_to_setup(new_setup, ref_setup, setup_strings, pconf):
                 else:
                     print(line)
                     print(key)
-                    if line.startswith(key):
+                    if line.rstrip().startswith(key):
                         new_setup.write(key + ' = ' + str(pconf[key]) + '\n')
                         key_added = True
 
@@ -65,7 +65,7 @@ def edit_setup_file(new_setup, line, setup_strings, pconf):
                     new_setup.write(string + '\n')
 
         else:
-            if line.startswith(key):
+            if line.rstrip().startswith(key):
                 new_setup.write(key + ' = ' + str(pconf[key]) + '\n')
 
 
