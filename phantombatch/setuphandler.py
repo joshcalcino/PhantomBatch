@@ -13,7 +13,7 @@ def write_to_setup(new_setup, ref_setup, setup_strings, pconf):
             for key in pconf:
                 if isinstance(pconf[key], list):
                     for string in setup_strings:  # loop over the strings that need to be written into setup file
-                        if (key in line) and (key in string):
+                        if (key in line) and string.startswith(key):
                             log.debug('Writing to setup file..')
                             key_added = True
                             new_setup.write(string + '\n')
@@ -59,7 +59,7 @@ def edit_setup_file(new_setup, line, setup_strings, pconf):
     for key in pconf:
         if isinstance(pconf[key], list):
             for string in setup_strings:  # loop over the strings that need to be written into setup file
-                if (key in line) and (key in string):
+                if (key in line) and (key == string):
                     log.debug('Editing setup file..')
                     new_setup.write(string + '\n')
 
