@@ -29,8 +29,6 @@
   "job_limit": 4,
   "binary": 0,
   "add_dust": 0,
-  "add_planets": 1,
-  "num_planets": 2,
   "make_options": "",
   "make_setup_options": ""
   }
