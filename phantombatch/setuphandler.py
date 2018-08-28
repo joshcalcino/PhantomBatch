@@ -5,6 +5,7 @@ def write_to_setup(new_setup, ref_setup, setup_strings, pconf):
     """ Write to the setup file. """
 
     for line in ref_setup:
+        print(line)
         key_added = False
         if line.startswith('# '):
             new_setup.write(line)
