@@ -3,7 +3,7 @@
   "np": 100000,
   "pindex": 1,
   "qindex": 0.25,
-  "setplanets": "T",
+  "setplanets": 1,
   "nplanets": 2,
   "mplanet1": 0.2,
   "rplanet1": 10,

@@ -175,7 +175,7 @@ class PhantomBatch(object):
                 else:
                     setuphandler.set_up_disc(filename, setup_strings[index], self.pconf)
 
-            if 'setplanets' in self.pconf and (self.pconf['setplanets'] == 'T'):
+            if 'setplanets' in self.pconf and (self.pconf['setplanets'] == 1):
                 setuphandler.add_planets(filename, setup_strings[index], self.pconf)
 
             index += 1
