@@ -49,14 +49,14 @@ def decipher_slurm_output(slurm_output, pbconf):
         if pbconf['user'] in line:
             found_user = True
             if 'C' not in line:
-                job_id = line[0:job_id_len].rstrip()
-                job_name = line[job_id_len:job_id_len+name_len].rstrip()
-                username = line[job_id_len+name_len:job_id_len+name_len+username_len].rstrip()
+                job_id = line[0:job_id_len].strip()
+                job_name = line[job_id_len:job_id_len+name_len].strip()
+                username = line[job_id_len+name_len:job_id_len+name_len+username_len].strip()
                 run_time = line[job_id_len+name_len+username_len:
-                                job_id_len+name_len+username_len+time_len].rstrip()
+                                job_id_len+name_len+username_len+time_len].strip()
                 status = line[job_id_len+name_len+username_len+time_len:
-                              job_id_len+name_len+username_len+time_len+status_len].rstrip()
-                queue = line[job_id_len+name_len+username_len+time_len+status_len:line_length].rstrip()
+                              job_id_len+name_len+username_len+time_len+status_len].strip()
+                queue = line[job_id_len+name_len+username_len+time_len+status_len:line_length].strip()
                 line_array = [job_id, job_name, username, run_time, status, queue]
                 my_jobs.append(line_array)
 
@@ -104,14 +104,14 @@ def decipher_pbs_output(pbs_output, pbconf):
     for line in slurm_lines:
         if pbconf['user'] in line:
             if 'C' not in line:
-                job_id = line[0:job_id_len].rstrip()
-                job_name = line[job_id_len:job_id_len+name_len].rstrip()
-                username = line[job_id_len+name_len:job_id_len+name_len+username_len].rstrip()
+                job_id = line[0:job_id_len].strip()
+                job_name = line[job_id_len:job_id_len+name_len].strip()
+                username = line[job_id_len+name_len:job_id_len+name_len+username_len].strip()
                 run_time = line[job_id_len+name_len+username_len:
-                                job_id_len+name_len+username_len+time_len].rstrip()
+                                job_id_len+name_len+username_len+time_len].strip()
                 status = line[job_id_len+name_len+username_len+time_len:
-                              job_id_len+name_len+username_len+time_len+status_len].rstrip()
-                queue = line[job_id_len+name_len+username_len+time_len+status_len:line_length].rstrip()
+                              job_id_len+name_len+username_len+time_len+status_len].strip()
+                queue = line[job_id_len+name_len+username_len+time_len+status_len:line_length].strip()
                 line_array = [job_id, job_name, username, run_time, status, queue]
                 my_jobs.append(line_array)
 
@@ -158,16 +158,16 @@ def submit_job(pbconf, directory, jobscript_name):
     if pbconf['job_scheduler'] == 'slurm':
         log.debug('Attempting to submit job..')
         output = subprocess.check_output('sbatch ' + jobscript_name, stderr=subprocess.STDOUT,
-                                         universal_newlines=True, shell=True).rstrip()
+                                         universal_newlines=True, shell=True).strip()
         log.info(output)
         len_slurm_output = len('Submitted batch job ')  # Change this string if your slurm prints something else out
-        job_number = output[len_slurm_output:].rstrip()
+        job_number = output[len_slurm_output:].strip()
 
     elif pbconf['job_scheduler'] == 'pbs':
         output = subprocess.check_output('qsub ' + jobscript_name, stderr=subprocess.STDOUT,
                                          universal_newlines=True, shell=True)
-        job_number = output.rstrip()
-        log.info(output.rstrip())
+        job_number = output.strip()
+        log.info(output.strip())
 
     else:
         log.error('Job scheduler not recognised, cannot submit jobs!')
@@ -190,13 +190,13 @@ def cancel_job(pbconf, job_number):
     if pbconf['job_scheduler'] == 'slurm':
         output = subprocess.check_output('scancel ' + str(job_number), stderr=subprocess.STDOUT,
                                          universal_newlines=True, shell=True)
-        log.debug(output.rstrip())
+        log.debug(output.strip())
         # util.
 
     elif pbconf['job_scheduler'] == 'pbs':
         output = subprocess.check_output('qdel ' + str(job_number), stderr=subprocess.STDOUT,
                                          universal_newlines=True, shell=True)
-        log.debug(output.rstrip())
+        log.debug(output.strip())
 
 
 def cancel_all_submitted_jobs(pbconf):
