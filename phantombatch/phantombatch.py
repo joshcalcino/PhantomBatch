@@ -228,23 +228,23 @@ class PhantomBatch(object):
                 return True
 
         else:
-            log.info('There are still jobs to be submitted.')
+            log.info('There are still jo bs to be submitted.')
             return False
 
     def phantombatch_monitor(self):
 
         self.initialise()
         self.create_setups()
-        self.run_phantom_setup()
-        jobscripthandler.create_job_scripts(self.pconf, self.pbconf)
-        jobhandler.run_batch_jobs(self.pbconf)
-
-        completed = False
-
-        while not completed:
-
-            log.info('PhantomBatch will now sleep for ' + str(self.pbconf['sleep_time']) + ' minutes.')
-            time.sleep(self.pbconf['sleep_time']*60)
-
-            jobhandler.run_batch_jobs(self.pbconf)
-            completed = self.check_phantombatch_complete()
+        # self.run_phantom_setup()
+        # jobscripthandler.create_job_scripts(self.pconf, self.pbconf)
+        # jobhandler.run_batch_jobs(self.pbconf)
+        #
+        # completed = False
+        #
+        # while not completed:
+        #
+        #     log.info('PhantomBatch will now sleep for ' + str(self.pbconf['sleep_time']) + ' minutes.')
+        #     time.sleep(self.pbconf['sleep_time']*60)
+        #
+        #     jobhandler.run_batch_jobs(self.pbconf)
+        #     completed = self.check_phantombatch_complete()
