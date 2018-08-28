@@ -6,6 +6,20 @@ PhantomBatch config file, and forget since PhantomBatch will create, submit, che
 
 Below is a list of features that have been added, or that will be added, in no particular order of importance.
 
+# Current features:
+- Support for SLURM and PBS job schedulers
+- Binary simulations
+    - Currently gas only
+    - Sink particles only
+    - Primary, secondary, and circumbinary discs supported
+    - Disc warping supported
+    - Exponential disc taper supported
+- Circumstellar disks
+- Adding in planets
+    - Support for looping over planet parameters
+- Terminates jobs if PhantomBatch is interrupted
+
+
 # Features to add:
 - Full support for binary discs
     - Disc mass setting (Currently only supports total disc mass)
@@ -14,23 +28,10 @@ Below is a list of features that have been added, or that will be added, in no p
 - Support for all disc setups
 - Support for non-disc setups
 - Editing setup.in files before running phantom simulations
-- Ability to pick up where it left off if aborted
+- Ability to pick up where it left off if aborted (should be easy to implement)
 - Ability to render splash images/movies
-- Support for other job schedulers aside from SLURM and PBS (e.g. SGE)
+- Support for more job schedulers (e.g. SGE)
 - Ability to stop simulations, moddump, and restart.
-
-# Current features:
-- Support for SLURM and PBS job schedulers
-- Binary simulations
-    - Currently gas only
-    - Sink particles only
-    - Primary, secondary, and circumbinary discs supported (testing)
-    - Disc warping
-    - Exponential disc taper
-- Circumstellar disks
-- Adding in planets
-    - Support for looping over planet parameters (testing)
-- Terminates jobs if PhantomBatch is interrupted
 
 Excessive number of commits is due to me writing the code on my laptop, but running on a cluster. I will eventually
 make a new branch for testing and implementing changes to prevent this interfering with users in the future.
