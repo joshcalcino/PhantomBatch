@@ -112,7 +112,7 @@ def add_planet_to_setup(new_setup, planet_number, setup_strings, pconf):
 def add_planets(setup_filename, setup_strings, pconf):
     """ Add planets into the setup file. """
 
-    with open(setup_filename, 'w') as new_setup:
+    with open(setup_filename, 'r+') as new_setup:
         if 'nplanets' in pconf:
             new_setup.write('\n nplanets = ' + str(pconf['nplanets']) + ' ! number of planets \n')
             for planet_number in range(1, int(pconf['nplanets'])+1):
