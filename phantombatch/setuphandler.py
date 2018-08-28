@@ -50,6 +50,7 @@ def setup_from_array(setup_strings, string, dict_arr):
 
 
 def edit_setup_file(new_setup, line, setup_strings, pconf):
+    print(setup_strings)
 
     for key in pconf:
         if isinstance(pconf[key], list):
