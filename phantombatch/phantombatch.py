@@ -195,7 +195,7 @@ class PhantomBatch(object):
             os.chdir(tmp_dir)
             output = subprocess.check_output('./phantomsetup ' + self.pbconf['setup'], stderr=subprocess.STDOUT,
                                              universal_newlines=True, shell=True)
-
+            print(output)
             util.check_for_phantom_warnings(output.rstrip())
             util.save_phantom_output(output.rstrip(), self.pbconf)
 
