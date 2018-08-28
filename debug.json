@@ -9,7 +9,7 @@
   "rplanet1": 10,
   "inclplanet1": 0,
   "accrplanet1": 1,
-  "mplanet2": 1,
+  "mplanet2": [1, 2],
   "rplanet2": [15, 20, 25],
   "inclplanet2": 0,
   "accrplanet2": 2,
