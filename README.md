@@ -35,3 +35,8 @@ Below is a list of features that have been added, or that will be added, in no p
 
 Excessive number of commits is due to me writing the code on my laptop, but running on a cluster. I will eventually
 make a new branch for testing and implementing changes to prevent this interfering with users in the future.
+
+The correct way to run PhantomBatch out be something like:
+`python3 example.py > example.out 2> example.err &`
+This will make sure that nothing is printed to the terminal, all output is printed to the two specified files.
+This means that PhantomBatch will run in the background on the login node of a cluster.
