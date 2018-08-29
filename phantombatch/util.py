@@ -57,6 +57,7 @@ def check_pbconf_sim_dir_consistency(job_name, sim_dir, pbconf):
         return short_sim_dir.startswith(job_name[len(pbconf['short_name'])+1:])
 
     else:
+        log.error('NAME INCONSISTENCY FOUND')
         return False
 
 

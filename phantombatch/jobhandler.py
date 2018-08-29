@@ -276,7 +276,7 @@ def check_completed_jobs(pbconf):
         pbconf['completed_jobs'] = []
 
     if 'job_num_dumps' not in pbconf:
-        pbconf['job_num_dumps'] = []
+        pbconf['job_num_dumps'] = []*len(pbconf['job_names'])
 
     log.debug('Printing pbconf[\'completed_jobs\'] in check_completed_jobs')
     log.debug(pbconf['completed_jobs'])
@@ -291,12 +291,7 @@ def check_completed_jobs(pbconf):
             #  Make a list of all of the dump files in the simulation directory
             job_list = glob.glob(pbconf['sim_dirs'][i] + '/' + pbconf['setup'] + '_*')
 
-            if pbconf['job_num_dumps'] == []:
-                log.debug('Printing in number of dumps..')
-                pbconf['job_num_dumps'].append(len(job_list))
-                print(pbconf['job_num_dumps'])
-            else:
-                pbconf['job_num_dumps'][i] = len(job_list)
+            pbconf['job_num_dumps'][i] = len(job_list)
 
             if 'num_dumps' in pbconf and (len(job_list) >= pbconf['num_dumps'] + 1):  # + 1 for _0000 dump
                 #  Check if the number of dumps in the given directory is at least as many as the requested
