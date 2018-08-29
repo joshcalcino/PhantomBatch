@@ -8,7 +8,12 @@ import glob
 
 def decipher_slurm_output(slurm_output, pbconf):
     """ This function deciphers the output from executing 'qstat' in the terminal so that we have a usable list
-    of all jobs currently running on the cluster. """
+    of all jobs currently running on the cluster.
+
+    There is an issue here this this doesn't work if there are no jobs running on a cluster in order for the function to
+    decipher the output.. Will need to figure a way around this, but may be an issue with things further down the
+    pipeline.
+    """
     print(slurm_output)
     tally = 0
     tally_arr = []
@@ -126,7 +131,10 @@ def check_running_jobs(pbconf):
 
     if pbconf['job_scheduler'] == 'slurm':
         #  Could probably consolidate jobs since both pbs and slurm use qstat?
-        jobs = subprocess.check_output('squeue -u ' + pbconf['user'] + ' -o "%.18i %.9P %.40j %.8u %.2t %.10M %.6D %R"',
+        # jobs = subprocess.check_output('squeue -u ' + pbconf['user'] + ' -o "%.18i %.9P %.40j %.8u %.2t %.10M %.6D %R"',
+        #                                stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
+
+        jobs = subprocess.check_output('squeue  -o "%.18i %.9P %.40j %.8u %.2t %.10M %.6D %R"',
                                        stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
         my_jobs = decipher_slurm_output(jobs, pbconf)
 
