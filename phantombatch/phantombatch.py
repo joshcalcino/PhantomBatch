@@ -29,6 +29,13 @@ class PhantomBatch(object):
         self.pconf = self.config['phantom_setup']
         self.pbconf = self.config['phantom_batch_setup']
 
+        # check if a saved configuration file already exists, overwrite current if it does
+        if os.path.isfile(os.path.join(self.pbconf['name'], self.pbconf['name'] + '_pbconf.pkl')):
+            self.config = util.load_config(self.pbconf)
+
+            self.pconf = self.config['phantom_setup']
+            self.pbconf = self.config['phantom_batch_setup']
+
     def terminate_jobs_at_exit(self):
         jobhandler.cancel_all_submitted_jobs(self.pbconf)
 
@@ -160,7 +167,6 @@ class PhantomBatch(object):
 
         self.pbconf['sim_dirs'] = setup_dirs
         setup_strings = setuphandler.get_setup_strings(self.pconf)
-        print(setup_strings)
 
         #  index keeps track setup_strings go into correct setup file
         index = 0
