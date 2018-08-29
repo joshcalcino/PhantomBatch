@@ -292,7 +292,9 @@ def check_completed_jobs(pbconf):
             job_list = glob.glob(pbconf['sim_dirs'][i] + '/' + pbconf['setup'] + '_*')
 
             if pbconf['job_num_dumps'] == []:
+                log.debug('Printing in number of dumps..')
                 pbconf['job_num_dumps'].append(len(job_list))
+                print(pbconf['job_num_dumps'])
             else:
                 pbconf['job_num_dumps'][i] = len(job_list)
 
