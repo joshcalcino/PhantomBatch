@@ -45,7 +45,8 @@ make a new branch for testing and implementing changes to prevent this interferi
 
 The correct way to run PhantomBatch is something like:
 
-`python3 example.py > example.out 2> example.err &`
+`python3 example.py > example.out 2>&1 &`
 
-This will make sure that nothing is printed to the terminal, all output is printed to the two specified files.
-This means that PhantomBatch will run in the background on the login node of a cluster.
+This will make sure that nothing is printed to the terminal, all output is printed to `example.out`.
+This means that PhantomBatch will run in the background on the login node of a cluster, and will continue to run when
+you log out.
