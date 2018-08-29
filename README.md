@@ -33,6 +33,11 @@ Below is a list of features that have been added, or that will be added, in no p
 - Support for more job schedulers (e.g. SGE)
 - Ability to stop simulations, moddump, and restart.
 
+And below is a list of bugs.
+
+# Known issues:
+- I don't think SLURM actually works..
+
 Excessive number of commits is due to me writing the code on my laptop, but running on a cluster. I will eventually
 make a new branch for testing and implementing changes to prevent this interfering with users in the future.
 

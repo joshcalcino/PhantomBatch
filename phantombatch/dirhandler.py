@@ -14,13 +14,17 @@ def loop_keys_dir(pconf):
                 dirs = dir_func(dirs, 'q', pconf[key])
 
             if key == 'binary_e':
-                dirs = dir_func(dirs, 'e', pconf[key])
+                # Build up an array of e's that isn't too long and disregard the '0.'
+                dict_arr = [format(i, '.2f')[2:] for i in pconf[key]]
+                dirs = dir_func(dirs, 'e', dict_arr)
 
             if key == 'binary_a':
-                dirs = dir_func(dirs, 'a', pconf[key])
+                # Build array of a's, which are rounded, to get rid of unnecessary decimal places
+                dict_arr = [round(i, 1) for i in pconf[key]]
+                dirs = dir_func(dirs, 'a', dict_arr)
 
             if key == 'm2':
-                dirs = dir_func(dirs, 'br', pconf[key])
+                dirs = dir_func(dirs, 'm2', pconf[key])
 
             if key == 'alphaSS':
                 dirs = dir_func(dirs, 'aSS', pconf[key])
