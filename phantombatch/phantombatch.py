@@ -33,6 +33,8 @@ class PhantomBatch(object):
         if os.path.isfile(os.path.join(self.pbconf['name'], self.pbconf['name'] + '_pbconf.pkl')):
             self.config = util.load_config(self.pbconf)
 
+            [print(key) for key in self.config]
+
             self.pconf = self.config['phantom_setup']
             self.pbconf = self.config['phantom_batch_setup']
 
