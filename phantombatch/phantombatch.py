@@ -31,6 +31,7 @@ class PhantomBatch(object):
 
         # check if a saved phantombatch configuration file already exists, overwrite current if it does
         if os.path.isfile(os.path.join(self.pbconf['name'], self.pbconf['name'] + '_pbconf.pkl')):
+            print(self.pbconf['name'])
             self.pbconf = util.load_config(self.pbconf)
 
     def terminate_jobs_at_exit(self):
