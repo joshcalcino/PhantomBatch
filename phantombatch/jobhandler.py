@@ -9,7 +9,7 @@ import glob
 def decipher_slurm_output(slurm_output, pbconf):
     """ This function deciphers the output from executing 'qstat' in the terminal so that we have a usable list
     of all jobs currently running on the cluster. """
-
+    print(slurm_output)
     tally = 0
     tally_arr = []
     found_dash = False
