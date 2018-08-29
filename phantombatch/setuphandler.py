@@ -18,8 +18,6 @@ def write_to_setup(new_setup, ref_setup, setup_strings, pconf):
                             new_setup.write(string + '\n')
 
                 else:
-                    print(line.strip())
-                    print(key)
                     if line.strip().startswith(key):
                         new_setup.write(key + ' = ' + str(pconf[key]) + '\n')
                         key_added = True
@@ -76,31 +74,6 @@ def get_setup_strings(pconf):
     for key in pconf:
         if isinstance(pconf[key], list):
             setup_strings = setup_from_array(setup_strings, key, pconf[key])
-
-            # if key == 'pindex':
-            #     setup_strings = setup_from_array(setup_strings, key, pconf[key])
-            #
-            # if key == 'qindex':
-            #     setup_strings = setup_from_array(setup_strings, key, pconf[key])
-            #
-            # if key == 'binary_e':
-            #     setup_strings = setup_from_array(setup_strings, key, pconf[key])
-            #
-            # if key == 'binary_a':
-            #     setup_strings = setup_from_array(setup_strings, key, pconf[key])
-            #
-            # if key == 'm2':
-            #     setup_strings = setup_from_array(setup_strings, key, pconf[key])
-            #
-            # if key == 'binary_i':
-            #     setup_strings = setup_from_array(setup_strings, key, pconf[key])
-            #
-            # if key == 'alphaSS':
-            #     setup_strings = setup_from_array(setup_strings, key, pconf[key])
-            #
-            # #  Loop planet parameters
-            # if 'mplanet' in key:
-            #     setup_strings = setup_from_array(setup_strings, key, pconf[key])
 
     return setup_strings
 
