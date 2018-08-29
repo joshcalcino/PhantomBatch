@@ -29,14 +29,9 @@ class PhantomBatch(object):
         self.pconf = self.config['phantom_setup']
         self.pbconf = self.config['phantom_batch_setup']
 
-        # check if a saved configuration file already exists, overwrite current if it does
+        # check if a saved phantombatch configuration file already exists, overwrite current if it does
         if os.path.isfile(os.path.join(self.pbconf['name'], self.pbconf['name'] + '_pbconf.pkl')):
-            self.config = util.load_config(self.pbconf)
-
-            [print(key) for key in self.config]
-
-            self.pconf = self.config['phantom_setup']
-            self.pbconf = self.config['phantom_batch_setup']
+            self.pbconf = util.load_config(self.pbconf)
 
     def terminate_jobs_at_exit(self):
         jobhandler.cancel_all_submitted_jobs(self.pbconf)
