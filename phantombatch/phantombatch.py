@@ -46,17 +46,6 @@ class PhantomBatch(object):
         if not os.path.exists(suite_directory):
             os.mkdir(suite_directory)
 
-        #  Check if there is a config file already saved in the directory
-        config_fname = os.path.join(suite_directory, self.pbconf['name'] + '_pbconf.pkl')
-
-        #  If there is a config file already, load it in
-        if os.path.isfile(config_fname):
-            self.config = util.load_config(config_fname)
-
-            #  Overwrite current config files with the saved file
-            self.pconf = self.config['phantom_setup']
-            self.pbconf = self.config['phantom_batch_setup']
-
         sims_dir = os.path.join(suite_directory, 'simulations')
 
         if not os.path.exists(sims_dir):
