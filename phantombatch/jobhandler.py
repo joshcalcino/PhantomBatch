@@ -14,7 +14,7 @@ def decipher_slurm_output(slurm_output, pbconf):
     decipher the output.. Will need to figure a way around this, but may be an issue with things further down the
     pipeline.
     """
-    print(slurm_output)
+    # print(slurm_output)
     tally = 0
     tally_arr = []
     found_dash = False
@@ -275,6 +275,9 @@ def check_completed_jobs(pbconf):
     if 'completed_jobs' not in pbconf:
         pbconf['completed_jobs'] = []
 
+    if 'job_num_dumps' not in pbconf:
+        pbconf['job_num_dumps'] = []
+
     log.debug('Printing pbconf[\'completed_jobs\'] in check_completed_jobs')
     log.debug(pbconf['completed_jobs'])
 
@@ -287,6 +290,8 @@ def check_completed_jobs(pbconf):
 
             #  Make a list of all of the dump files in the simulation directory
             job_list = glob.glob(pbconf['sim_dirs'][i] + '/' + pbconf['setup'] + '_*')
+
+            pbconf['job_num_dumps'][i] = len(job_list)
 
             if 'num_dumps' in pbconf and (len(job_list) >= pbconf['num_dumps'] + 1):  # + 1 for _0000 dump
                 #  Check if the number of dumps in the given directory is at least as many as the requested
@@ -310,6 +315,14 @@ def check_completed_jobs(pbconf):
                             'Please specify this in your .config file with the \'num_dumps\' key.')
 
         i += 1
+
+    log.info('----------------------')
+    log.info('|  PHANTOM JOB INFO  |')
+    log.info('----------------------')
+
+    for i in range(0, len(pbconf['job_names'])):
+        log.info(pbconf['job_names'][i] + ' has ' + pbconf['job_num_dumps'][i] + ' out of ' + str(pbconf['num_dumps']) +
+                 ' completed.')
 
     log.info('There are now ' + str(len(current_jobs)) + ' jobs still running.')
     log.info('There are now ' + str(len(pbconf['completed_jobs'])) + ' jobs finished.')
