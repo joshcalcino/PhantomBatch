@@ -1,6 +1,6 @@
 {
 "phantom_setup": {
-  "np": 1000000,
+  "np": 100000,
   "binary_e": [0, 0.5],
   "binary_a": 20,
   "binary_i": [0, 10, 20, 30],
@@ -11,14 +11,14 @@
   "R_outbinary": 80,
   "iwarpbinary": "F",
   "use_primarydisc": "F",
-  "detat": 1
+  "detat": 0.5
   },
 
 "phantom_batch_setup": {
   "name": "binary_test",
   "short_name": "bt",
   "num_dumps": 200,
-  "sleep_time": 60,
+  "sleep_time": 1,
   "setup": "disc",
   "job_scheduler": "slurm",
   "ncpus": 14,
