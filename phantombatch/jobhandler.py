@@ -134,7 +134,7 @@ def check_running_jobs(pbconf):
         # jobs = subprocess.check_output('squeue -u ' + pbconf['user'] + ' -o "%.18i %.9P %.40j %.8u %.2t %.10M %.6D %R"',
         #                                stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
 
-        jobs = subprocess.check_output('squeue  -o "%.18i %.9P %.40j %.8u %.2t %.10M %.6D %R"',
+        jobs = subprocess.check_output('qstat',
                                        stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
         my_jobs = decipher_slurm_output(jobs, pbconf)
 
