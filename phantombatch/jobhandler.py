@@ -156,7 +156,7 @@ def check_running_jobs(pbconf):
 
     if pbconf['job_scheduler'] == 'slurm':
         jobs = subprocess.check_output('squeue -u ' + pbconf['user'] +
-                                       ' -o  "%.18i %.9P %.40j %.8u %.2t %.14M %.6D %R"',
+                                       ' -o  "%.18i %.9P %.40j %.8u %.2t %.14M %.6D %.8R"',
                                        stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
 
         # jobs = subprocess.check_output('qstat',
@@ -257,7 +257,7 @@ def run_batch_jobs(pbconf):
     for job in pbconf['job_names']:
         current_jobs = check_running_jobs(pbconf)
         if not any(job in cjob for cjob in current_jobs) and \
-                ('job_limit' in pbconf and (len(current_jobs) < pbconf['job_limit'])):
+                ('job_limit' in pbconf and (len(current_jobs) <= pbconf['job_limit'])):
 
             if 'submitted_job_names' in pbconf and (job in pbconf['submitted_job_names']):
                 pass
