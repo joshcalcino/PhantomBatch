@@ -15,6 +15,8 @@ def decipher_slurm_output(slurm_output, pbconf):
     pipeline.
     """
 
+    print(slurm_output)
+
     tally = 0
     tally_arr = []
     found_char = False
@@ -37,6 +39,8 @@ def decipher_slurm_output(slurm_output, pbconf):
             tally += 1
             tally_arr.append(tally)
             break
+
+    print(tally_arr)
 
     job_id_len, queue_len, name_len, username_len = tally_arr[0], tally_arr[1], tally_arr[2], tally_arr[3]
     status_len, time_len, nodes_len, node_len = tally_arr[4], tally_arr[5], tally_arr[6], tally_arr[7]
