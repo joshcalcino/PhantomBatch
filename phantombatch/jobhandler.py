@@ -14,16 +14,13 @@ def decipher_slurm_output(slurm_output, pbconf):
     decipher the output.. Will need to figure a way around this, but may be an issue with things further down the
     pipeline.
     """
-    print(slurm_output)
+
     tally = 0
     tally_arr = []
     found_char = False
 
     for char in slurm_output:
         """ Check each character in the slurm output to determine the output column widths. """
-        print(char)
-        print(found_char)
-        print(char.isspace() and found_char)
         if char.isspace() and not found_char:
             tally += 1
 
@@ -40,11 +37,11 @@ def decipher_slurm_output(slurm_output, pbconf):
             tally += 1
             tally_arr.append(tally)
             break
-    print(tally_arr)
-    job_id_len, name_len, username_len = tally_arr[0], tally_arr[1], tally_arr[2]
-    time_len, status_len, queue_len = tally_arr[3], tally_arr[4], tally_arr[5]
 
-    line_length = job_id_len + name_len + username_len + time_len + status_len + queue_len
+    job_id_len, queue_len, name_len, username_len = tally_arr[0], tally_arr[1], tally_arr[2], tally_arr[3]
+    status_len, time_len, nodes_len, node_len = tally_arr[4], tally_arr[5], tally_arr[6], tally_arr[7]
+
+    line_length = sum(tally_arr)
     slurm_lines = []
 
     for i in range(0, int(len(slurm_output)/line_length)):
@@ -58,15 +55,33 @@ def decipher_slurm_output(slurm_output, pbconf):
         if pbconf['user'] in line:
             found_user = True
             if 'C' not in line:
-                job_id = line[0:job_id_len].strip()
-                job_name = line[job_id_len:job_id_len+name_len].strip()
-                username = line[job_id_len+name_len:job_id_len+name_len+username_len].strip()
-                run_time = line[job_id_len+name_len+username_len:
-                                job_id_len+name_len+username_len+time_len].strip()
-                status = line[job_id_len+name_len+username_len+time_len:
-                              job_id_len+name_len+username_len+time_len+status_len].strip()
-                queue = line[job_id_len+name_len+username_len+time_len+status_len:line_length].strip()
-                line_array = [job_id, job_name, username, run_time, status, queue]
+                job_id = line[0:
+                              job_id_len].strip()
+
+                queue = line[job_id_len:
+                             job_id_len + queue_len].strip()
+
+                job_name = line[queue_len + job_id_len:
+                                queue_len + job_id_len + name_len].strip()
+
+                username = line[job_id_len + name_len + queue_len:
+                                job_id_len + queue_len + username_len + name_len].strip()
+
+                status = line[job_id_len + queue_len + name_len + username_len:
+                              job_id_len + queue_len + name_len + username_len + status_len].strip()
+
+                run_time = line[job_id_len + queue_len + name_len + username_len + status_len:
+                                job_id_len + queue_len + name_len + username_len + status_len + time_len].strip()
+
+                nodes = line[job_id_len + queue_len + name_len + username_len + status_len + time_len:
+                             job_id_len + queue_len + name_len + username_len + status_len + time_len + nodes_len]\
+                    .strip()
+
+                node = line[job_id_len + queue_len + name_len + username_len + status_len + time_len + nodes_len:
+                            job_id_len + queue_len + name_len + username_len + status_len + time_len + nodes_len +
+                            node_len].strip()
+
+                line_array = [job_id, job_name, username, run_time, status, queue, nodes, node]
                 my_jobs.append(line_array)
 
     if not found_user:
