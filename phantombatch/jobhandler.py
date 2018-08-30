@@ -24,7 +24,7 @@ def decipher_slurm_output(slurm_output, pbconf):
         print(char)
         print(found_char)
         print(char.isspace() and found_char)
-        if char.isspace():
+        if char.isspace() and not found_char:
             tally += 1
 
         elif char.isalpha() or char == '(':
