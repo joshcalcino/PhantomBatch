@@ -104,7 +104,7 @@ def decipher_pbs_output(pbs_output, pbconf):
             tally += 1
             found_dash = True
         elif char.isspace() and found_dash:
-            tally += 1
+            # tally += 1
             tally_arr.append(tally)
             tally = 0
             found_dash = False
@@ -144,6 +144,7 @@ def decipher_pbs_output(pbs_output, pbconf):
 
     my_jobs = []
     for line in slurm_lines:
+        line.rstrip()
         if pbconf['user'] in line:
             if 'C' not in line:
                 job_id = line[0:
