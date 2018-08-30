@@ -176,8 +176,7 @@ def get_pbs_jobs(pbconf):
                                          stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
         output = str(output)
         print(output)
-        output.replace(str(column), '')
-        print(output)
+        print(output.replace(str(column), ''))
 
     return output
 
