@@ -173,7 +173,7 @@ def get_pbs_jobs(pbconf):
 
     tmp_jobs = [[]]*len(columns)
 
-    index = 0
+    i = 0
     for column in columns:
         output = subprocess.check_output('qstat -f | grep \'' + column + '\'',
                                          stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
@@ -182,9 +182,13 @@ def get_pbs_jobs(pbconf):
 
         output = [out.replace(str(column), '').strip() for out in output]
 
-        tmp_jobs[index] = output
+        if column == 'Job Owner = ':
+            ind = output[0].index('@')
+            output = [out[:ind] for out in output]
 
-        index += 1
+        tmp_jobs[i] = output
+
+        i += 1
 
     my_jobs = [['']*len(tmp_jobs)]*len(tmp_jobs[0])
     print(my_jobs)
