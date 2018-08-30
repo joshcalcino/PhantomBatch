@@ -4,6 +4,8 @@ PhantomBatch is being written to take the hassle out of running many simulations
 The philosophy behind PhantomBatch is to think, set, and forget; Think about what set of parameters would be nice to explore, set a 
 PhantomBatch config file, and forget since PhantomBatch will create, submit, check, and cancel your Phantom simulations for you!
 
+PhantomBatch is only compatible with Python 3.
+
 Below is a list of features that have been added, or that will be added, in no particular order of importance.
 
 # Current features:
@@ -37,7 +39,6 @@ Below is a list of features that have been added, or that will be added, in no p
 And below is a list of known issues.
 
 # Known issues:
-- I don't think SLURM actually works..
 - Some job and dir names might be excessively long if user specifies unusual numbers
 
 Excessive number of commits is due to me writing the code on my laptop, but running on a cluster. I will eventually

@@ -4,6 +4,7 @@
   "binary_e": [0, 0.5],
   "binary_a": 20,
   "binary_i": [0, 10, 20, 30],
+  "disc_mbinary": 0.005,
   "R_inbinary": 30,
   "R_cbinary": 80,
   "R_refbinary": 40,
@@ -11,7 +12,7 @@
   "R_outbinary": 80,
   "iwarpbinary": "F",
   "use_primarydisc": "F",
-  "detat": 0.5
+  "detat": 1
   },
 
 "phantom_batch_setup": {

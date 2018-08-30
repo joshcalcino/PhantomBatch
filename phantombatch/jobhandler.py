@@ -15,8 +15,6 @@ def decipher_slurm_output(slurm_output, pbconf):
     pipeline.
     """
 
-    print(slurm_output)
-
     tally = 0
     tally_arr = []
     found_char = False
@@ -40,8 +38,6 @@ def decipher_slurm_output(slurm_output, pbconf):
             tally += 1
             tally_arr.append(tally)
             break
-
-    print(tally_arr)
 
     job_id_len, queue_len, name_len, username_len = tally_arr[0], tally_arr[1], tally_arr[2], tally_arr[3]
     status_len, time_len, nodes_len, node_len = tally_arr[4], tally_arr[5], tally_arr[6], tally_arr[7]
@@ -259,7 +255,7 @@ def run_batch_jobs(pbconf):
     for job in pbconf['job_names']:
         current_jobs = check_running_jobs(pbconf)
         if not any(job in cjob for cjob in current_jobs) and \
-                ('job_limit' in pbconf and (len(current_jobs) <= pbconf['job_limit'])):
+                ('job_limit' in pbconf and (len(current_jobs) >= pbconf['job_limit'])):
 
             if job in pbconf['submitted_job_names'] and any(job in cjob for cjob in current_jobs):
                 pass
@@ -282,7 +278,7 @@ def run_batch_jobs(pbconf):
                     pbconf['submitted_job_names'] = []
                     pbconf['submitted_job_names'].append(job)
 
-        elif 'job_limit' in pbconf and (len(current_jobs) > pbconf['job_limit']):
+        elif 'job_limit' in pbconf and (len(current_jobs) >= pbconf['job_limit']):
             log.debug('Hit maximum number of allowed jobs.')
             break
 
