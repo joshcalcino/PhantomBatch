@@ -33,11 +33,13 @@ def decipher_slurm_output(slurm_output, pbconf):
         elif char.isspace() and found_char:
             tally += 1
             tally_arr.append(tally)
+            tally = 0
             found_char = False
 
         elif char == ')' and found_char:
             tally += 1
             tally_arr.append(tally)
+            tally = 0
             break
 
     print(tally_arr)
