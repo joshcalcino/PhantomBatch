@@ -104,7 +104,7 @@ def decipher_pbs_output(pbs_output, pbconf):
             found_dash = True
 
         elif char.isspace() and found_dash:
-            # tally += 1
+            tally += 1
             tally_arr.append(tally)
             tally = 0
             found_dash = False
@@ -124,7 +124,7 @@ def decipher_pbs_output(pbs_output, pbconf):
     pbs_output.rstrip()
 
     for i in range(0, int(len(pbs_output)/line_length)):
-        pbs_lines.append(pbs_output[(i+2)*line_length:(i+1)*line_length])
+        pbs_lines.append(pbs_output[i*line_length:(i+1)*line_length])
 
     print(pbs_lines)
     my_jobs = []
