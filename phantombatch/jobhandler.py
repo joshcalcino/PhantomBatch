@@ -79,8 +79,7 @@ def decipher_slurm_output(slurm_output, pbconf):
                     .strip()
 
                 node = line[job_id_len + queue_len + name_len + username_len + status_len + time_len + nodes_len:
-                            job_id_len + queue_len + name_len + username_len + status_len + time_len + nodes_len +
-                            node_len].strip()
+                            line_length].strip()
 
                 line_array = [job_id, job_name, username, run_time, status, queue, nodes, node]
                 my_jobs.append(line_array)
@@ -94,7 +93,7 @@ def decipher_slurm_output(slurm_output, pbconf):
 def decipher_pbs_output(pbs_output, pbconf):
     """ This function deciphers the output from pbs in the terminal """
     print(pbs_output)
-    pbs_output = pbs_output.rstrip()
+    # pbs_output = pbs_output.rstrip()
     tally = 0
     tally_arr = []
     found_dash = False
@@ -128,15 +127,26 @@ def decipher_pbs_output(pbs_output, pbconf):
     for line in slurm_lines:
         if pbconf['user'] in line:
             if 'C' not in line:
-                job_id = line[0:job_id_len].strip()
-                job_name = line[job_id_len:job_id_len+name_len].strip()
-                username = line[job_id_len+name_len:job_id_len+name_len+username_len].strip()
+                job_id = line[0:
+                              job_id_len].strip()
+
+                job_name = line[job_id_len:
+                                job_id_len+name_len].strip()
+
+                username = line[job_id_len+name_len:
+                                job_id_len+name_len+username_len].strip()
+
                 run_time = line[job_id_len+name_len+username_len:
                                 job_id_len+name_len+username_len+time_len].strip()
+
                 status = line[job_id_len+name_len+username_len+time_len:
                               job_id_len+name_len+username_len+time_len+status_len].strip()
-                queue = line[job_id_len+name_len+username_len+time_len+status_len:line_length].strip()
+
+                queue = line[job_id_len+name_len+username_len+time_len+status_len:
+                             line_length].strip()
+
                 line_array = [job_id, job_name, username, run_time, status, queue]
+
                 my_jobs.append(line_array)
 
     return my_jobs
