@@ -112,7 +112,7 @@ def decipher_pbs_output(pbs_output, pbconf):
         #     tally += 1
         #     tally_arr.append(tally)
         #     tally = 0
-        elif not char.isalpha() and (char != '-' or not char.isspace()):
+        elif not char.isalpha() and char != '-' and not char.isspace():
             tally += 1
             tally_arr.append(tally)
             break
