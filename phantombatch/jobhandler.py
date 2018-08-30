@@ -93,9 +93,7 @@ def decipher_slurm_output(slurm_output, pbconf):
 def decipher_pbs_output(pbs_output, pbconf):
     """ This function deciphers the output from pbs in the terminal """
     # pbs_output = pbs_output.rstrip()
-    print("||||||||||||||||||||||||||||||")
-    for line in pbs_output:
-        print(line)
+    pbs_output = pbs_output.replace('\n', '')
     tally = 0
     tally_arr = []
     found_dash = False
