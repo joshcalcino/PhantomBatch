@@ -97,18 +97,24 @@ def decipher_pbs_output(pbs_output, pbconf):
     tally = 0
     tally_arr = []
     found_dash = False
+    space_after_dash = False  # This keeps track of double spaces after a dash
 
     for char in pbs_output:
         #  Check each character in the pbs output to determine the output column widths
         if char == '-':
             tally += 1
             found_dash = True
+            space_after_dash = False
+
+        elif char.isspace and space_after_dash:
+            tally += 1
 
         elif char.isspace() and found_dash:
             tally += 1
             tally_arr.append(tally)
             tally = 0
-            # found_dash = False
+            space_after_dash = True
+            found_dash = False
 
         elif not char.isalpha() and char != '-' and not char.isspace():
             # tally += 1
@@ -116,6 +122,7 @@ def decipher_pbs_output(pbs_output, pbconf):
                 tally_arr.append(tally)
             break
 
+    print(tally_arr)
     job_id_len, name_len, username_len = tally_arr[0], tally_arr[1], tally_arr[2]
     time_len, status_len, queue_len = tally_arr[3], tally_arr[4], tally_arr[5]
 
