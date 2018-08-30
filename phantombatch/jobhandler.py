@@ -23,6 +23,7 @@ def decipher_slurm_output(slurm_output, pbconf):
         """ Check each character in the slurm output to determine the output column widths. """
         print(char)
         print(found_char)
+        print(char.isspace() and found_char)
         if char.isspace():
             tally += 1
 
