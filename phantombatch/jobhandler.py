@@ -113,7 +113,7 @@ def decipher_pbs_output(pbs_output, pbconf):
             tally += 1
             tally_arr.append(tally)
             tally = 0
-        elif char.isdigit() and found_dash:
+        elif char.isdigit():
             tally += 1
             tally_arr.append(tally)
             break
