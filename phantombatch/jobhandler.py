@@ -185,7 +185,7 @@ def get_pbs_jobs():
         tmp_jobs[i] = output
 
         i += 1
-
+    print(tmp_jobs)
     my_jobs = [['']*len(tmp_jobs)]*len(tmp_jobs[0])
 
     for i in range(0, len(tmp_jobs)):
