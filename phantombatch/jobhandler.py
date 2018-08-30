@@ -211,10 +211,6 @@ def check_running_jobs(pbconf):
 
     elif pbconf['job_scheduler'] == 'pbs':
         my_jobs = get_pbs_jobs()
-        # jobs = subprocess.check_output('qstat -a -w -t', stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
-        # log.debug(jobs)
-        # my_jobs = decipher_pbs_output(jobs, pbconf)
-        # log.debug(my_jobs)
 
     else:
         log.error('Job scheduler not recognised!')
@@ -222,7 +218,7 @@ def check_running_jobs(pbconf):
     for line in my_jobs:
         if any([job in line[1] for job in pbconf['job_names']]):  # line[1] holds the name of the job in my_job
             my_pb_jobs.append(line)
-
+    print(my_pb_jobs)
     log.debug('Printing phantombatch jobs..')
     log.debug(my_pb_jobs)
     return my_pb_jobs
