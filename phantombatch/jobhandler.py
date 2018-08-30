@@ -14,7 +14,7 @@ def decipher_slurm_output(slurm_output, pbconf):
     decipher the output.. Will need to figure a way around this, but may be an issue with things further down the
     pipeline.
     """
-    # print(slurm_output)
+    print(slurm_output)
     tally = 0
     tally_arr = []
     found_space = False
@@ -30,6 +30,7 @@ def decipher_slurm_output(slurm_output, pbconf):
             tally += 1
             tally_arr.append(tally)
             break
+
     job_id_len, name_len, username_len = tally_arr[0], tally_arr[1], tally_arr[2]
     time_len, status_len, queue_len = tally_arr[3], tally_arr[4], tally_arr[5]
 
