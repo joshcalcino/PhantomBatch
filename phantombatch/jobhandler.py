@@ -99,53 +99,34 @@ def decipher_pbs_output(pbs_output, pbconf):
 
     for char in pbs_output:
         #  Check each character in the pbs output to determine the output column widths
-        # print(char)
         if char == '-':
             tally += 1
             found_dash = True
+
         elif char.isspace() and found_dash:
             # tally += 1
             tally_arr.append(tally)
             tally = 0
             found_dash = False
-        # elif char == '_' and found_dash:
-        #     tally += 1
-        #     tally_arr.append(tally)
-        #     tally = 0
+
         elif not char.isalpha() and char != '-' and not char.isspace():
             # tally += 1
             if tally != 0:
                 tally_arr.append(tally)
             break
 
-    print(tally)
-    print(tally_arr)
-
-        # if char == '-':
-        #     tally += 1
-        #     found_dash = True
-        #
-        # elif char == ' ' and found_dash:
-        #     tally_arr.append(tally)
-        #     found_dash = False
-        #     tally = 0
-        #
-        # elif char.isdigit():
-        #     # tally += 1
-        #     tally_arr.append(tally)
-        #     break
-
     job_id_len, name_len, username_len = tally_arr[0], tally_arr[1], tally_arr[2]
     time_len, status_len, queue_len = tally_arr[3], tally_arr[4], tally_arr[5]
 
     line_length = sum(tally_arr)
-    slurm_lines = []
+    pbs_lines = []
 
     for i in range(0, int(len(pbs_output)/line_length)):
-        slurm_lines.append(pbs_output[i*line_length:(i+1)*line_length])
+        pbs_lines.append(pbs_output[i*line_length:(i+1)*line_length])
 
+    print(pbs_lines)
     my_jobs = []
-    for line in slurm_lines:
+    for line in pbs_lines:
         line.rstrip()
         if pbconf['user'] in line:
             if 'C' not in line:
