@@ -120,7 +120,7 @@ def decipher_pbs_output(pbs_output, pbconf):
     job_id_len, name_len, username_len = tally_arr[0], tally_arr[1], tally_arr[2]
     time_len, status_len, queue_len = tally_arr[3], tally_arr[4], tally_arr[5]
 
-    line_length = job_id_len + name_len + username_len + time_len + status_len + queue_len
+    line_length = sum(tally_arr)
     slurm_lines = []
 
     for i in range(0, int(len(pbs_output)/line_length)):
