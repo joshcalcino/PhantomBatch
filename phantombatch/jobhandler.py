@@ -129,10 +129,10 @@ def decipher_pbs_output(pbs_output, pbconf):
     line_length = sum(tally_arr)
     pbs_lines = []
 
-    pbs_output.rstrip()
+    pbs_output.strip()
 
     for i in range(0, int(len(pbs_output)/line_length)):
-        pbs_lines.append(pbs_output[i*line_length:(i+1)*line_length])
+        pbs_lines.append(pbs_output[i*line_length:(i+1)*line_length].strip())
 
     # print(pbs_lines)
     my_jobs = []
