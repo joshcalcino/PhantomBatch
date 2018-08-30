@@ -218,7 +218,7 @@ def check_running_jobs(pbconf):
     for line in my_jobs:
         if any([job in line[1] for job in pbconf['job_names']]):  # line[1] holds the name of the job in my_job
             my_pb_jobs.append(line)
-    print(my_pb_jobs)
+
     log.debug('Printing phantombatch jobs..')
     log.debug(my_pb_jobs)
     return my_pb_jobs
@@ -305,7 +305,7 @@ def run_batch_jobs(pbconf):
     for job in pbconf['job_names']:
         current_jobs = check_running_jobs(pbconf)
         if not any(job in cjob for cjob in current_jobs) and \
-                ('job_limit' in pbconf and (len(current_jobs) >= pbconf['job_limit'])):
+                ('job_limit' in pbconf and (len(current_jobs) <= pbconf['job_limit'])):
 
             if job in pbconf['submitted_job_names'] and any(job in cjob for cjob in current_jobs):
                 pass
@@ -328,7 +328,7 @@ def run_batch_jobs(pbconf):
                     pbconf['submitted_job_names'] = []
                     pbconf['submitted_job_names'].append(job)
 
-        elif 'job_limit' in pbconf and (len(current_jobs) >= pbconf['job_limit']):
+        elif 'job_limit' in pbconf and (len(current_jobs) <= pbconf['job_limit']):
             log.debug('Hit maximum number of allowed jobs.')
             break
 
