@@ -99,6 +99,7 @@ def decipher_pbs_output(pbs_output, pbconf):
 
     for char in pbs_output:
         #  Check each character in the pbs output to determine the output column widths
+        print(char)
         if char == '-':
             tally += 1
             found_dash = True
