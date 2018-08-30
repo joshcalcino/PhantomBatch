@@ -93,6 +93,9 @@ def decipher_slurm_output(slurm_output, pbconf):
 def decipher_pbs_output(pbs_output, pbconf):
     """ This function deciphers the output from pbs in the terminal """
     # pbs_output = pbs_output.rstrip()
+    print("||||||||||||||||||||||||||||||")
+    for line in pbs_output:
+        print(line)
     tally = 0
     tally_arr = []
     found_dash = False
@@ -126,7 +129,7 @@ def decipher_pbs_output(pbs_output, pbconf):
     for i in range(0, int(len(pbs_output)/line_length)):
         pbs_lines.append(pbs_output[i*line_length:(i+1)*line_length])
 
-    print(pbs_lines)
+    # print(pbs_lines)
     my_jobs = []
     for line in pbs_lines:
         line.rstrip()
