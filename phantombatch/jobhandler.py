@@ -106,6 +106,7 @@ def decipher_pbs_output(pbs_output, pbconf):
             tally += 1
             tally_arr.append(tally)
             tally = 0
+            found_dash = False
         elif char == '_' and found_dash:
             tally += 1
             tally_arr.append(tally)
@@ -114,6 +115,7 @@ def decipher_pbs_output(pbs_output, pbconf):
             tally += 1
             tally_arr.append(tally)
             break
+        print(tally_arr)
 
         # if char == '-':
         #     tally += 1
