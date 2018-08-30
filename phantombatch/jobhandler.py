@@ -189,10 +189,11 @@ def get_pbs_jobs(pbconf):
     my_jobs = [[]]*len(tmp_jobs[:][0])
 
     print(len(tmp_jobs[:][0]))
+    print(len((tmp_jobs[0][:])))
 
-    for i in range(0, len(tmp_jobs)):
-        for j in range(0, len(tmp_jobs[i][:])):
-            my_jobs[j].append(tmp_jobs[i][j])
+    # for i in range(0, len(tmp_jobs)):
+    #     for j in range(0, len(tmp_jobs[i][:])):
+    #         my_jobs[j].append(tmp_jobs[i][j])
 
     print(my_jobs)
     return my_jobs
