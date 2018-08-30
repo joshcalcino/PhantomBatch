@@ -182,7 +182,7 @@ def get_pbs_jobs(pbconf):
 
         output = [out.replace(str(column), '').strip() for out in output]
 
-        if column == 'Job Owner = ':
+        if column == 'Job_Owner = ':
             ind = output[0][0].index('@')
             output = [out[:ind] for out in output]
 
@@ -191,14 +191,11 @@ def get_pbs_jobs(pbconf):
         i += 1
 
     my_jobs = [['']*len(tmp_jobs)]*len(tmp_jobs[0])
-    print(my_jobs)
-    print(len(tmp_jobs[0]))
 
     for i in range(0, len(tmp_jobs)):
         for j in range(0, len(tmp_jobs[i])):
             my_jobs[j][i] = tmp_jobs[i][j]
 
-    print(my_jobs)
     return my_jobs
 
 
