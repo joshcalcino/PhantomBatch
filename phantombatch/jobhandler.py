@@ -171,18 +171,21 @@ def get_pbs_jobs(pbconf):
 
     columns = ['Job Id: ', 'Job_Name = ', 'resources_used.walltime = ', 'job_state = ', 'Job_Owner = ']
 
+    my_jobs = [[]]*len(columns)
+
+    index = 0
     for column in columns:
         output = subprocess.check_output('qstat -f | grep \'' + column + '\'',
                                          stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
         output = str(output).split('\n')
 
-        for line in output:
-            print(str(line) + ' LINE')
-        # output = str(output)
-        # print(output)
-        # print([output.replace(str(column), '').strip()])
+        output = [out.replace(str(column), '').strip() for out in output]
 
-    return output
+        my_jobs[index] = output
+
+        index += 1
+    print(my_jobs)
+    return my_jobs
 
 
 def check_running_jobs(pbconf):
