@@ -165,7 +165,7 @@ def decipher_pbs_output(pbs_output, pbconf):
 
 def get_pbs_jobs():
 
-    columns = ['Job Id: ', 'Job_Name = ', 'resources_used.walltime = ', 'job_state = ', 'Job_Owner = ']
+    columns = ['Job Id: ', 'Job_Name = ', 'Job_Owner = ', 'resources_used.walltime = ', 'job_state = ']
 
     tmp_jobs = [[]]*len(columns)
 
@@ -303,6 +303,7 @@ def run_batch_jobs(pbconf):
     i = 0
     time.sleep(1)
     for job in pbconf['job_names']:
+        print('Looking to submit ' + job)
         current_jobs = check_running_jobs(pbconf)
         if not any(job in cjob for cjob in current_jobs) and \
                 ('job_limit' in pbconf and (len(current_jobs) <= pbconf['job_limit'])):
