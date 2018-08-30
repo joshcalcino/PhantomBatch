@@ -30,7 +30,7 @@ def decipher_slurm_output(slurm_output, pbconf):
             tally += 1
             tally_arr.append(tally)
             break
-
+    print(tally_arr)
     job_id_len, name_len, username_len = tally_arr[0], tally_arr[1], tally_arr[2]
     time_len, status_len, queue_len = tally_arr[3], tally_arr[4], tally_arr[5]
 
