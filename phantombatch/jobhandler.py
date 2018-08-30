@@ -163,11 +163,7 @@ def decipher_pbs_output(pbs_output, pbconf):
     return my_jobs
 
 
-def get_pbs_jobs(pbconf):
-    # jobs = subprocess.check_output('qstat -f', stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
-    # log.debug(jobs)
-    # my_jobs = decipher_pbs_output(jobs, pbconf)
-    # log.debug(my_jobs)
+def get_pbs_jobs():
 
     columns = ['Job Id: ', 'Job_Name = ', 'resources_used.walltime = ', 'job_state = ', 'Job_Owner = ']
 
@@ -195,7 +191,7 @@ def get_pbs_jobs(pbconf):
     for i in range(0, len(tmp_jobs)):
         for j in range(0, len(tmp_jobs[i])):
             my_jobs[j][i] = tmp_jobs[i][j]
-    print(my_jobs)
+
     return my_jobs
 
 
@@ -214,7 +210,7 @@ def check_running_jobs(pbconf):
         log.debug(my_jobs)
 
     elif pbconf['job_scheduler'] == 'pbs':
-        my_jobs = get_pbs_jobs(pbconf)
+        my_jobs = get_pbs_jobs()
         # jobs = subprocess.check_output('qstat -a -w -t', stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
         # log.debug(jobs)
         # my_jobs = decipher_pbs_output(jobs, pbconf)
@@ -242,7 +238,7 @@ def submit_job(pbconf, directory, jobscript_name):
     job_number = None
 
     if pbconf['job_scheduler'] == 'slurm':
-        log.debug('Attempting to submit job..')
+        log.debug('Attempting to submit SLURM job..')
         output = subprocess.check_output('sbatch ' + jobscript_name, stderr=subprocess.STDOUT,
                                          universal_newlines=True, shell=True).strip()
         log.info(output)
@@ -250,6 +246,7 @@ def submit_job(pbconf, directory, jobscript_name):
         job_number = output[len_slurm_output:].strip()
 
     elif pbconf['job_scheduler'] == 'pbs':
+        log.debug('Attempting to submit PBS job..')
         output = subprocess.check_output('qsub ' + jobscript_name, stderr=subprocess.STDOUT,
                                          universal_newlines=True, shell=True)
         job_number = output.strip()
