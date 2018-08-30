@@ -113,7 +113,7 @@ def decipher_pbs_output(pbs_output, pbconf):
             space_after_dash = True
             found_dash = False
 
-        elif char.isspace and space_after_dash:
+        elif char.isspace and space_after_dash and not found_dash:
             tally += 1
 
         elif not char.isalpha() and char != '-' and not char.isspace():
