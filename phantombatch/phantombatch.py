@@ -17,7 +17,7 @@ class PhantomBatch(object):
         if verbose:
             log.basicConfig(level=log.DEBUG)
         else:
-            log.basicConfig(level=log.info)
+            log.basicConfig(level=log.INFO)
 
         #  Terminate jobs if PhantomBatch is interrupted
         if terminate_at_exit:
