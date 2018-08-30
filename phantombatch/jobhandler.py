@@ -25,13 +25,17 @@ def decipher_slurm_output(slurm_output, pbconf):
         print(char.isalpha())
         if char.isspace():
             tally += 1
+
         elif char.isspace() and found_char:
             tally += 1
+            print(tally)
             tally_arr.append(tally)
             found_char = False
+
         elif char.isalpha() or char == '(':
             tally += 1
             found_char = True
+
         elif char == ')' and found_char:
             tally += 1
             tally_arr.append(tally)
