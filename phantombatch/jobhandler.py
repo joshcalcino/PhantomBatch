@@ -17,16 +17,19 @@ def decipher_slurm_output(slurm_output, pbconf):
     print(slurm_output)
     tally = 0
     tally_arr = []
-    found_space = False
+    found_char = False
 
     for char in slurm_output:
         """ Check each character in the slurm output to determine the output column widths. """
-        if char == ' ':
+        if char.isspace():
             tally += 1
-            found_space = True
-        elif (char.isalpha() or char == '(') and found_space:
+        elif char.isspace() and found_char:
             tally += 1
-        elif char == ')' and found_space:
+            tally_arr.append(tally)
+        elif char.isalpha() or char == '(':
+            tally += 1
+            found_char = True
+        elif char == ')' and found_char:
             tally += 1
             tally_arr.append(tally)
             break
