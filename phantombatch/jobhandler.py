@@ -321,8 +321,8 @@ def check_completed_jobs(pbconf):
     log.info('----------------------')
 
     for i in range(0, len(pbconf['job_names'])):
-        log.info(pbconf['job_names'][i] + ' has ' + pbconf['job_num_dumps'][i] + ' out of ' + str(pbconf['num_dumps']) +
-                 ' completed.')
+        log.info(pbconf['job_names'][i] + ' has ' + str(pbconf['job_num_dumps'][i]) + ' out of ' +
+                 str(pbconf['num_dumps']) + ' completed.')
 
     log.info('There are now ' + str(len(current_jobs)) + ' jobs still running.')
     log.info('There are now ' + str(len(pbconf['completed_jobs'])) + ' jobs finished.')
