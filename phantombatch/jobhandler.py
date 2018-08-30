@@ -149,8 +149,8 @@ def check_running_jobs(pbconf):
         if any([job in line[1] for job in pbconf['job_names']]):  # line[1] holds the name of the job in my_job
             my_pb_jobs.append(line)
 
-    log.debug('Printing phantombatch jobs..')
-    log.debug(my_pb_jobs)
+    # log.debug('Printing phantombatch jobs..')
+    # log.debug(my_pb_jobs)
     return my_pb_jobs
 
 
@@ -276,7 +276,7 @@ def check_completed_jobs(pbconf):
         pbconf['completed_jobs'] = []
 
     if 'job_num_dumps' not in pbconf:
-        pbconf['job_num_dumps'] = []*len(pbconf['job_names'])
+        pbconf['job_num_dumps'] = [0]*len(pbconf['job_names'])
 
     log.debug('Printing pbconf[\'completed_jobs\'] in check_completed_jobs')
     log.debug(pbconf['completed_jobs'])
