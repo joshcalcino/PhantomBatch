@@ -258,14 +258,14 @@ def run_batch_jobs(pbconf):
         if not any(job in cjob for cjob in current_jobs) and \
                 ('job_limit' in pbconf and (len(current_jobs) <= pbconf['job_limit'])):
 
-            if 'submitted_job_names' in pbconf and (job in pbconf['submitted_job_names']):
+            if job in pbconf['submitted_job_names'] and any(job in cjob for cjob in current_jobs):
                 pass
 
             else:
                 job_number = submit_job(pbconf, pbconf['sim_dirs'][i], pbconf['setup'] + '.jobscript')
 
                 if 'submitted_job_numbers' in pbconf:
-                    """ Save the submitted job numbers for later reference """
+                    # Save the submitted job numbers for later reference
                     pbconf['submitted_job_numbers'].append(str(job_number))
 
                 else:
