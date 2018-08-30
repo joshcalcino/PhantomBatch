@@ -174,6 +174,8 @@ def get_pbs_jobs(pbconf):
     for column in columns:
         output = subprocess.check_output('qstat -f | grep \'' + column + '\'',
                                          stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
+        for line in output:
+            print(str(line) + ' LINE')
         output = str(output)
         print(output)
         print([output.replace(str(column), '').strip()])
