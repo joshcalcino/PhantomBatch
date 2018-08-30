@@ -102,15 +102,15 @@ def decipher_pbs_output(pbs_output, pbconf):
         if char == '-':
             tally += 1
             found_dash = True
-        elif char == ' ' and found_dash:
+        elif char.isspace() and found_dash:
             tally += 1
             tally_arr.append(tally)
             tally = 0
             found_dash = False
-        elif char == '_' and found_dash:
-            tally += 1
-            tally_arr.append(tally)
-            tally = 0
+        # elif char == '_' and found_dash:
+        #     tally += 1
+        #     tally_arr.append(tally)
+        #     tally = 0
         elif not char.isalpha() and (char != '-' or char != ' '):
             tally += 1
             tally_arr.append(tally)
