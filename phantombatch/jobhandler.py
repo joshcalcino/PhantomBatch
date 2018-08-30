@@ -183,7 +183,7 @@ def get_pbs_jobs(pbconf):
         output = [out.replace(str(column), '').strip() for out in output]
 
         if column == 'Job Owner = ':
-            ind = output[0].index('@')
+            ind = output[0][0].index('@')
             output = [out[:ind] for out in output]
 
         tmp_jobs[i] = output
