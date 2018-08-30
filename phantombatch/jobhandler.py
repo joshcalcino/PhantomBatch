@@ -156,7 +156,7 @@ def check_running_jobs(pbconf):
 
     if pbconf['job_scheduler'] == 'slurm':
         jobs = subprocess.check_output('squeue -u ' + pbconf['user'] +
-                                       ' -o  "%.18i %.9P %.40j %.8u %.2t %.14M %.6D %.17R"',
+                                       ' -o  "%.18i %.9P %.40j %.8u %.2t %.14M %.6D %.16R"',
                                        stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
 
         # jobs = subprocess.check_output('qstat',
