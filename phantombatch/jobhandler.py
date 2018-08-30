@@ -129,10 +129,8 @@ def decipher_pbs_output(pbs_output, pbconf):
     line_length = sum(tally_arr)
     pbs_lines = []
 
-    pbs_output.strip()
-
     for i in range(0, int(len(pbs_output)/line_length)):
-        pbs_lines.append(pbs_output[i*line_length:(i+1)*line_length].strip())
+        pbs_lines.append(pbs_output[i*line_length:(i+1)*line_length])
 
     # print(pbs_lines)
     my_jobs = []
@@ -165,6 +163,25 @@ def decipher_pbs_output(pbs_output, pbconf):
     return my_jobs
 
 
+def get_pbs_jobs(pbconf):
+    # jobs = subprocess.check_output('qstat -f', stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
+    # log.debug(jobs)
+    # my_jobs = decipher_pbs_output(jobs, pbconf)
+    # log.debug(my_jobs)
+
+    columns = ['Job Id: ', 'Job_Name = ', 'resources_used.walltime = ', 'job_state = ', 'Job_Owner = ']
+
+    for column in columns:
+        output = subprocess.check_output('qstat -f | grep \'' + column + '\'',
+                                         stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
+        output = str(output)
+        print(output)
+        output.replace(str(column), '')
+        print(output)
+
+    return output
+
+
 def check_running_jobs(pbconf):
     log.info('Checking jobs currently running..')
 
@@ -180,10 +197,11 @@ def check_running_jobs(pbconf):
         log.debug(my_jobs)
 
     elif pbconf['job_scheduler'] == 'pbs':
-        jobs = subprocess.check_output('qstat', stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
-        log.debug(jobs)
-        my_jobs = decipher_pbs_output(jobs, pbconf)
-        log.debug(my_jobs)
+        my_jobs = get_pbs_jobs(pbconf)
+        # jobs = subprocess.check_output('qstat -a -w -t', stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
+        # log.debug(jobs)
+        # my_jobs = decipher_pbs_output(jobs, pbconf)
+        # log.debug(my_jobs)
 
     else:
         log.error('Job scheduler not recognised!')
