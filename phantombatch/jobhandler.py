@@ -248,8 +248,11 @@ def cancel_all_submitted_jobs(pbconf):
 def run_batch_jobs(pbconf):
     """ This function will attempt to submit all of the jobs in pbconf['job_names'] and pbconf['sim_dirs']. """
 
-    if 'submitted_jobs' not in pbconf:
-        pbconf['submitted_job_number'] = []
+    if 'submitted_job_numbers' not in pbconf:
+        pbconf['submitted_job_numbers'] = []
+
+    if 'submitted_job_namess' not in pbconf:
+        pbconf['submitted_job_names'] = []
 
     i = 0
     time.sleep(1)
