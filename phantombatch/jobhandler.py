@@ -93,7 +93,7 @@ def decipher_slurm_output(slurm_output, pbconf):
 
 def decipher_pbs_output(pbs_output, pbconf):
     """ This function deciphers the output from pbs in the terminal """
-
+    print(pbs_output)
     tally = 0
     tally_arr = []
     found_dash = False
@@ -111,7 +111,7 @@ def decipher_pbs_output(pbs_output, pbconf):
             tally += 1
             tally_arr.append(tally)
             tally = 0
-        elif char.isdigit():
+        elif char.isdigit() and found_dash:
             tally += 1
             tally_arr.append(tally)
             break
