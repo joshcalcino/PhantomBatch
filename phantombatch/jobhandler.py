@@ -17,26 +17,19 @@ def decipher_slurm_output(slurm_output, pbconf):
     # print(slurm_output)
     tally = 0
     tally_arr = []
-    found_dash = False
+    found_space = False
 
     for char in slurm_output:
         """ Check each character in the slurm output to determine the output column widths. """
-        if char == '-':
+        if char == ' ':
             tally += 1
-            found_dash = True
-        elif char == ' ' and found_dash:
+            found_space = True
+        elif (char.isalpha() or char == '(') and found_space:
             tally += 1
-            tally_arr.append(tally)
-            tally = 0
-        elif char == '_' and found_dash:
-            tally += 1
-            tally_arr.append(tally)
-            tally = 0
-        elif char.isdigit():
+        elif char == ')' and found_space:
             tally += 1
             tally_arr.append(tally)
             break
-
     job_id_len, name_len, username_len = tally_arr[0], tally_arr[1], tally_arr[2]
     time_len, status_len, queue_len = tally_arr[3], tally_arr[4], tally_arr[5]
 
@@ -130,12 +123,12 @@ def check_running_jobs(pbconf):
     my_jobs = []
 
     if pbconf['job_scheduler'] == 'slurm':
-        #  Could probably consolidate jobs since both pbs and slurm use qstat?
-        # jobs = subprocess.check_output('squeue -u ' + pbconf['user'] + ' -o "%.18i %.9P %.40j %.8u %.2t %.10M %.6D %R"',
-        #                                stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
-
-        jobs = subprocess.check_output('qstat',
+        jobs = subprocess.check_output('squeue -u ' + pbconf['user'] +
+                                       ' -o  "%.18i %.9P %.40j %.8u %.2t %.14M %.6D %R"',
                                        stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
+
+        # jobs = subprocess.check_output('qstat',
+        #                                stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
         my_jobs = decipher_slurm_output(jobs, pbconf)
 
     elif pbconf['job_scheduler'] == 'pbs':
@@ -149,8 +142,8 @@ def check_running_jobs(pbconf):
         if any([job in line[1] for job in pbconf['job_names']]):  # line[1] holds the name of the job in my_job
             my_pb_jobs.append(line)
 
-    # log.debug('Printing phantombatch jobs..')
-    # log.debug(my_pb_jobs)
+    log.debug('Printing phantombatch jobs..')
+    log.debug(my_pb_jobs)
     return my_pb_jobs
 
 
@@ -316,13 +309,13 @@ def check_completed_jobs(pbconf):
 
         i += 1
 
-    log.info('----------------------')
-    log.info('|  PHANTOM JOB INFO  |')
-    log.info('----------------------')
+    log.info('--------------------------------------')
+    log.info('|          PHANTOM JOB INFO          |')
+    log.info('--------------------------------------')
 
     for i in range(0, len(pbconf['job_names'])):
         log.info(pbconf['job_names'][i] + ' has ' + str(pbconf['job_num_dumps'][i]) + ' out of ' +
-                 str(pbconf['num_dumps']) + ' completed.')
+                 str(pbconf['num_dumps']) + ' dumps completed.')
 
     log.info('There are now ' + str(len(current_jobs)) + ' jobs still running.')
     log.info('There are now ' + str(len(pbconf['completed_jobs'])) + ' jobs finished.')
