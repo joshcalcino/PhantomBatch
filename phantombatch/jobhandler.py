@@ -156,8 +156,6 @@ def check_running_jobs(pbconf):
                                        ' -o  "%.18i %.9P %.40j %.8u %.2t %.14M %.6D %.15R"',
                                        stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
 
-        # jobs = subprocess.check_output('qstat',
-        #                                stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
         my_jobs = decipher_slurm_output(jobs, pbconf)
         log.debug(my_jobs)
 
