@@ -216,11 +216,13 @@ def check_running_jobs(pbconf):
         log.error('Job scheduler not recognised!')
 
     for line in my_jobs:
+        print(line)
         if any([job in line[1] for job in pbconf['job_names']]):  # line[1] holds the name of the job in my_job
+            print('Adding in a new line to my_pb_jobs..')
             my_pb_jobs.append(line)
 
-    log.debug('Printing phantombatch jobs..')
-    log.debug(my_pb_jobs)
+    # log.debug('Printing phantombatch jobs..')
+    # log.debug(my_pb_jobs)
     return my_pb_jobs
 
 
