@@ -39,7 +39,6 @@ def decipher_slurm_output(slurm_output, pbconf):
         elif char == ')' and found_char:
             tally += 1
             tally_arr.append(tally)
-            tally = 0
             break
 
     print(tally_arr)
@@ -156,7 +155,7 @@ def check_running_jobs(pbconf):
 
     if pbconf['job_scheduler'] == 'slurm':
         jobs = subprocess.check_output('squeue -u ' + pbconf['user'] +
-                                       ' -o  "%.18i %.9P %.40j %.8u %.2t %.14M %.6D %.16R"',
+                                       ' -o  "%.18i %.9P %.40j %.8u %.2t %.14M %.6D %.15R"',
                                        stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
 
         # jobs = subprocess.check_output('qstat',
