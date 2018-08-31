@@ -235,12 +235,12 @@ def run_batch_jobs(pbconf):
 
     if 'submitted_job_namess' not in pbconf:
         pbconf['submitted_job_names'] = []
-
-    log.debug('Printing submitted_job_numbers')
-    log.debug(pbconf['submitted_job_numbers'])
-
-    log.debug('Printing submitted_job_names')
-    log.debug(pbconf['submitted_job_names'])
+    #
+    # log.debug('Printing submitted_job_numbers')
+    # log.debug(pbconf['submitted_job_numbers'])
+    #
+    # log.debug('Printing submitted_job_names')
+    # log.debug(pbconf['submitted_job_names'])
 
     i = 0
     time.sleep(1)
@@ -260,6 +260,12 @@ def run_batch_jobs(pbconf):
 
                 pbconf['submitted_job_numbers'].append(str(job_number))
                 pbconf['submitted_job_names'].append(job)
+
+                log.debug('Printing submitted_job_numbers after append')
+                log.debug(pbconf['submitted_job_numbers'])
+
+                log.debug('Printing submitted_job_names after append')
+                log.debug(pbconf['submitted_job_names'])
 
         elif 'job_limit' in pbconf and (len(current_jobs) <= pbconf['job_limit']):
             log.debug('Hit maximum number of allowed jobs.')
