@@ -236,6 +236,12 @@ def run_batch_jobs(pbconf):
     if 'submitted_job_namess' not in pbconf:
         pbconf['submitted_job_names'] = []
 
+    log.debug('Printing submitted_job_numbers')
+    log.debug(pbconf['submitted_job_numbers'])
+
+    log.debug('Printing submitted_job_names')
+    log.debug(pbconf['submitted_job_names'])
+
     i = 0
     time.sleep(1)
     for job in pbconf['job_names']:
