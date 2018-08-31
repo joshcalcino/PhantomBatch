@@ -249,7 +249,7 @@ def submit_job(pbconf, directory, jobscript_name):
         #  Get second last line of output since last line will be an empty array. We do this incase other stuff pops
         #  up before the job name (which happens on my cluster)
         output = str(subprocess.check_output('qsub ' + jobscript_name, stderr=subprocess.STDOUT,
-                                             universal_newlines=True, shell=True)).split('\n')[-2]
+                                             universal_newlines=True, shell=True)).split('\n')
         print(output)
         job_number = output.strip()
         log.info(output.strip())
