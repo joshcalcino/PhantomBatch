@@ -1,6 +1,6 @@
 {
 "phantom_setup": {
-  "np": 100000,
+  "np": 50000,
   "binary_e": [0, 0.5],
   "binary_a": 20,
   "binary_i": [0, 10, 20, 30],
@@ -22,11 +22,11 @@
   "sleep_time": 1,
   "setup": "disc",
   "job_scheduler": "slurm",
-  "ncpus": 14,
+  "ncpus": 4,
   "memory": "16G",
   "user": "uqjcalci",
   "no_email": 1,
-  "job_limit": 3,
+  "job_limit": 4,
   "binary": 1,
   "add_dust": 0,
   "add_planets": 0,

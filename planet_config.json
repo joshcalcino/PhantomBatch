@@ -1,0 +1,36 @@
+{
+"phantom_setup": {
+  "np": 100000,
+  "pindex": 1,
+  "qindex": 0.25,
+  "setplanets": 1,
+  "nplanets": 2,
+  "mplanet1": 0.2,
+  "rplanet1": 10,
+  "inclplanet1": 0,
+  "accrplanet1": 1,
+  "mplanet2": [1, 2],
+  "rplanet2": 20,
+  "inclplanet2": 0,
+  "accrplanet2": 2,
+  "deltat": 0.5
+  },
+
+"phantom_batch_setup": {
+  "name": "planet_example",
+  "short_name": "px",
+  "num_dumps": 50,
+  "sleep_time": 1,
+  "setup": "disc",
+  "job_scheduler": "slurm",
+  "ncpus": 4,
+  "memory": "6G",
+  "user": "uqjcalci",
+  "no_email": 1,
+  "job_limit": 4,
+  "binary": 0,
+  "add_dust": 0,
+  "make_options": "",
+  "make_setup_options": ""
+  }
+}

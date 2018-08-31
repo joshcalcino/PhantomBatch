@@ -217,14 +217,14 @@ def cancel_job(pbconf, job_number):
 def cancel_all_submitted_jobs(pbconf):
     """ This function will cancel all of the jobs submitted by PhantomBatch for pbconf['name']. """
 
-    log.debug('Cancelling all submitted jobs.')
+    log.info('Cancelling all submitted jobs.')
     current_jobs = check_running_jobs(pbconf)
 
     for job_number in pbconf['submitted_job_numbers']:
         if any(job_number in cjob for cjob in current_jobs):
             cancel_job(pbconf, job_number)
 
-    log.debug('All submitted jobs have been cancelled.')
+    log.info('All submitted jobs have been cancelled.')
 
 
 def run_batch_jobs(pbconf):
@@ -254,12 +254,6 @@ def run_batch_jobs(pbconf):
 
                 pbconf['submitted_job_numbers'].append(str(job_number))
                 pbconf['submitted_job_names'].append(job)
-
-                log.debug('Printing submitted_job_numbers after append')
-                log.debug(pbconf['submitted_job_numbers'])
-
-                log.debug('Printing submitted_job_names after append')
-                log.debug(pbconf['submitted_job_names'])
 
         elif 'job_limit' in pbconf and (len(current_jobs) <= pbconf['job_limit']):
             log.debug('Hit maximum number of allowed jobs.')
