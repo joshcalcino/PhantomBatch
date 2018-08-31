@@ -194,7 +194,7 @@ def get_pbs_jobs():
             print(j, i)
             print('my_jobs[j][i]')
             print(my_jobs[j][i])
-            print('tmp_jobs[j][i]')
+            print('tmp_jobs[i][j]')
             print(tmp_jobs[i][j])
     print('Printing my_jobs..')
     print(my_jobs)
