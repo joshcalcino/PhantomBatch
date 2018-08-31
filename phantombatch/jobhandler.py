@@ -168,7 +168,7 @@ def get_pbs_jobs():
     columns = ['Job Id: ', 'Job_Name = ', 'Job_Owner = ', 'resources_used.walltime = ', 'job_state = ']
 
     tmp_jobs = [['']]*len(columns)
-    import copy
+
     i = 0
     for column in columns:
         output = str(subprocess.check_output('qstat -f | grep \'' + column + '\'',
@@ -178,13 +178,13 @@ def get_pbs_jobs():
         # output = str(output).split('\n')
         # output = copy.deepcopy(output[:-1]) # since the last value is an empty string
 
-        stripped_output = copy.deepcopy([out.replace(str(column), '').strip() for out in output])
+        stripped_output = [out.replace(str(column), '').strip() for out in output]
 
         if column == 'Job_Owner = ':
             ind = stripped_output[0].index('@')
-            stripped_output = copy.deepcopy([out[:ind] for out in stripped_output])
+            stripped_output = [out[:ind] for out in stripped_output]
 
-        tmp_jobs[i] = copy.deepcopy(stripped_output)
+        tmp_jobs[i] = stripped_output
 
         i += 1
 
@@ -193,14 +193,7 @@ def get_pbs_jobs():
     for i in range(0, len(tmp_jobs)):
         for j in range(0, len(tmp_jobs[i])):
             my_jobs[j][i] = tmp_jobs[i][j]
-            # print(j, i)
-            # print(my_jobs)
-            # print('my_jobs[j][i]')
-            # print(my_jobs[j][i])
-            # print('tmp_jobs[i][j]')
-            # print(tmp_jobs[i][j])
-    # print('Printing my_jobs..')
-    # print(my_jobs)
+
     return my_jobs
 
 
@@ -253,8 +246,9 @@ def submit_job(pbconf, directory, jobscript_name):
 
     elif pbconf['job_scheduler'] == 'pbs':
         log.debug('Attempting to submit PBS job..')
-        output = subprocess.check_output('qsub ' + jobscript_name, stderr=subprocess.STDOUT,
-                                         universal_newlines=True, shell=True)
+        output = str(subprocess.check_output('qsub ' + jobscript_name, stderr=subprocess.STDOUT,
+                                             universal_newlines=True, shell=True)).split('\n')[-1]
+        print(output)
         job_number = output.strip()
         log.info(output.strip())
 
