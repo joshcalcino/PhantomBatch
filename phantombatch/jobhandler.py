@@ -90,79 +90,6 @@ def decipher_slurm_output(slurm_output, pbconf):
     return my_jobs
 
 
-def decipher_pbs_output(pbs_output, pbconf):
-    """ This function deciphers the output from pbs in the terminal """
-    # pbs_output = pbs_output.rstrip()
-    pbs_output = pbs_output.replace('\n', '')
-    tally = 0
-    tally_arr = []
-    found_dash = False
-    space_after_dash = False  # This keeps track of double spaces after a dash
-
-    for char in pbs_output:
-        #  Check each character in the pbs output to determine the output column widths
-        if char == '-':
-            tally += 1
-            found_dash = True
-            space_after_dash = False
-
-        elif char.isspace() and found_dash:
-            tally += 1
-            tally_arr.append(tally)
-            tally = 0
-            space_after_dash = True
-            found_dash = False
-
-        elif char.isspace and space_after_dash and not found_dash:
-            tally += 1
-
-        elif not char.isalpha() and char != '-' and not char.isspace():
-            # tally += 1
-            if tally != 0:
-                tally_arr.append(tally)
-            break
-    print(pbs_output)
-    print(tally_arr)
-    job_id_len, name_len, username_len = tally_arr[0], tally_arr[1], tally_arr[2]
-    time_len, status_len, queue_len = tally_arr[3], tally_arr[4], tally_arr[5]
-
-    line_length = sum(tally_arr)
-    pbs_lines = []
-
-    for i in range(0, int(len(pbs_output)/line_length)):
-        pbs_lines.append(pbs_output[i*line_length:(i+1)*line_length])
-
-    # print(pbs_lines)
-    my_jobs = []
-    for line in pbs_lines:
-        line.rstrip()
-        if pbconf['user'] in line:
-            if 'C' not in line:
-                job_id = line[0:
-                              job_id_len].strip()
-
-                job_name = line[job_id_len:
-                                job_id_len+name_len].strip()
-
-                username = line[job_id_len+name_len:
-                                job_id_len+name_len+username_len].strip()
-
-                run_time = line[job_id_len+name_len+username_len:
-                                job_id_len+name_len+username_len+time_len].strip()
-
-                status = line[job_id_len+name_len+username_len+time_len:
-                              job_id_len+name_len+username_len+time_len+status_len].strip()
-
-                queue = line[job_id_len+name_len+username_len+time_len+status_len:
-                             line_length].strip()
-
-                line_array = [job_id, job_name, username, run_time, status, queue]
-
-                my_jobs.append(line_array)
-
-    return my_jobs
-
-
 def get_pbs_jobs():
 
     columns = ['Job Id: ', 'Job_Name = ', 'Job_Owner = ', 'resources_used.walltime = ', 'job_state = ']
@@ -255,7 +182,6 @@ def submit_job(pbconf, directory, jobscript_name):
         for line in output:
             if line[0].isdigit():
                 job_number = line.strip()
-        print(job_number)
     else:
         log.error('Job scheduler not recognised, cannot submit jobs!')
         log.info('Please use a known job scheduler, or add in your own.')
@@ -311,7 +237,7 @@ def run_batch_jobs(pbconf):
     i = 0
     time.sleep(1)
     for job in pbconf['job_names']:
-        print('Looking to submit ' + job)
+        log.debug('Looking to submit ' + job)
         current_jobs = check_running_jobs(pbconf)
         if not any(job in cjob for cjob in current_jobs) and \
                 ('job_limit' in pbconf and (len(current_jobs) <= pbconf['job_limit'])):
