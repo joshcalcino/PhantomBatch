@@ -256,20 +256,8 @@ def run_batch_jobs(pbconf):
             else:
                 job_number = submit_job(pbconf, pbconf['sim_dirs'][i], pbconf['setup'] + '.jobscript')
 
-                if 'submitted_job_numbers' in pbconf:
-                    # Save the submitted job numbers for later reference
-                    pbconf['submitted_job_numbers'].append(str(job_number))
-
-                else:
-                    pbconf['submitted_job_numbers'] = []
-                    pbconf['submitted_job_numbers'].append(str(job_number))
-
-                if 'submitted_job_names' in pbconf:
-                    pbconf['submitted_job_names'].append(job)  # As above but for the job names
-
-                else:
-                    pbconf['submitted_job_names'] = []
-                    pbconf['submitted_job_names'].append(job)
+                pbconf['submitted_job_numbers'].append(str(job_number))
+                pbconf['submitted_job_names'].append(job)
 
         elif 'job_limit' in pbconf and (len(current_jobs) <= pbconf['job_limit']):
             log.debug('Hit maximum number of allowed jobs.')
