@@ -234,6 +234,7 @@ def run_batch_jobs(pbconf):
         pbconf['submitted_job_numbers'] = []
 
     if 'submitted_job_namess' not in pbconf:
+        log.debug('submitted_job_names NOT IN pbconf')
         pbconf['submitted_job_names'] = []
     #
     # log.debug('Printing submitted_job_numbers')
