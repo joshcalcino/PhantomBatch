@@ -191,6 +191,7 @@ def get_pbs_jobs():
     for i in range(0, len(tmp_jobs)):
         for j in range(0, len(tmp_jobs[i])):
             my_jobs[j][i] = tmp_jobs[i][j]
+            print(j, i)
             print('my_jobs[j][i]')
             print(my_jobs[j][i])
             print('tmp_jobs[j][i]')
