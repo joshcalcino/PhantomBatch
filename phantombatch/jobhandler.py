@@ -231,10 +231,11 @@ def run_batch_jobs(pbconf):
     """ This function will attempt to submit all of the jobs in pbconf['job_names'] and pbconf['sim_dirs']. """
 
     if 'submitted_job_numbers' not in pbconf:
+        log.debug('--------submitted_job_numbers NOT IN pbconf')
         pbconf['submitted_job_numbers'] = []
 
     if 'submitted_job_namess' not in pbconf:
-        log.debug('submitted_job_names NOT IN pbconf')
+        log.debug('----------submitted_job_names NOT IN pbconf')
         pbconf['submitted_job_names'] = []
     #
     # log.debug('Printing submitted_job_numbers')
