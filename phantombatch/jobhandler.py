@@ -246,8 +246,10 @@ def submit_job(pbconf, directory, jobscript_name):
 
     elif pbconf['job_scheduler'] == 'pbs':
         log.debug('Attempting to submit PBS job..')
+        #  Get second last line of output since last line will be an empty array. We do this incase other stuff pops
+        #  up before the job name (which happens on my cluster)
         output = str(subprocess.check_output('qsub ' + jobscript_name, stderr=subprocess.STDOUT,
-                                             universal_newlines=True, shell=True)).split('\n')[-1]
+                                             universal_newlines=True, shell=True)).split('\n')[-2]
         print(output)
         job_number = output.strip()
         log.info(output.strip())
