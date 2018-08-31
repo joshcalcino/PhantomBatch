@@ -254,6 +254,8 @@ def run_batch_jobs(pbconf):
                 pass
 
             else:
+                log.debug('Printing job name that is being submitted')
+                log.debug(job)
                 job_number = submit_job(pbconf, pbconf['sim_dirs'][i], pbconf['setup'] + '.jobscript')
 
                 pbconf['submitted_job_numbers'].append(str(job_number))
