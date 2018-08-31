@@ -199,8 +199,8 @@ def get_pbs_jobs():
             # print(my_jobs[j][i])
             # print('tmp_jobs[i][j]')
             # print(tmp_jobs[i][j])
-    print('Printing my_jobs..')
-    print(my_jobs)
+    # print('Printing my_jobs..')
+    # print(my_jobs)
     return my_jobs
 
 
@@ -225,7 +225,6 @@ def check_running_jobs(pbconf):
         log.error('Job scheduler not recognised!')
 
     for line in my_jobs:
-        print(line)
         if any([job in line[1] for job in pbconf['job_names']]):  # line[1] holds the name of the job in my_job
             print('Adding in a new line to my_pb_jobs..')
             my_pb_jobs.append(line)
