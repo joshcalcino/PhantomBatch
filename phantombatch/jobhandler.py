@@ -168,7 +168,7 @@ def get_pbs_jobs():
     columns = ['Job Id: ', 'Job_Name = ', 'Job_Owner = ', 'resources_used.walltime = ', 'job_state = ']
 
     tmp_jobs = [[]]*len(columns)
-
+    import copy
     i = 0
     for column in columns:
         output = subprocess.check_output('qstat -f | grep \'' + column + '\'',
@@ -182,7 +182,7 @@ def get_pbs_jobs():
             ind = output[0].index('@')
             output = [out[:ind] for out in output]
 
-        tmp_jobs[i] = output
+        tmp_jobs[i] = copy.deepcopy(output)
 
         i += 1
     print(tmp_jobs)
@@ -190,7 +190,7 @@ def get_pbs_jobs():
 
     for i in range(0, len(tmp_jobs)):
         for j in range(0, len(tmp_jobs[i])):
-            my_jobs[j][i] = tmp_jobs[i][j]
+            my_jobs[j][i] = copy.deepcopy(tmp_jobs[i][j])
             print(j, i)
             print('my_jobs[j][i]')
             print(my_jobs[j][i])
