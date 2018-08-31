@@ -173,14 +173,14 @@ def get_pbs_jobs():
     for column in columns:
         output = subprocess.check_output('qstat -f | grep \'' + column + '\'',
                                          stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
-        output = str(output).split('\n')
-        output = output[:-1]  # since the last value is an empty string
+        output = copy.deepcopy(str(output).split('\n'))
+        output = copy.deepcopy(output[:-1]) # since the last value is an empty string
 
-        output = [out.replace(str(column), '').strip() for out in output]
+        output = copy.deepcopy([out.replace(str(column), '').strip() for out in output])
 
         if column == 'Job_Owner = ':
             ind = output[0].index('@')
-            output = [out[:ind] for out in output]
+            output = copy.deepcopy([out[:ind] for out in output])
 
         tmp_jobs[i] = copy.deepcopy(output)
 
