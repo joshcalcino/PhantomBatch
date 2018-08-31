@@ -249,7 +249,7 @@ def submit_job(pbconf, directory, jobscript_name):
         output = str(subprocess.check_output('qsub ' + jobscript_name, stderr=subprocess.STDOUT,
                                              universal_newlines=True, shell=True))
         log.info(output.strip())
-        output = output.split('\n')
+        output = output.split('\n')[:-1]  # remove last line since it is empty
 
         #  Want to get the line that contains the job number and ignore other lines
         for line in output:
