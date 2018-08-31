@@ -187,14 +187,14 @@ def get_pbs_jobs():
         tmp_jobs[i] = copy.deepcopy(stripped_output)
 
         i += 1
-    print(tmp_jobs)
+
     my_jobs = [[str(i)]*len(tmp_jobs) for i in range(len(tmp_jobs[0]))]
 
     for i in range(0, len(tmp_jobs)):
         for j in range(0, len(tmp_jobs[i])):
             my_jobs[j][i] = tmp_jobs[i][j]
-            print(j, i)
-            print(my_jobs)
+            # print(j, i)
+            # print(my_jobs)
             # print('my_jobs[j][i]')
             # print(my_jobs[j][i])
             # print('tmp_jobs[i][j]')
