@@ -182,6 +182,8 @@ def submit_job(pbconf, directory, jobscript_name):
         for line in output:
             if line[0].isdigit():
                 job_number = line.strip()
+        log.debug('Printing job_number from submit_job')
+        log.debug(job_number)
     else:
         log.error('Job scheduler not recognised, cannot submit jobs!')
         log.info('Please use a known job scheduler, or add in your own.')
