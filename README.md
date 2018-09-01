@@ -65,7 +65,7 @@ The `config.json` file should look like something like this (minus the inline co
   "binary_e": [0, 0.5],          # We are doing a binary simulation, and want to do e = 0 and e = 0.5
   "binary_a": 20,                # Semi-major axis of the companion
   "binary_i": [0, 10, 20, 30],   # Also looping over inclination
-  "disc_mbinary": 0.005,         # Mass of the disc, this is currently the only supported method of setting disc mass
+  "disc_mbinary": 0.005,         # Mass of the disc, currently the only supported method of setting disc mass
   "R_inbinary": 30,              # The inner edge of the gas disc
   "R_outbinary": 80,             # The outer edge of the gas disc...
   "R_cbinary": 80,               # etc ....
@@ -76,15 +76,15 @@ The `config.json` file should look like something like this (minus the inline co
   "detat": 1                     # How frequently you want to dump
   },
 
-"phantom_batch_setup": {         # This dict contains all of the PhantomBatch settings. These MUST be set correctly
+"phantom_batch_setup": {         # This contains all of the PhantomBatch settings. These MUST be set correctly
                                  # for sensible output from PhantomBatch.
   "name": "binary_test",         # The name of the simulation suite you are performing. Call this whatever
-  "short_name": "bt",            # A short name of your simulation suite, keep this short! It is added to job script names
+  "short_name": "bt",            # A short name of your simulation suite, keep this short! 
   "num_dumps": 200,              # Number of dump files you want.
   "sleep_time": 1,               # How long (in minutes) PhantomBatch waits between checking job progress
   "setup": "disc",               # The Phantom setup you are simulating. "disc" is the only supported setup for now
-  "job_scheduler": "slurm",      # The job handler of your cluster. Only two options exist at the moment: "slurm", "pbs"
-  "ncpus": 4,                    # number of cpus per job. If your SYSTEM env variable is set, this will overwrite that value
+  "job_scheduler": "slurm",      # The job handler of your cluster. Two options exist for now: "slurm", "pbs"
+  "ncpus": 4,                    # Num of cpus per job. If your SYSTEM env variable is set, will overwrite that value
   "memory": "16G",               # How much RAM you want to request per job
   "user": "uqjcalci",            # Your username on the cluster
   "no_email": 1,                 # 0 = receive spam emails from cluster, 1 = no emails
@@ -94,12 +94,22 @@ The `config.json` file should look like something like this (minus the inline co
   "make_options": "",            # Any additional make settings for Phantom
   "make_setup_options": ""       # As above for make setup options
   }
-}```
+}
+```
 
 The above `config.json` file would simulate a total of 8 discs, each with 50k SPH particles for 200 orbits of the
 companion. If you define unused values in `phantom_setup`, do not worry, as these will be ignored for your particular
 choice of `setup`. For example, if you defined values for planets, but do no specifically set `setplanets = T`, then any
 other variables specifying planet parameters will be neglected in creating your Phantom `setup` files.
+
+Please make sure that you add your cluster into the Phantom `Makefile`, and set your `SYSTEM` environment variable.
+PhantomBatch WILL NOT WORK if you do not do this!
+
+There are also two other environment variables you will need to set (these are likely to be removed in a future release).
+The first is `PHANTOM_DIR`, which should provide the path to your copy of Phantom. This is usually `~/phantom` in most cases.
+The second is `PHANTOM_DATA`, which is not appropriately named for its task, but it is the directory where you have PhantomBatch cloned.
+Please run all of your PhantomBatch simulations INSIDE the PhantomBatch directory. I will eventually make it such that you can
+invoke PhantomBatch anywhere, but for now this is how you must do it.
 
 There are a few example config files. Please look at them if you need help making your `config.json` files.
 
