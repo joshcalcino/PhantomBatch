@@ -171,6 +171,9 @@ class PhantomBatch(object):
             if 'setplanets' in self.pconf and (self.pconf['setplanets'] == 1):
                 setuphandler.add_planets(filename, setup_strings[index], self.pconf)
 
+            if 'add_dust' in self.pbconf and self.pbconf['add_dust']:
+                setuphandler.add_dust(filename, setup_strings[index], self.pconf)
+
             index += 1
 
         log.info('Completed.')

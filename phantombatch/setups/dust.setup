@@ -1,0 +1,6 @@
+# options for dust
+         dust_method =           2    ! dust method (1=one fluid,2=two fluid)
+   dust_to_gas_ratio =       0.010    ! dust to gas ratio
+    profile_set_dust =           0    ! how to set dust density profile (0=equal to gas,1=custom,2=equal to gas with cutoffs)
+        grainsizeinp =       0.100    ! grain size (in cm)
+        graindensinp =       3.000    ! intrinsic grain density (in g/cm^3)

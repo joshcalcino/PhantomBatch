@@ -1,0 +1,8 @@
+# options for dust accretion disc
+          itaperdust =           F    ! exponentially taper the outer disc profile
+         ismoothdust =           T    ! smooth inner disc
+            R_indust =       1.000    ! inner radius
+           R_outdust =        150.    ! outer radius
+         pindex_dust =       1.000    ! p index
+         qindex_dust =       0.250    ! q index
+            H_R_dust =       0.050    ! H/R at R=R_ref

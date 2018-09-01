@@ -17,6 +17,7 @@ Below is a list of features that have been added, or that will be added, in no p
     - Disc warping supported
     - Exponential disc taper supported
 - Circumstellar disks
+- Dust on start up (testing)
 - Adding in planets
     - Support for looping over planet parameters
 - Terminates jobs if PhantomBatch is interrupted
@@ -26,7 +27,6 @@ Below is a list of features that have been added, or that will be added, in no p
 - Full support for binary discs
     - Disc mass setting (Currently only supports total disc mass)
     - Support for potential
-- Support for dust on start up
 - Support for all disc setups
 - Support for non-disc setups
 - Editing setup.in files before running phantom simulations

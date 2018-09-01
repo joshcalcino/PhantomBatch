@@ -104,6 +104,26 @@ def add_planets(setup_filename, setup_strings, pconf):
             add_planet_to_setup(new_setup, 1, setup_strings, pconf)
 
 
+def add_dust(setup_filename, setup_strings, pconf):
+    """ Add two dust method into the setup file. """
+    with open(setup_filename, 'r+') as new_setup:
+        with open('phantombatch/setups/dust.setup', 'r') as dust_setup:
+            write_to_setup(new_setup, dust_setup, setup_strings, pconf)
+
+        if 'profile_set_dust' in pconf and pconf['profile_set_dust'] == '1' or pconf['profile_set_dust'] == '2':
+            with open('phantombatch/setups/custom_dust.setup', 'r') as custom_dust_setup:
+                write_to_setup(new_setup, custom_dust_setup, setup_strings, pconf)
+
+    #  ----- ONE FLUID DUST METHOD -----
+    if ('dust_method' in pconf) and (pconf['dust_method'] == '1'):
+        log.debug('Adding in options for one fluid dust.')
+        with open(setup_filename, 'r+') as new_setup:
+            if ('ilimitdustflux' in pconf) and (pconf['ilimitdustflux'] == 'T'):
+                new_setup.write('\n ilimitdustflux = ' + str(pconf['ilimitdustflux']) + '\n')
+            else:
+                new_setup.write('\n ilimitdustflux = F \n')
+
+
 def set_up_disc(setup_filename, setup_strings, pconf):
     """ Set up a disc. """
     with open(setup_filename, 'w') as new_setup:
