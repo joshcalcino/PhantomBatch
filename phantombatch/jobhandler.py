@@ -87,7 +87,7 @@ def decipher_slurm_output(slurm_output, pbconf):
 
     if not found_user:
         log.error('Unable to find any jobs associated with user specified in PhantomBatch config.')
-
+    log.debug(my_jobs)
     return my_jobs
 
 
