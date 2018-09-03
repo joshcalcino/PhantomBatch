@@ -19,7 +19,11 @@ def decipher_slurm_output(slurm_output, pbconf):
     tally_arr = []
     found_char = False
 
-    for char in slurm_output:
+    slurm_output = slurm_output.split('\n')[:-1]  # Since the last line should be empty
+
+    first_line = slurm_output[0]
+
+    for char in first_line:
         """ Check each character in the slurm output to determine the output column widths. """
         if char.isspace() and not found_char:
             tally += 1
@@ -43,16 +47,16 @@ def decipher_slurm_output(slurm_output, pbconf):
     status_len, time_len, nodes_len, node_len = tally_arr[4], tally_arr[5], tally_arr[6], tally_arr[7]
 
     line_length = sum(tally_arr)
-    slurm_lines = []
-
-    for i in range(0, int(len(slurm_output)/line_length)):
-        slurm_lines.append(slurm_output[i*line_length:(i+1)*line_length])
+    # slurm_lines = []
+    #
+    # for i in range(0, int(len(slurm_output)/line_length)):
+    #     slurm_lines.append(slurm_output[i*line_length:(i+1)*line_length])
 
     my_jobs = []
 
     found_user = False
 
-    for line in slurm_lines:
+    for line in slurm_output:
         line = line.strip()
         if pbconf['user'] in line:
             found_user = True
