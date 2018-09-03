@@ -43,19 +43,10 @@ def decipher_slurm_output(slurm_output, pbconf):
             tally_arr.append(tally)
             break
 
-    print(tally_arr)
-
     job_id_len, queue_len, name_len, username_len = tally_arr[0], tally_arr[1], tally_arr[2], tally_arr[3]
     status_len, time_len, nodes_len, node_len = tally_arr[4], tally_arr[5], tally_arr[6], tally_arr[7]
 
     line_length = sum(tally_arr)
-
-    print(slurm_output)
-
-    # slurm_lines = []
-    #
-    # for i in range(0, int(len(slurm_output)/line_length)):
-    #     slurm_lines.append(slurm_output[i*line_length:(i+1)*line_length])
 
     my_jobs = []
 
@@ -95,6 +86,7 @@ def decipher_slurm_output(slurm_output, pbconf):
 
     if not found_user:
         log.error('Unable to find any jobs associated with user specified in PhantomBatch config.')
+
     log.debug(my_jobs)
     return my_jobs
 
