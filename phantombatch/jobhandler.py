@@ -53,6 +53,7 @@ def decipher_slurm_output(slurm_output, pbconf):
     found_user = False
 
     for line in slurm_lines:
+        line = line.strip()
         if pbconf['user'] in line:
             found_user = True
             if 'C' not in line:
