@@ -49,14 +49,24 @@ I will turn this into a wiki if PhantomBatch generates enough interest
 
 The correct way to run PhantomBatch is something like:
 
-`python3 example.py > example.out 2>&1 &`
+`python3 example.py > example.out 2>&1 &`\
+which will return something like\
+``[1] 12345``
 
 This will make sure that nothing is printed to the terminal, all output is printed to `example.out`.
 This means that PhantomBatch will run in the background on the login node of a cluster, and will continue to run when
 you log out.
 
+If you want to cancel running a PhantomBatch job running in the background, do not `kill` it. This will prevent any exit
+functions from running. Instead, bring it to the foreground with `fg` and then do your usual `Ctrl + C` to interrupt the job:
+
+``fg 1``\
+``Ctrl + C``
+Replace the number `1` with whatever value came up in the square brackets after you ran PhantomBatch as a background job.
 `example.py` contains very little code, and is used to provide PhantomBatch with the filename to your `config.json`
 file, and to initiate PhantomBatch.
+
+## The Config File
 
 The `config.json` file should look like something like this (minus the inline comments I have added):
 ```{
