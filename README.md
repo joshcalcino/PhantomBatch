@@ -8,7 +8,7 @@ PhantomBatch is only compatible with Python 3.
 
 Below is a list of features that have been added, or that will be added, in no particular order of importance.
 
-# Current features:
+## Current features:
 - Support for SLURM and PBS job schedulers
 - Binary simulations
     - Currently gas only
@@ -23,7 +23,7 @@ Below is a list of features that have been added, or that will be added, in no p
 - Terminates jobs if PhantomBatch is interrupted
 
 
-# Features to add:
+## Features to add:
 - Full support for binary discs
     - Disc mass setting (Currently only supports total disc mass)
     - Support for potential
@@ -38,7 +38,7 @@ Below is a list of features that have been added, or that will be added, in no p
 
 And below is a list of known issues.
 
-# Known issues:
+## Known issues:
 - Some job and dir names might be excessively long if user specifies unusual numbers
 
 Excessive number of commits is due to me writing the code on my laptop, but running on a cluster. I will eventually
@@ -61,10 +61,8 @@ If you want to cancel running a PhantomBatch job running in the background, do n
 functions from running. Instead, bring it to the foreground with `fg` and then do your usual `Ctrl + C` to interrupt the job:
 
 ``fg 1``\
-``Ctrl + C``
+``Ctrl + C``\
 Replace the number `1` with whatever value came up in the square brackets after you ran PhantomBatch as a background job.
-`example.py` contains very little code, and is used to provide PhantomBatch with the filename to your `config.json`
-file, and to initiate PhantomBatch.
 
 ## The Config File
 

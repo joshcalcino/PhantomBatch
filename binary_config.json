@@ -12,7 +12,7 @@
   "R_outbinary": 80,
   "iwarpbinary": "F",
   "use_primarydisc": "F",
-  "detat": 1
+  "deltat": 1
   },
 
 "phantom_batch_setup": {
