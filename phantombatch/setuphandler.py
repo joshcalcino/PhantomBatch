@@ -26,10 +26,10 @@ def write_to_setup(new_setup, ref_setup, setup_strings, pconf):
                 new_setup.write(line)
 
 
-def setup_from_array(setup_strings, string, dict_arr):
+def setup_from_array(setup_strings, string, dict_arr, pbconf):
     """ Create strings for the parameter arrays provided in pconf. """
 
-    if len(setup_strings) is 0:
+    if len(setup_strings) is 0 or string in pbconf['no_loop']:
         setup_strings = [string + ' = ' + str(i) for i in dict_arr]
         return setup_strings
 
@@ -67,13 +67,13 @@ def edit_setup_file(new_setup, line, setup_strings, pconf):
                 new_setup.write(key + ' = ' + str(pconf[key]) + '\n')
 
 
-def get_setup_strings(pconf):
+def get_setup_strings(pconf, pbconf):
     """ This function creates the strings to go into each simulation setup file. This should be changed. """
 
     setup_strings = []
     for key in pconf:
         if isinstance(pconf[key], list):
-            setup_strings = setup_from_array(setup_strings, key, pconf[key])
+            setup_strings = setup_from_array(setup_strings, key, pconf[key], pbconf)
 
     return setup_strings
 
@@ -174,7 +174,8 @@ def set_up_binary(setup_filename, setup_strings, pconf):
                 log.debug('Adding in itapergasprimary to binary setup.')
                 new_setup.write('\n R_cprimary = ' + str(pconf['R_cprimary']) + '\n')
 
-            if ('itapergassecondary' in pconf) and (pconf['itapergassecondary'] == 'T') and ('itapergassecondary' in line):
+            if ('itapergassecondary' in pconf) and (pconf['itapergassecondary'] == 'T') and \
+                    ('itapergassecondary' in line):
                 log.debug('Adding in itapergassecondary to binary setup.')
                 new_setup.write('\n R_csecondary = ' + str(pconf['R_csecondary']) + '\n')
 

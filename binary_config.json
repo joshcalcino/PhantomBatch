@@ -2,14 +2,14 @@
 "phantom_setup": {
   "np": 50000,
   "binary_e": [0, 0.5],
-  "binary_a": 20,
+  "binary_a": [20, 15],
   "binary_i": 0,
   "disc_mbinary": 0.005,
   "R_inbinary": 30,
+  "R_outbinary": 80,
   "R_cbinary": 80,
   "R_refbinary": 40,
-  "itapergasbinary": "F",
-  "R_outbinary": 80,
+  "itapergasbinary": "T",
   "iwarpbinary": "F",
   "use_primarydisc": "F",
   "deltat": 1
@@ -31,6 +31,7 @@
   "add_dust": 0,
   "add_planets": 0,
   "num_planets": 0,
+  "no_loop": ["binary_a"],
   "make_options": "",
   "make_setup_options": ""
   }
