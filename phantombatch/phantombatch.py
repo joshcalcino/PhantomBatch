@@ -237,7 +237,7 @@ class PhantomBatch(object):
         self.initialise()
         self.create_setups()
         self.run_phantom_setup()
-        jobscripthandler.create_job_scripts(self.pconf, self.pbconf)
+        jobscripthandler.create_job_scripts(self.pconf, self.pbconf, self.run_dir)
         jobhandler.check_running_jobs(self.pbconf)
         jobhandler.run_batch_jobs(self.pbconf)
 

@@ -4,7 +4,7 @@ import fileinput
 from phantombatch import dirhandler
 
 
-def create_job_scripts(pconf, pbconf):
+def create_job_scripts(pconf, pbconf, run_dir):
     """ This function edits the job script file in each pbconf['sim_dir'], so that the requested resources are
     allocated for each job, and so each job has a sensible name that reflects the parameter choice of each particular
     simulation. """
@@ -12,7 +12,7 @@ def create_job_scripts(pconf, pbconf):
     log.info('Creating job scripts for ' + pbconf['name'] + '..')
 
     job_script_filename = os.path.join(pbconf['setup'] + '.jobscript')
-    sim_dirs = [os.path.join(os.environ['PHANTOM_DATA'], pbconf['name'], 'simulations', tmp_dir)
+    sim_dirs = [os.path.join(run_dir, pbconf['name'], 'simulations', tmp_dir)
                 for tmp_dir in pbconf['dirs']]
 
     job_script_names = get_job_script_names(pconf, pbconf)
