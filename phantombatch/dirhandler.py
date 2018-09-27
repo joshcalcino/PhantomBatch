@@ -46,12 +46,12 @@ def loop_keys_dir(pconf):
     return dirs
 
 
-def create_dirs(pconf, pbconf):
+def create_dirs(pconf, pbconf, run_dir):
     """ Create the simulation directories. """
 
     log.info('Checking if simulation directories exist..')
 
-    suite_directory = os.path.join(os.environ['PHANTOM_DATA'], pbconf['name'])
+    suite_directory = os.path.join(run_dir, pbconf['name'])
 
     dirs = loop_keys_dir(pconf)
 

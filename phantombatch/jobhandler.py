@@ -155,7 +155,7 @@ def check_running_jobs(pbconf):
     return my_pb_jobs
 
 
-def submit_job(pbconf, directory, jobscript_name):
+def submit_job(pbconf, directory, jobscript_name, run_dir):
     """ Submit a job to the cluster. Both SLURM and PBS job schedulers are supported. """
 
     log.debug('Attempting to submit job in directory ' + directory)
@@ -190,7 +190,7 @@ def submit_job(pbconf, directory, jobscript_name):
         log.info('Please use a known job scheduler, or add in your own.')
         exit()
 
-    os.chdir(os.environ['PHANTOM_DATA'])
+    os.chdir(run_dir)
 
     if job_number is None:
         log.error('Unable to submit job.')
@@ -228,7 +228,7 @@ def cancel_all_submitted_jobs(pbconf):
     log.info('All submitted jobs have been cancelled.')
 
 
-def run_batch_jobs(pbconf):
+def run_batch_jobs(pbconf, run_dir):
     """ This function will attempt to submit all of the jobs in pbconf['job_names'] and pbconf['sim_dirs']. """
 
     if 'submitted_job_numbers' not in pbconf:
@@ -251,7 +251,7 @@ def run_batch_jobs(pbconf):
             else:
                 log.debug('Printing job name that is being submitted')
                 log.debug(job)
-                job_number = submit_job(pbconf, pbconf['sim_dirs'][i], pbconf['setup'] + '.jobscript')
+                job_number = submit_job(pbconf, pbconf['sim_dirs'][i], pbconf['setup'] + '.jobscript', run_dir)
 
                 pbconf['submitted_job_numbers'].append(str(job_number))
                 pbconf['submitted_job_names'].append(job)

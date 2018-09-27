@@ -57,7 +57,7 @@ class PhantomBatch(object):
             os.mkdir(sims_dir)
 
         self.initiliase_phantom()
-        dirhandler.create_dirs(self.pconf, self.pbconf)
+        dirhandler.create_dirs(self.pconf, self.pbconf, self.run_dir)
 
         for tmp_dir in self.pbconf['dirs']:
             output = subprocess.check_output('cp ' + os.path.join(self.run_dir, self.pbconf['name'],
@@ -239,7 +239,7 @@ class PhantomBatch(object):
         self.run_phantom_setup()
         jobscripthandler.create_job_scripts(self.pconf, self.pbconf, self.run_dir)
         jobhandler.check_running_jobs(self.pbconf)
-        jobhandler.run_batch_jobs(self.pbconf)
+        jobhandler.run_batch_jobs(self.pbconf, self.run_dir)
 
         completed = False
 
@@ -248,5 +248,5 @@ class PhantomBatch(object):
             log.info('PhantomBatch will now sleep for ' + str(self.pbconf['sleep_time']) + ' minutes.')
             time.sleep(self.pbconf['sleep_time']*60)
 
-            jobhandler.run_batch_jobs(self.pbconf)
+            jobhandler.run_batch_jobs(self.pbconf, self.run_dir)
             completed = self.check_phantombatch_complete()
