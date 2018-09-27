@@ -12,7 +12,9 @@ __all__ = ["PhantomBatch"]
 class PhantomBatch(object):
 
     def __init__(self, config_filename, verbose=False, terminate_at_exit=True):
-
+        # Get current running directory
+        self.run_dir = os.environ['PWD']
+        
         #  Set up the level of verbosity
         if verbose:
             log.basicConfig(level=log.DEBUG)
@@ -40,7 +42,7 @@ class PhantomBatch(object):
     def initialise(self):
         log.info('Initialising ' + self.pbconf['name'] + '..')
 
-        suite_directory = os.path.join(os.environ['PHANTOM_DATA'], self.pbconf['name'])
+        suite_directory = os.path.join(self.run_dir, self.pbconf['name'])
 
         #  Check if the directory already exists
         if not os.path.exists(suite_directory):
@@ -55,7 +57,7 @@ class PhantomBatch(object):
         dirhandler.create_dirs(self.pconf, self.pbconf)
 
         for tmp_dir in self.pbconf['dirs']:
-            output = subprocess.check_output('cp ' + os.path.join(os.environ['PHANTOM_DATA'], self.pbconf['name'],
+            output = subprocess.check_output('cp ' + os.path.join(self.run_dir, self.pbconf['name'],
                                                                   'phantom_' + self.pbconf['setup']) + '/* ' +
                                              os.path.join(sims_dir, tmp_dir), stderr=subprocess.STDOUT,
                                              universal_newlines=True, shell=True)
@@ -75,7 +77,7 @@ class PhantomBatch(object):
             raise NotImplementedError
 
         else:
-            setup_dir = os.path.join(os.environ['PHANTOM_DATA'], self.pbconf['name'], 'phantom_' + self.pbconf['setup'])
+            setup_dir = os.path.join(self.run_dir, self.pbconf['name'], 'phantom_' + self.pbconf['setup'])
 
             if not os.path.exists(setup_dir):
                 os.mkdir(setup_dir)
@@ -141,7 +143,7 @@ class PhantomBatch(object):
                                                      stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
                     util.save_phantom_output(output.rstrip(), self.pbconf)
 
-                os.chdir(os.environ['PHANTOM_DATA'])
+                os.chdir(self.run_dir)
 
     def create_setups(self):
         """ This function will create all of the setup files for the simulation parameters specified in the phantom config
@@ -149,7 +151,7 @@ class PhantomBatch(object):
 
         log.info('Creating the Phantom setup files for ' + self.pbconf['name'] + '..')
         setup_filename = os.path.join(self.pbconf['setup'] + '.setup')
-        setup_dirs = [os.path.join(os.environ['PHANTOM_DATA'], self.pbconf['name'], 'simulations', tmp_dir)
+        setup_dirs = [os.path.join(self.run_dir, self.pbconf['name'], 'simulations', tmp_dir)
                       for tmp_dir in self.pbconf['dirs']]
 
         self.pbconf['sim_dirs'] = setup_dirs
@@ -195,7 +197,7 @@ class PhantomBatch(object):
             util.check_for_phantom_warnings(output.rstrip())
             util.save_phantom_output(output.rstrip(), self.pbconf)
 
-        os.chdir(os.environ['PHANTOM_DATA'])
+        os.chdir(self.run_dir)
         log.info('Completed.')
 
     def check_phantombatch_complete(self):
