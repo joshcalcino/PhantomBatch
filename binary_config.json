@@ -32,6 +32,7 @@
   "add_planets": 0,
   "num_planets": 0,
   "no_loop": ["binary_a"],
+  "fix_with": ["binary_e"],
   "make_options": "",
   "make_setup_options": ""
   }

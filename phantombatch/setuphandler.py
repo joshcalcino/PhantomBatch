@@ -1,3 +1,4 @@
+import os
 import logging as log
 
 
@@ -83,7 +84,7 @@ def add_planet_to_setup(new_setup, planet_number, setup_strings, pconf):
      Certainly a better way to do this.
      """
 
-    with open('phantombatch/setups/planet.setup', 'r') as planet_setup:
+    with open(os.path.join(os.environ['PHANTOMBATCH_DIR'], 'phantombatch/setups/planet.setup'), 'r') as planet_setup:
         for line in planet_setup:
             edit_setup_file(new_setup, line.replace('%', str(planet_number)), setup_strings, pconf)
 
@@ -107,7 +108,7 @@ def add_planets(setup_filename, setup_strings, pconf):
 def add_dust(setup_filename, setup_strings, pconf):
     """ Add two dust method into the setup file. """
     with open(setup_filename, 'r+') as new_setup:
-        with open('phantombatch/setups/dust.setup', 'r') as dust_setup:
+        with open(os.path.join(os.environ['PHANTOMBATCH_DIR'], 'phantombatch/setups/dust.setup'), 'r') as dust_setup:
             write_to_setup(new_setup, dust_setup, setup_strings, pconf)
 
         if 'profile_set_dust' in pconf and pconf['profile_set_dust'] == '1' or pconf['profile_set_dust'] == '2':
@@ -127,7 +128,7 @@ def add_dust(setup_filename, setup_strings, pconf):
 def set_up_disc(setup_filename, setup_strings, pconf):
     """ Set up a disc. """
     with open(setup_filename, 'w') as new_setup:
-        with open('phantombatch/setups/disc.setup', 'r') as disc_setup:
+        with open(os.path.join(os.environ['PHANTOMBATCH_DIR'], 'phantombatch/setups/disc.setup'), 'r') as disc_setup:
             write_to_setup(new_setup, disc_setup, setup_strings, pconf)
 
     #  Now loop over lines in new_setup to change any additional options
@@ -149,7 +150,7 @@ def set_up_binary(setup_filename, setup_strings, pconf):
     """ Set up a binary disc. """
 
     with open(setup_filename, 'w') as new_setup:
-        with open('phantombatch/setups/binary.setup', 'r') as binary_setup:
+        with open(os.path.join(os.environ['PHANTOMBATCH_DIR'], 'phantombatch/setups/binary.setup'), 'r') as binary_setup:
             write_to_setup(new_setup, binary_setup, setup_strings, pconf)
 
         if 'use_primarydisc' in pconf and (pconf['use_primarydisc'] == 'T'):
