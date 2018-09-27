@@ -171,6 +171,8 @@ def submit_job(pbconf, directory, jobscript_name, run_dir):
         log.info(output)
         len_slurm_output = len('Submitted batch job ')  # Change this string if your slurm prints something else out
         job_number = output[len_slurm_output:].strip()
+        log.debug('Printing job_number from submit_job')
+        log.debug(job_number)
 
     elif pbconf['job_scheduler'] == 'pbs':
         log.debug('Attempting to submit PBS job..')
@@ -318,9 +320,9 @@ def check_completed_jobs(pbconf):
 
         i += 1
 
-    log.info('--------------------------------------')
-    log.info('|          PHANTOM JOB INFO          |')
-    log.info('--------------------------------------')
+    log.info('-------------------------------------------------------')
+    log.info('|                  PHANTOM JOB INFO                   |')
+    log.info('-------------------------------------------------------')
 
     for i in range(0, len(pbconf['job_names'])):
         log.info(pbconf['job_names'][i] + ' has ' + str(pbconf['job_num_dumps'][i]) + ' out of ' +
