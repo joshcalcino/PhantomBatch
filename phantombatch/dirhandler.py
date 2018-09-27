@@ -11,7 +11,7 @@ def loop_keys_dir(pconf, pbconf):
         nl_keys = pbconf['no_loop']
         fw_keys = pbconf['fix_with']
 
-        for i in range(0, pbconf['no_loop']):
+        for i in range(0, len(pbconf['no_loop'])):
             dirs = keys_dir(dirs, fw_keys[i], pconf, no_loop=True)
             no_loop_keys.append(fw_keys[i])
 
