@@ -11,9 +11,12 @@ __all__ = ["PhantomBatch"]
 
 class PhantomBatch(object):
 
-    def __init__(self, config_filename, verbose=False, terminate_at_exit=True):
-        # Get current running directory
-        self.run_dir = os.environ['PWD']
+    def __init__(self, config_filename, verbose=False, terminate_at_exit=True, run_dir=None):
+        # Get running directory, use current directory if run_dir not specified
+        if run_dir is not None:
+            self.run_dir = run_dir
+        else:
+            self.run_dir = os.environ['PWD']
         
         #  Set up the level of verbosity
         if verbose:
