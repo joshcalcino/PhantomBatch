@@ -8,8 +8,8 @@ def loop_keys_dir(pconf, pbconf):
     no_loop_keys = []
 
     if 'no_loop' in pbconf and len(pbconf['no_loop']) > 0:
-        nl_keys = list(pbconf['no_loop'].keys())
-        fw_keys = list(pbconf['fix_with'].keys())
+        nl_keys = pbconf['no_loop']
+        fw_keys = pbconf['fix_with']
 
         for i in range(0, pbconf['no_loop']):
             dirs = keys_dir(dirs, fw_keys[i], pconf, no_loop=True)
