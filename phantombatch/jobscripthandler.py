@@ -100,7 +100,7 @@ def edit_pbs_jobscript(pbconf, job_script_filename, job_script_names):
 def get_job_script_names(pconf, pbconf):
     """ This function generates a list of job script names given the suite of parameters being used in pconf. """
 
-    job_script_names = dirhandler.loop_keys_dir(pconf)
+    job_script_names = dirhandler.loop_keys_dir(pconf, pbconf)
 
     if 'short_name' in pbconf and pbconf['short_name'] is not None:
         job_script_names = [pbconf['short_name'] + '_' + name for name in job_script_names]
