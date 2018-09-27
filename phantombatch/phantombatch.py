@@ -65,7 +65,7 @@ class PhantomBatch(object):
                                              os.path.join(sims_dir, tmp_dir), stderr=subprocess.STDOUT,
                                              universal_newlines=True, shell=True)
 
-            util.save_phantom_output(output.rstrip(), self.pbconf)
+            util.save_phantom_output(output.rstrip(), self.pbconf, self.run_dir)
 
     def initiliase_phantom(self):
         """ This function will initialise phantom in a special directory called phantom_pbconfg['setup']. We do this so
@@ -93,7 +93,7 @@ class PhantomBatch(object):
                                                  os.path.join(setup_dir, 'Makefile'),
                                                  stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
 
-                util.save_phantom_output(output.rstrip(), self.pbconf)
+                util.save_phantom_output(output.rstrip(), self.pbconf, self.run_dir)
 
                 os.chdir(setup_dir)
 
@@ -105,7 +105,7 @@ class PhantomBatch(object):
                     output = subprocess.check_output('make',
                                                      stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
 
-                util.save_phantom_output(output.rstrip(), self.pbconf)
+                util.save_phantom_output(output.rstrip(), self.pbconf, self.run_dir)
 
                 if 'make_setup_options' in self.pbconf and (len(self.pbconf['make_setup_options']) is not 0):
                     log.debug('Compiling with pbconf[\'make_setup_options\']')
@@ -116,7 +116,7 @@ class PhantomBatch(object):
                     output = subprocess.check_output('make setup',
                                                      stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
 
-                util.save_phantom_output(output.rstrip(), self.pbconf)
+                util.save_phantom_output(output.rstrip(), self.pbconf, self.run_dir)
 
                 log.debug('Writing jobscript template.')
 
@@ -126,7 +126,7 @@ class PhantomBatch(object):
                                                      + self.pbconf['setup'] + '.jobscript',
                                                      stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
 
-                    util.save_phantom_output(output.rstrip(), self.pbconf)
+                    util.save_phantom_output(output.rstrip(), self.pbconf, self.run_dir)
 
                 except KeyError:
                     log.warning('SYSTEM environment variable is not set, jobscript may not be created.')
@@ -139,12 +139,12 @@ class PhantomBatch(object):
                                                      self.pbconf['setup'] + '.jobscript',
                                                      stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
 
-                    util.save_phantom_output(output.rstrip(), self.pbconf)
+                    util.save_phantom_output(output.rstrip(), self.pbconf, self.run_dir)
 
                 if 'make_moddump_options' in self.pbconf:
                     output = subprocess.check_output('make moddump ' + self.pbconf['make_moddump_options'],
                                                      stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
-                    util.save_phantom_output(output.rstrip(), self.pbconf)
+                    util.save_phantom_output(output.rstrip(), self.pbconf, self.run_dir)
 
                 os.chdir(self.run_dir)
 
@@ -198,7 +198,7 @@ class PhantomBatch(object):
                                              universal_newlines=True, shell=True)
 
             util.check_for_phantom_warnings(output.rstrip())
-            util.save_phantom_output(output.rstrip(), self.pbconf)
+            util.save_phantom_output(output.rstrip(), self.pbconf, self.run_dir)
 
         os.chdir(self.run_dir)
         log.info('Completed.')

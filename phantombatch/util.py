@@ -61,10 +61,10 @@ def check_pbconf_sim_dir_consistency(job_name, sim_dir, pbconf):
         return False
 
 
-def save_phantom_output(output, pbconf):
+def save_phantom_output(output, pbconf, run_dir):
     """ Save the output from phantom into a separate file. """
 
-    output_filename = os.path.join(os.environ['PHANTOM_DATA'], pbconf['name'], 'phantom_output')
+    output_filename = os.path.join(run_dir, pbconf['name'], 'phantom_output')
 
     if os.path.exists(output_filename):
         with open(output_filename, 'a') as f:
