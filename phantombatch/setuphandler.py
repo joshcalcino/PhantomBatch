@@ -92,7 +92,7 @@ def add_planet_to_setup(new_setup, planet_number, setup_strings, pconf):
 
 def add_planets(setup_filename, setup_strings, pconf):
     """ Add planets into the setup file. """
-
+    log.debug('Entering ' + setup_filename + ' to add in planets..')
     with open(setup_filename, 'a+') as new_setup:
         if 'nplanets' in pconf:
             new_setup.write('\n nplanets = ' + str(pconf['nplanets']) + ' ! number of planets \n')
@@ -108,6 +108,7 @@ def add_planets(setup_filename, setup_strings, pconf):
 
 def add_dust(setup_filename, setup_strings, pconf):
     """ Add two dust method into the setup file. """
+    log.debug('Entering ' + setup_filename + ' to add in dust..')
     with open(setup_filename, 'r+') as new_setup:
         with open(os.path.join(os.environ['PHANTOMBATCH_DIR'], 'phantombatch/setups/dust.setup'), 'r') as dust_setup:
             write_to_setup(new_setup, dust_setup, setup_strings, pconf)
@@ -128,6 +129,7 @@ def add_dust(setup_filename, setup_strings, pconf):
 
 def set_up_disc(setup_filename, setup_strings, pconf):
     """ Set up a disc. """
+    log.debug('Entering ' + setup_filename + ' to set up disc..')
     with open(setup_filename, 'w') as new_setup:
         with open(os.path.join(os.environ['PHANTOMBATCH_DIR'], 'phantombatch/setups/disc.setup'), 'r') as disc_setup:
             write_to_setup(new_setup, disc_setup, setup_strings, pconf)
@@ -149,7 +151,7 @@ def set_up_disc(setup_filename, setup_strings, pconf):
 
 def set_up_binary(setup_filename, setup_strings, pconf):
     """ Set up a binary disc. """
-
+    log.debug('Entering ' + setup_filename + ' to set up binary..')
     with open(setup_filename, 'w') as new_setup:
         with open(os.path.join(os.environ['PHANTOMBATCH_DIR'], 'phantombatch/setups/binary.setup'), 'r') as binary_setup:
             write_to_setup(new_setup, binary_setup, setup_strings, pconf)

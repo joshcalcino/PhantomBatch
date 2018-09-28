@@ -165,7 +165,6 @@ class PhantomBatch(object):
         for tmp_dir in setup_dirs:
             #  This is where all of the different setups will be defined
             filename = os.path.join(tmp_dir, setup_filename)
-            log.debug('Entering ' + filename + '..')
 
             if self.pbconf['setup'] == 'disc':
                 if 'binary' in self.pbconf and self.pbconf['binary']:
