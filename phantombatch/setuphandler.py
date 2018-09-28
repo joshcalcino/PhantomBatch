@@ -46,7 +46,12 @@ def setup_from_array(setup_strings, string, dict_arr, no_loop=False):
 
     if no_loop:
         # For now, this is only going to work if you're wanting no_loop over one set of parameters...
-        setup_strings = [setup_strings[i] + [tmp_setup_strings[i]] for i in range(0, len(tmp_setup_strings))]
+        if isinstance(setup_strings[0], list):
+            setup_strings = [setup_strings[i] + [tmp_setup_strings[i]] for i in range(0, len(tmp_setup_strings))]
+
+        else:
+            setup_strings = [[setup_strings[i], tmp_setup_strings[i]] for i in range(0, len(tmp_setup_strings))]
+
         return setup_strings
 
     if isinstance(setup_strings[0], list):
