@@ -150,7 +150,7 @@ def check_running_jobs(pbconf):
             log.debug('Adding in a new line to my_pb_jobs..')
             my_pb_jobs.append(line)
 
-    log.debug('Printing phantombatch jobs..')
+    log.debug('Printing PhantomBatch jobs..')
     log.debug(my_pb_jobs)
     return my_pb_jobs
 
@@ -257,6 +257,15 @@ def run_batch_jobs(pbconf, run_dir):
 
                 pbconf['submitted_job_numbers'].append(str(job_number))
                 pbconf['submitted_job_names'].append(job)
+
+                log.debug('Printing submitted job numbers..')
+                log.debug(pbconf['submitted_job_numbers'])
+
+                log.debug('Printing submitted job names..')
+                log.debug(pbconf['submitted_job_names'])
+
+                log.debug('Printing PhantomBatch job names..')\
+                log.debug(pbconf['job_names'])
 
         elif 'job_limit' in pbconf and (len(current_jobs) <= pbconf['job_limit']):
             log.debug('Hit maximum number of allowed jobs.')
