@@ -152,6 +152,8 @@ def set_up_disc(setup_filename, setup_strings, pconf):
 def set_up_binary(setup_filename, setup_strings, pconf):
     """ Set up a binary disc. """
     log.debug('Entering ' + setup_filename + ' to set up binary..')
+    log.debug('Printing setup_strings..')
+    log.debug(setup_strings)
     with open(setup_filename, 'w') as new_setup:
         with open(os.path.join(os.environ['PHANTOMBATCH_DIR'], 'phantombatch/setups/binary.setup'), 'r') as binary_setup:
             write_to_setup(new_setup, binary_setup, setup_strings, pconf)
