@@ -55,34 +55,34 @@ def decipher_slurm_output(slurm_output, pbconf):
     for line in slurm_output:
         if pbconf['user'] in line:
             found_user = True
-            if 'C' not in line:
-                job_id = line[0:
-                              job_id_len].strip()
 
-                queue = line[job_id_len:
-                             job_id_len + queue_len].strip()
+            job_id = line[0:
+                          job_id_len].strip()
 
-                job_name = line[queue_len + job_id_len:
-                                queue_len + job_id_len + name_len].strip()
+            queue = line[job_id_len:
+                         job_id_len + queue_len].strip()
 
-                username = line[job_id_len + name_len + queue_len:
-                                job_id_len + queue_len + username_len + name_len].strip()
+            job_name = line[queue_len + job_id_len:
+                            queue_len + job_id_len + name_len].strip()
 
-                status = line[job_id_len + queue_len + name_len + username_len:
-                              job_id_len + queue_len + name_len + username_len + status_len].strip()
+            username = line[job_id_len + name_len + queue_len:
+                            job_id_len + queue_len + username_len + name_len].strip()
 
-                run_time = line[job_id_len + queue_len + name_len + username_len + status_len:
-                                job_id_len + queue_len + name_len + username_len + status_len + time_len].strip()
+            status = line[job_id_len + queue_len + name_len + username_len:
+                          job_id_len + queue_len + name_len + username_len + status_len].strip()
 
-                nodes = line[job_id_len + queue_len + name_len + username_len + status_len + time_len:
-                             job_id_len + queue_len + name_len + username_len + status_len + time_len + nodes_len]\
-                    .strip()
+            run_time = line[job_id_len + queue_len + name_len + username_len + status_len:
+                            job_id_len + queue_len + name_len + username_len + status_len + time_len].strip()
 
-                node = line[job_id_len + queue_len + name_len + username_len + status_len + time_len + nodes_len:
-                            line_length].strip()
+            nodes = line[job_id_len + queue_len + name_len + username_len + status_len + time_len:
+                         job_id_len + queue_len + name_len + username_len + status_len + time_len + nodes_len]\
+                .strip()
 
-                line_array = [job_id, job_name, username, run_time, status, queue, nodes, node]
-                my_jobs.append(line_array)
+            node = line[job_id_len + queue_len + name_len + username_len + status_len + time_len + nodes_len:
+                        line_length].strip()
+
+            line_array = [job_id, job_name, username, run_time, status, queue, nodes, node]
+            my_jobs.append(line_array)
 
     if not found_user:
         log.error('Unable to find any jobs associated with user specified in PhantomBatch config.')
@@ -148,7 +148,7 @@ def check_running_jobs(pbconf):
     log.debug('Filtering through the job scheduler output to find PhantomBatch jobs..')
     for line in my_jobs:
         log.debug(line)
-        if any([job in line[1] for job in pbconf['job_names']]):  # line[1] holds the name of the job in my_job
+        if any([job in line[1] for job in pbconf['job_names']]) and 'C' not in line[4]:  # line[1] holds the name of the job in my_job
             log.debug('Adding in a new line to my_pb_jobs..')
             my_pb_jobs.append(line)
 
