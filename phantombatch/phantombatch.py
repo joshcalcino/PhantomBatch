@@ -229,7 +229,7 @@ class PhantomBatch(object):
                 return True
 
         else:
-            log.info('There are still jo bs to be submitted.')
+            log.info('There are still jobs to be completed.')
             return False
 
     def phantombatch_monitor(self):

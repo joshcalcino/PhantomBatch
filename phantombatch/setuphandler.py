@@ -51,6 +51,7 @@ def setup_from_array(setup_strings, string, dict_arr, pbconf):
 
 def edit_setup_file(new_setup, line, setup_strings, pconf):
     """ Edit the setup file to add in setup_strings """
+    log.debug('Attempting to edit setup file.')
 
     #  Make sure setup_strings is a list
     if not isinstance(setup_strings, list):
