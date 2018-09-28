@@ -148,7 +148,8 @@ def check_running_jobs(pbconf):
     log.debug('Filtering through the job scheduler output to find PhantomBatch jobs..')
     for line in my_jobs:
         log.debug(line)
-        if any([job in line[1] for job in pbconf['job_names']]) and 'C' not in line[4]:  # line[1] holds the name of the job in my_job
+        if any([job in line[1] for job in pbconf['job_names']]) and 'C' not in line[4]:
+            #  line[1] holds the name of the job in my_job
             log.debug('Adding in a new line to my_pb_jobs..')
             my_pb_jobs.append(line)
 
