@@ -264,7 +264,7 @@ def run_batch_jobs(pbconf, run_dir):
                 log.debug('Printing submitted job names..')
                 log.debug(pbconf['submitted_job_names'])
 
-                log.debug('Printing PhantomBatch job names..')\
+                log.debug('Printing PhantomBatch job names..')
                 log.debug(pbconf['job_names'])
 
         elif 'job_limit' in pbconf and (len(current_jobs) <= pbconf['job_limit']):
