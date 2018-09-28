@@ -8,6 +8,9 @@ def write_to_setup(new_setup, ref_setup, setup_strings, pconf):
     if not isinstance(setup_strings, list):
             setup_strings = [setup_strings]
 
+    log.debug('Printing length of setup_strings..')
+    log.debug(len(setup_strings))
+
     for line in ref_setup:
         key_added = False
         if line.startswith('# '):
@@ -16,7 +19,6 @@ def write_to_setup(new_setup, ref_setup, setup_strings, pconf):
             for key in pconf:
                 if isinstance(pconf[key], list):
                     for string in setup_strings:  # loop over the strings that need to be written into setup file
-                        log.debug(string)
                         if (key in line) and string.startswith(key):
                             log.debug('Writing to setup file..')
                             key_added = True
@@ -31,10 +33,10 @@ def write_to_setup(new_setup, ref_setup, setup_strings, pconf):
                 new_setup.write(line)
 
 
-def setup_from_array(setup_strings, string, dict_arr, pbconf):
+def setup_from_array(setup_strings, string, dict_arr, no_loop=False):
     """ Create strings for the parameter arrays provided in pconf. """
 
-    if len(setup_strings) is 0 or string in pbconf['no_loop']:
+    if len(setup_strings) is 0:
         setup_strings = [string + ' = ' + str(i) for i in dict_arr]
         return setup_strings
 
@@ -77,8 +79,21 @@ def get_setup_strings(pconf, pbconf):
     """ This function creates the strings to go into each simulation setup file. This should be changed. """
 
     setup_strings = []
+    no_loop_keys = []
+
+    if 'no_loop' in pbconf and len(pbconf['no_loop']) > 0:
+        nl_keys = pbconf['no_loop']
+        fw_keys = pbconf['fix_with']
+
+        for i in range(0, len(pbconf['no_loop'])):
+            setup_strings = setup_from_array(setup_strings, fw_keys[i], pconf, no_loop=True)
+            no_loop_keys.append(fw_keys[i])
+
+            setup_strings = setup_from_array(setup_strings, nl_keys[i], pconf, no_loop=True)
+            no_loop_keys.append(nl_keys[i])
+
     for key in pconf:
-        if isinstance(pconf[key], list):
+        if isinstance(pconf[key], list) and key not in no_loop_keys:
             setup_strings = setup_from_array(setup_strings, key, pconf[key], pbconf)
 
     return setup_strings
