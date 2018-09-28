@@ -13,6 +13,7 @@ def write_to_setup(new_setup, ref_setup, setup_strings, pconf):
             for key in pconf:
                 if isinstance(pconf[key], list):
                     for string in setup_strings:  # loop over the strings that need to be written into setup file
+                        log.debug(string)
                         if (key in line) and string.startswith(key):
                             log.debug('Writing to setup file..')
                             key_added = True
