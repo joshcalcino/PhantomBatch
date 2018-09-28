@@ -96,10 +96,10 @@ def get_setup_strings(pconf, pbconf):
         fw_keys = pbconf['fix_with']
 
         for i in range(0, len(pbconf['no_loop'])):
-            setup_strings = setup_from_array(setup_strings, fw_keys[i], pconf[pbconf['no_loop'][i]], no_loop=True)
+            setup_strings = setup_from_array(setup_strings, nl_keys[i], pconf[pbconf['no_loop'][i]], no_loop=True)
             no_loop_keys.append(fw_keys[i])
 
-            setup_strings = setup_from_array(setup_strings, nl_keys[i], pconf[pbconf['fix_with'][i]], no_loop=True)
+            setup_strings = setup_from_array(setup_strings, fw_keys[i], pconf[pbconf['fix_with'][i]], no_loop=True)
             no_loop_keys.append(nl_keys[i])
 
     for key in pconf:
