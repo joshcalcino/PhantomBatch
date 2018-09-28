@@ -5,6 +5,9 @@ import logging as log
 def write_to_setup(new_setup, ref_setup, setup_strings, pconf):
     """ Write to the setup file. """
 
+    if not isinstance(setup_strings, list):
+            setup_strings = [setup_strings]
+
     for line in ref_setup:
         key_added = False
         if line.startswith('# '):
