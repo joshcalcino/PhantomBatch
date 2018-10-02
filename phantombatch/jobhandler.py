@@ -20,6 +20,7 @@ def decipher_slurm_output(slurm_output, pbconf):
     found_char = False
 
     slurm_output = slurm_output.split('\n')[:-1]  # Since the last line should be empty
+    print(slurm_output)
 
     first_line = slurm_output[0]
 
