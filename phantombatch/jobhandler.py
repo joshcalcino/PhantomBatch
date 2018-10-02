@@ -20,9 +20,12 @@ def decipher_slurm_output(slurm_output, pbconf):
     found_char = False
 
     slurm_output = slurm_output.split('\n')[:-1]  # Since the last line should be empty
-    print(slurm_output)
 
     first_line = slurm_output[0]
+
+    if first_line.startswith('squeue: error: Invalid user:'):
+        log.error('squeue Invalid user error. Make sure you entered in your cluster username correctly.')
+        exit()
 
     for char in first_line:
         """ Check each character in the slurm output to determine the output column widths. """
@@ -43,7 +46,7 @@ def decipher_slurm_output(slurm_output, pbconf):
             tally += 1
             tally_arr.append(tally)
             break
-    print(tally_arr)
+
     job_id_len, queue_len, name_len, username_len = tally_arr[0], tally_arr[1], tally_arr[2], tally_arr[3]
     status_len, time_len, nodes_len, node_len = tally_arr[4], tally_arr[5], tally_arr[6], tally_arr[7]
 
