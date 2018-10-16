@@ -51,6 +51,9 @@ def keys_dir(dirs, key, pconf, no_loop=False):
     if key == 'binary_i':
         dirs = dir_func(dirs, 'i', pconf[key], no_loop=no_loop)
 
+    if key == 'disc_mbinary':
+        dirs = dir_func(dirs, 'dm', pconf[key], no_loop=no_loop)
+
     # Loop over planet parameters
     if 'mplanet' in key:
         #  Adding in key[-1] makes sure that we select the write planet number
