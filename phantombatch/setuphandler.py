@@ -55,9 +55,15 @@ def setup_from_array(setup_strings, string, dict_arr, no_loop=False):
         return setup_strings
 
     if isinstance(setup_strings[0], list):
+        log.debug('Printing setup_strings')
+        log.debug(setup_strings)
         setup_strings = setup_strings * len(dict_arr)
+        log.debug('Printing setup_strings')
+        log.debug(setup_strings)
         setup_strings = [setup_strings[i] + [tmp_setup_strings[j]] for i in range(0, len(setup_strings))
                          for j in range(0, len(tmp_setup_strings))]
+        log.debug('Printing setup_strings')
+        log.debug(setup_strings)
 
     else:
         setup_strings = [[setup_strings[i], tmp_setup_strings[j]] for i in range(0, len(setup_strings))
@@ -108,12 +114,6 @@ def get_setup_strings(pconf, pbconf):
     for key in pconf:
         if isinstance(pconf[key], list) and key not in no_loop_keys:
             setup_strings = setup_from_array(setup_strings, key, pconf[key], pbconf)
-
-    log.debug('Printing no_loop_keys')
-    log.debug(no_loop_keys)
-
-    log.debug('Printing setup_strings')
-    log.debug(setup_strings)
 
     return setup_strings
 
