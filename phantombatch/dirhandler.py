@@ -20,7 +20,7 @@ def loop_keys_dir(pconf, pbconf):
 
     for key in pconf:
         if isinstance(pconf[key], list) and key not in no_loop_keys:
-            dirs = keys_dir(dirs, key, pconf, pbconf)
+            dirs = keys_dir(dirs, key, pconf, no_loop=False)
 
     return dirs
 
