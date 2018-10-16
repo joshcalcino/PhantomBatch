@@ -102,6 +102,9 @@ def get_setup_strings(pconf, pbconf):
             setup_strings = setup_from_array(setup_strings, fw_keys[i], pconf[pbconf['fix_with'][i]], no_loop=True)
             no_loop_keys.append(nl_keys[i])
 
+            log.debug('Printing setup_strings')
+            log.debug(setup_strings)
+
     for key in pconf:
         if isinstance(pconf[key], list) and key not in no_loop_keys:
             setup_strings = setup_from_array(setup_strings, key, pconf[key], pbconf)
