@@ -54,6 +54,9 @@ def setup_from_array(setup_strings, string, dict_arr, no_loop=False):
 
         return setup_strings
 
+    log.debug('Is setup_strings[0] a list?')
+    log.debug(isinstance(setup_strings[0], list))
+
     if isinstance(setup_strings[0], list):
         log.debug('Entering if statement setup_from_array')
         log.debug('Printing setup_strings')
