@@ -1,7 +1,6 @@
 import os
 import logging as log
 import subprocess
-import time
 from phantombatch import util
 import glob
 

@@ -41,7 +41,6 @@ class PhantomBatch(object):
                 if self.pbconf[key] != pbconf_tmp[key]:
                     pbconf_tmp[key] = self.pbconf[key]
 
-
     def terminate_jobs_at_exit(self):
         jobhandler.cancel_all_submitted_jobs(self.pbconf)
 
@@ -125,7 +124,7 @@ class PhantomBatch(object):
 
                 try:
                     sys_environ = os.environ['SYSTEM']
-                    output = subprocess.check_output('make qscript INFILE=' + self.pbconf['setup'] + '.in' +
+                    output = subprocess.check_output('make qscript INFILE=' + self.pbconf['setup'] + '.in ' +
                                                      'SYSTEM=' + sys_environ + ' > '
                                                      + self.pbconf['setup'] + '.jobscript',
                                                      stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
@@ -138,7 +137,7 @@ class PhantomBatch(object):
                     log.info('This will make sure that the correct Fortran compiler and system job scheduler '
                              'is selected by make qscript.')
 
-                    output = subprocess.check_output('make qscript INFILE=' + self.pbconf['setup']+'.in' +
+                    output = subprocess.check_output('make qscript INFILE=' + self.pbconf['setup']+'.in ' +
                                                      self.pbconf['make_options'] + ' > ' +
                                                      self.pbconf['setup'] + '.jobscript',
                                                      stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
