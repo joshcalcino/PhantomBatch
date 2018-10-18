@@ -36,8 +36,11 @@ class PhantomBatch(object):
 
         # check if a saved phantombatch configuration file already exists, overwrite current if it does
         if os.path.isfile(os.path.join(self.pbconf['name'], self.pbconf['name'] + '_pbconf.pkl')):
-            print(self.pbconf['name'])
-            self.pbconf = util.load_config(self.pbconf)
+            pbconf_tmp = util.load_config(self.pbconf)
+            for key in self.pbconf:
+                if self.pbconf[key] != pbconf_tmp[key]:
+                    pbconf_tmp[key] = self.pbconf[key]
+
 
     def terminate_jobs_at_exit(self):
         jobhandler.cancel_all_submitted_jobs(self.pbconf)
@@ -122,7 +125,8 @@ class PhantomBatch(object):
 
                 try:
                     sys_environ = os.environ['SYSTEM']
-                    output = subprocess.check_output('make qscript INFILE=' + self.pbconf['setup'] + '.in' + ' > '
+                    output = subprocess.check_output('make qscript INFILE=' + self.pbconf['setup'] + '.in' +
+                                                     'SYSTEM=' + sys_environ + ' > '
                                                      + self.pbconf['setup'] + '.jobscript',
                                                      stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
 

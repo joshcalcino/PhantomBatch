@@ -247,7 +247,7 @@ def run_batch_jobs(pbconf, run_dir):
         pbconf['submitted_job_names'] = []
 
     i = 0
-    time.sleep(1)
+
     for job in pbconf['job_names']:
         log.debug('Looking to submit ' + job)
         current_jobs = check_running_jobs(pbconf)
@@ -336,9 +336,9 @@ def check_completed_jobs(pbconf):
 
         i += 1
 
-    log.info('-------------------------------------------------------')
-    log.info('|                  PHANTOM JOB INFO                   |')
-    log.info('-------------------------------------------------------')
+    log.info('----------------------------------------------------------------')
+    log.info('|                       PHANTOM JOB INFO                        |')
+    log.info('----------------------------------------------------------------')
 
     for i in range(0, len(pbconf['job_names'])):
         log.info(pbconf['job_names'][i] + ' has ' + str(pbconf['job_num_dumps'][i]) + ' out of ' +

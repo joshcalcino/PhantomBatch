@@ -58,11 +58,11 @@ This means that PhantomBatch will run in the background on the login node of a c
 you log out.
 
 If you want to cancel running a PhantomBatch job running in the background, do not `kill` it. This will prevent any exit
-functions from running. Instead, bring it to the foreground with `fg` and then do your usual `Ctrl + C` to interrupt the job:
+functions from running. Instead, you want to interrupt PhantomBatch.
 
-``fg 1``\
-``Ctrl + C``\
-Replace the number `1` with whatever value came up in the square brackets after you ran PhantomBatch as a background job.
+``kill -2 12345``
+
+This will interrupt the process.
 
 ## The Config File
 
