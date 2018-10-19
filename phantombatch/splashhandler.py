@@ -14,13 +14,11 @@ def make_splash_defaults_dir(pconf, pbconf, sbconf):
 
     dirhandler.create_dirs(pconf, sbconf, 'splash')
     splash_directory = os.path.join(pbconf['run_dir'], pbconf['name'], 'splash')
-    print(splash_directory)
 
     splash_defaults_dir = os.path.join(splash_directory, 'splash_defaults')
-    print(splash_defaults_dir)
 
     if not os.path.exists(splash_defaults_dir):
-        os.mkdir('splash_defaults')
+        os.mkdir(splash_defaults_dir)
 
     sbconf['splash_defaults_dir'] = splash_defaults_dir
 
