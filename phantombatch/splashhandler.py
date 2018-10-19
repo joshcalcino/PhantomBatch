@@ -146,8 +146,8 @@ def initialise_splash_handler(pconf, pbconf, sbconf):
     if not os.path.exists(splash_dir):
         os.mkdir(splash_dir)
 
-    make_splash_defaults_dir(pconf, sbconf, pbconf)
-    get_splash_command(sbconf, pbconf)
+    make_splash_defaults_dir(pconf, pbconf, sbconf)
+    get_splash_command(pbconf, sbconf)
     create_jobscripts_for_splash(pconf, sbconf, pbconf)
 
 
