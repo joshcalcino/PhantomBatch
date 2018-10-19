@@ -9,10 +9,10 @@ def create_jobscripts(pconf, pbconf, jobscript_filename=None, jobscript_name=Non
     allocated for each job, and so each job has a sensible name that reflects the parameter choice of each particular
     simulation. I need to rewrite this so it contains fewer weird optional variables.."""
 
+    log.info('Creating job scripts for ' + pbconf['name'] + '..')
+
     if jobscript_filename is None:
         jobscript_filename = pbconf['setup']
-
-    log.info('Creating job scripts for ' + pbconf['name'] + '..')
 
     jobscript_filename = os.path.join(jobscript_filename + '.jobscript')
 
