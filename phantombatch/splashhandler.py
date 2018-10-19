@@ -103,7 +103,7 @@ def create_jobscripts_for_splash(pconf, pbconf, sbconf):
 
     shutil.copy(file, destination)
     exit()
-    old_jobscript_path = os.path.join(pbconf[], pbconf['setup']+'.jobscript')
+    old_jobscript_path = os.path.join(destination, pbconf['setup']+'.jobscript')
     new_jobscript_path = os.path.join(destination, sbconf['short_name']+'.jobscript')
 
     # Create the jobscript file for splash
