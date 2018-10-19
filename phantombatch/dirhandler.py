@@ -79,6 +79,7 @@ def create_dirs(pconf, conf, setup_directory):
 
     for tmp_dir in dirs:
         cdir = os.path.join(conf['run_dir'], suite_directory, setup_directory, tmp_dir)
+        print(cdir)
         if not os.path.exists(cdir):
             os.mkdir(cdir)
 
