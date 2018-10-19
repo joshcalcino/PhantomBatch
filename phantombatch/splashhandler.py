@@ -112,9 +112,6 @@ def create_jobscripts_for_splash(pconf, pbconf, sbconf):
             num_lines = 0
             for line in f:
                 num_lines += 1
-            print(num_lines)
-            num_lines = sum([1 for tmp in f])
-            print(num_lines)
             i = 0
             for line in f:
                 #  -4 below since the last 4 lines in old_jobscript_path are the phantom specific lines
