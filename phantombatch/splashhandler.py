@@ -86,8 +86,6 @@ def append_splash_jobscript(sbconf, jobscript_path):
     """ Append the splash jobscript file with the execution command. """
 
     with open(jobscript_path, 'a') as f:
-        for line in f:
-            print(line)
         if 'jobscript_lines' in sbconf:
             if isinstance(sbconf['jobscript_lines'], list):
                 for line in sbconf['jobscript_lines']:
@@ -116,6 +114,7 @@ def create_jobscripts_for_splash(pconf, pbconf, sbconf):
             for line in f:
                 #  -4 below since the last 4 lines in old_jobscript_path are the phantom specific lines
                 if i < num_lines-4:
+                    print(line)
                     g.write(line)
                 else:
                     break
