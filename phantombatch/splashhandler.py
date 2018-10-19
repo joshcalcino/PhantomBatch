@@ -4,10 +4,10 @@ import logging as log
 import glob
 from phantombatch import jobscripthandler, dirhandler
 
-try:
-    splash_dir = os.environ('SPLASH_DIR')
-except KeyError:
-    log.warning('SPLASH_DIR environment variable not set!')
+# try:
+#     splash_dir = os.environ('SPLASH_DIR')
+# except KeyError:
+#     log.warning('SPLASH_DIR environment variable not set!')
 
 
 def make_splash_defaults_dir(pconf, pbconf, sbconf):
