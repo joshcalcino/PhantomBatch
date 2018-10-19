@@ -55,7 +55,7 @@ def copy_splash_defaults(pconf, pbconf, sbconf, names=None):
     log.info('Splash default files copied.')
 
 
-def get_full_splash_config(sbconf, pbconf):
+def get_full_splash_config(pbconf, sbconf):
     """ Insert needed information into sbconf that is contained in pbconf. """
 
     defaults = {'job_scheduler': None, 'user': None, 'no_email': False, 'run_dir': os.environ['PWD'], 'name': None}
@@ -74,7 +74,7 @@ def get_full_splash_config(sbconf, pbconf):
     return sbconf
 
 
-def get_splash_command(sbconf, pbconf):
+def get_splash_command(pbconf, sbconf):
     """ Add in a splash command if one is not defined in sbconf. """
 
     if 'splash_command' not in sbconf:
@@ -98,7 +98,7 @@ def append_splash_jobscript(sbconf, jobscript_path):
         f.write(sbconf['splash_command'])
 
 
-def create_jobscripts_for_splash(pconf, sbconf, pbconf):
+def create_jobscripts_for_splash(pconf, pbconf, sbconf):
     file = os.path.join(pbconf['dirs'][0], pbconf['name'], '.jobscript')
     destination = sbconf['splash_defaults_dir']
 
@@ -149,7 +149,7 @@ def initialise_splash_handler(pconf, pbconf, sbconf):
 
     make_splash_defaults_dir(pconf, pbconf, sbconf)
     get_splash_command(pbconf, sbconf)
-    create_jobscripts_for_splash(pconf, sbconf, pbconf)
+    create_jobscripts_for_splash(pconf, pbconf, sbconf)
 
 
 def splash_handler(pconf, pbconf, sbconf):
