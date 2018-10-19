@@ -98,7 +98,7 @@ def append_splash_jobscript(sbconf, jobscript_path):
 
 
 def create_jobscripts_for_splash(pconf, pbconf, sbconf):
-    file = os.path.join(pbconf['dirs'][0], pbconf['name'], '.jobscript')
+    file = os.path.join(pbconf['dirs'][0], pbconf['setup']+'.jobscript')
     destination = sbconf['splash_defaults_dir']
 
     shutil.copy(file, destination)
