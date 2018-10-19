@@ -4,42 +4,46 @@ import fileinput
 from phantombatch import dirhandler
 
 
-def create_job_scripts(pconf, pbconf, run_dir):
-    """ This function edits the job script file in each pbconf['sim_dir'], so that the requested resources are
+def create_jobscripts(pconf, pbconf, jobscript_filename=None, jobscript_name=None):
+    """ This function edits the job script file in each pbconf['dirs'], so that the requested resources are
     allocated for each job, and so each job has a sensible name that reflects the parameter choice of each particular
-    simulation. """
+    simulation. I need to rewrite this so it contains fewer weird optional variables.."""
+
+    if jobscript_filename is None:
+        jobscript_filename = pbconf['setup']
 
     log.info('Creating job scripts for ' + pbconf['name'] + '..')
 
-    job_script_filename = os.path.join(pbconf['setup'] + '.jobscript')
-    sim_dirs = [os.path.join(run_dir, pbconf['name'], 'simulations', tmp_dir)
-                for tmp_dir in pbconf['dirs']]
+    jobscript_filename = os.path.join(jobscript_filename + '.jobscript')
 
-    job_script_names = get_job_script_names(pconf, pbconf)
-    pbconf['job_names'] = job_script_names
+    # sim_dirs = [os.path.join(run_dir, pbconf['name'], 'simulations', tmp_dir)
+    #             for tmp_dir in pbconf['dirs']]
+
+    jobscript_names = get_jobscript_names(pconf, pbconf, jobscript_name=jobscript_name)
+    pbconf['job_names'] = jobscript_names
 
     index = 0
 
-    for tmp_dir in sim_dirs:
-        filename = os.path.join(tmp_dir, job_script_filename)
+    for tmp_dir in pbconf['dirs']:
+        filename = os.path.join(tmp_dir, jobscript_filename)
         if pbconf['job_scheduler'] == 'slurm':
-            edit_slurm_jobscript(pbconf, filename, job_script_names[index])
+            edit_slurm_jobscript(pbconf, filename, jobscript_names[index])
 
         elif pbconf['job_scheduler'] == 'pbs':
-            edit_pbs_jobscript(pbconf, filename, job_script_names[index])
+            edit_pbs_jobscript(pbconf, filename, jobscript_names[index])
 
         index += 1
 
     log.info('Completed.')
 
 
-def edit_slurm_jobscript(pbconf, job_script_filename, job_script_names):
-    for line in fileinput.input(job_script_filename, inplace=True):
+def edit_slurm_jobscript(pbconf, jobscript_filename, jobscript_names):
+    for line in fileinput.input(jobscript_filename, inplace=True):
         if '#SBATCH --nodes' in line and ('ncpus' in pbconf):
             print(('#SBATCH --nodes=1 --ntasks=' + str(pbconf['ncpus'])).strip())
 
         elif '#SBATCH --job-name' in line:
-            print(('#SBATCH --job-name=' + job_script_names).strip())
+            print(('#SBATCH --job-name=' + jobscript_names).strip())
 
         elif '#SBATCH --mail' in line and 'no_email' in pbconf and pbconf['no_email']:
             print(''.strip())
@@ -63,14 +67,14 @@ def edit_slurm_jobscript(pbconf, job_script_filename, job_script_names):
             print(line.strip())
 
 
-def edit_pbs_jobscript(pbconf, job_script_filename, job_script_names):
-    for line in fileinput.input(job_script_filename, inplace=True):
+def edit_pbs_jobscript(pbconf, jobscript_filename, jobscript_names):
+    for line in fileinput.input(jobscript_filename, inplace=True):
         if '#PBS -l nodes' in line and ('ncpus' in pbconf):
             print(('#PBS -l nodes=1:ppn=' + str(pbconf['ncpus'])).strip())
-            print('#PBS -A name'.strip())  # Adding this here since my PBS cluster needs an account specified..
+            # print('#PBS -A name'.strip())  # Adding this here since my PBS cluster needs an account specified..
 
         elif '#PBS -N' in line:
-            print(('#PBS -N ' + job_script_names).strip())
+            print(('#PBS -N ' + jobscript_names).strip())
 
         elif '#PBS -A' in line:
             print(('#PBS -A ' + pbconf['user']).strip())
@@ -97,18 +101,22 @@ def edit_pbs_jobscript(pbconf, job_script_filename, job_script_names):
             print(line.strip())
 
 
-def get_job_script_names(pconf, pbconf):
+def get_jobscript_names(pconf, pbconf, jobscript_name=None):
     """ This function generates a list of job script names given the suite of parameters being used in pconf. """
 
-    job_script_names = dirhandler.loop_keys_dir(pconf, pbconf)
+    jobscript_names = dirhandler.loop_keys_dir(pconf, pbconf)
+
+    if jobscript_name is not None:
+        jobscript_names = [jobscript_name + '_' + name for name in jobscript_names]
+        return jobscript_names
 
     if 'short_name' in pbconf and pbconf['short_name'] is not None:
-        job_script_names = [pbconf['short_name'] + '_' + name for name in job_script_names]
+        jobscript_names = [pbconf['short_name'] + '_' + name for name in jobscript_names]
 
     else:
-        job_script_names = [pbconf['name'] + '_' + name for name in job_script_names]
+        jobscript_names = [pbconf['name'] + '_' + name for name in jobscript_names]
 
-    if len(job_script_names[0]) > 16:
-        log.warning('Job names are too long. Consider adding in a \'short_name\' to phantombatch config.')
+    if len(jobscript_names[0]) > 40:
+        log.warning('Job names are too long. Consider adding in a \'short_name\' to PhantomBatch config.')
 
-    return job_script_names
+    return jobscript_names

@@ -47,10 +47,12 @@ make a new branch for testing and implementing changes to prevent this interferi
 # Brief User guide
 I will turn this into a wiki if PhantomBatch generates enough interest
 
-The correct way to run PhantomBatch is something like:
+The correct way to run PhantomBatch is:
 
 `python3 example.py > example.out 2>&1 &`\
+
 which will return something like\
+
 ``[1] 12345``
 
 This will make sure that nothing is printed to the terminal, all output is printed to `example.out`.
@@ -81,7 +83,7 @@ The `config.json` file should look like something like this (minus the inline co
   "itapergasbinary": "F",
   "iwarpbinary": "F",
   "use_primarydisc": "F",
-  "detat": 1                     # How frequently you want to dump
+  "deltat": 1                     # How frequently you want to dump
   },
 
 "phantom_batch_setup": {         # This contains all of the PhantomBatch settings. These MUST be set correctly

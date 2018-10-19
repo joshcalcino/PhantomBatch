@@ -68,26 +68,21 @@ def keys_dir(dirs, key, pconf, no_loop=False):
     return dirs
 
 
-def create_dirs(pconf, pbconf, run_dir, movies=False):
-    """ Create directories. """
-
-    if movies:
-        setup_directory = 'movies'
-    else:
-        setup_directory = 'simulations'
+def create_dirs(pconf, conf, setup_directory):
+    """ Create directories and save them into conf dictionary. """
 
     log.info('Checking if ' + setup_directory + ' directory exist..')
 
-    suite_directory = os.path.join(run_dir, pbconf['name'])
+    suite_directory = os.path.join(conf['run_dir'], conf['name'])
 
-    dirs = loop_keys_dir(pconf, pbconf)
+    dirs = loop_keys_dir(pconf, conf)
 
     for tmp_dir in dirs:
-        cdir = os.path.join(suite_directory, setup_directory, tmp_dir)
+        cdir = os.path.join(conf['run_dir'], suite_directory, setup_directory, tmp_dir)
         if not os.path.exists(cdir):
             os.mkdir(cdir)
 
-    pbconf['dirs'] = dirs
+    conf['dirs'] = dirs
     log.info('Completed.')
 
 

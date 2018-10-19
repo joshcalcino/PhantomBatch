@@ -1,7 +1,7 @@
 import os
 import logging as log
 import subprocess
-from phantombatch import setuphandler, jobscripthandler, dirhandler, jobhandler, util
+from phantombatch import setuphandler, jobscripthandler, dirhandler, jobhandler, splashhandler, util
 import time
 import atexit
 
@@ -12,12 +12,6 @@ __all__ = ["PhantomBatch"]
 class PhantomBatch(object):
 
     def __init__(self, config_filename, verbose=False, terminate_at_exit=True, run_dir=None):
-        # Get running directory, use current directory if run_dir not specified
-        if run_dir is not None:
-            self.run_dir = run_dir
-        else:
-            self.run_dir = os.environ['PWD']
-        
         #  Set up the level of verbosity
         if verbose:
             log.basicConfig(level=log.DEBUG)
@@ -38,8 +32,33 @@ class PhantomBatch(object):
         if os.path.isfile(os.path.join(self.pbconf['name'], self.pbconf['name'] + '_pbconf.pkl')):
             pbconf_tmp = util.load_config(self.pbconf)
             for key in self.pbconf:
-                if self.pbconf[key] != pbconf_tmp[key]:
+                if key in pbconf_tmp and (self.pbconf[key] != pbconf_tmp[key]):
                     pbconf_tmp[key] = self.pbconf[key]
+                    log.warning('key ' + key + ' has changed since your last run of PhantomBatch.')
+                elif key not in pbconf_tmp:
+                    pbconf_tmp[key] = self.pbconf[key]
+
+            self.pbconf = pbconf_tmp
+
+        self.run_splash = False
+
+        # Set up splashbatch if it is going to be used
+        if 'splash_batch_setup' in self.config:
+            self.run_splash = True
+            self.sbconf = splashhandler.get_full_splash_config(self.config['splash_batch_setup'], self.pbconf)
+
+            if 'no_splash' in self.sbconf and self.sbconf['no_splash'] is True:
+                # Add this in so it is easier to control splash usage without having to remove lines from config file
+                self.run_splash = False
+
+        # Get running directory, use current directory if run_dir not specified
+        if run_dir is not None:
+            self.run_dir = run_dir
+        else:
+            self.run_dir = os.environ['PWD']
+
+        # Save run_dir in the PhantomBatch config dict
+        self.pbconf['run_dir'] = self.run_dir
 
     def terminate_jobs_at_exit(self):
         jobhandler.cancel_all_submitted_jobs(self.pbconf)
@@ -59,7 +78,7 @@ class PhantomBatch(object):
             os.mkdir(sims_dir)
 
         self.initiliase_phantom()
-        dirhandler.create_dirs(self.pconf, self.pbconf, self.run_dir)
+        dirhandler.create_dirs(self.pconf, self.pbconf, self.run_dir, 'simulations')
 
         for tmp_dir in self.pbconf['dirs']:
             output = subprocess.check_output('cp ' + os.path.join(self.run_dir, self.pbconf['name'],
@@ -78,7 +97,7 @@ class PhantomBatch(object):
         if isinstance(self.pbconf['setup'], list):
             """ Imagining that we can have an array of setups which would be consecutively executed.. Say if we wanted to
             run some gas and then moddump with dust grains.."""
-
+            log.error('You added a list for setup options. This functionality has not been implemented yet.')
             raise NotImplementedError
 
         else:
@@ -235,13 +254,18 @@ class PhantomBatch(object):
             return False
 
     def phantombatch_monitor(self):
+        """ The default monitor for PhantomBatch. This monitor will set up Phantom and PhantomBatch, create simulations,
+        submit and monitor jobs until completion. """
 
         self.initialise()
         self.create_setups()
         self.run_phantom_setup()
-        jobscripthandler.create_job_scripts(self.pconf, self.pbconf, self.run_dir)
+        jobscripthandler.create_jobscripts(self.pconf, self.pbconf)
         jobhandler.check_running_jobs(self.pbconf)
-        jobhandler.run_batch_jobs(self.pbconf, self.run_dir)
+        jobhandler.run_batch_jobs(self.pbconf)
+
+        if self.run_splash:
+            splashhandler.initialise_splash_handler(self.pconf, self.pbconf, self.sbconf)
 
         completed = False
 
@@ -250,5 +274,8 @@ class PhantomBatch(object):
             log.info('PhantomBatch will now sleep for ' + str(self.pbconf['sleep_time']) + ' minutes.')
             time.sleep(self.pbconf['sleep_time']*60)
 
-            jobhandler.run_batch_jobs(self.pbconf, self.run_dir)
+            jobhandler.run_batch_jobs(self.pbconf)
             completed = self.check_phantombatch_complete()
+
+            if self.run_splash:
+                splashhandler.splash_handler(self.pconf, self.pbconf, self.sbconf)

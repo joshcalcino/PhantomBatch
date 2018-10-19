@@ -3,7 +3,6 @@
   "ncpus": 4,
   "memory": "8G",
   "walltime": "4:00:00",
-  "user": "uqjcalci",
   "no_email": 1,
   "job_limit": 4
   }
