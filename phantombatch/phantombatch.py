@@ -45,7 +45,7 @@ class PhantomBatch(object):
         # Set up splashbatch if it is going to be used
         if 'splash_batch_setup' in self.config:
             self.run_splash = True
-            self.sbconf = splashhandler.get_full_splash_config(self.config['splash_batch_setup'], self.pbconf)
+            self.sbconf = splashhandler.get_full_splash_config(self.pbconf, self.config['splash_batch_setup'])
 
             if 'no_splash' in self.sbconf and self.sbconf['no_splash'] is True:
                 # Add this in so it is easier to control splash usage without having to remove lines from config file
