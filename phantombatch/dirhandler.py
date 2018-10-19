@@ -75,11 +75,12 @@ def create_dirs(pconf, conf, setup_directory):
 
     suite_directory = os.path.join(conf['run_dir'], conf['name'])
 
-    dirs = loop_keys_dir(pconf, conf)
+    dir_names = loop_keys_dir(pconf, conf)
+    dirs = []
 
-    for tmp_dir in dirs:
-        cdir = os.path.join(conf['run_dir'], suite_directory, setup_directory, tmp_dir)
-        print(cdir)
+    for tmp_dir in dir_names:
+        cdir = os.path.join(suite_directory, setup_directory, tmp_dir)
+        dirs.append(cdir)
         if not os.path.exists(cdir):
             os.mkdir(cdir)
 
