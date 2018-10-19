@@ -135,6 +135,17 @@ def initialise_splash_handler(pconf, pbconf, sbconf):
 
     log.info('Initialising splash handler..')
 
+    suite_directory = os.path.join(pbconf['run_dir'], pbconf['name'])
+
+    #  Check if the directory already exists
+    if not os.path.exists(suite_directory):
+        os.mkdir(suite_directory)
+
+    splash_dir = os.path.join(suite_directory, 'splash')
+
+    if not os.path.exists(splash_dir):
+        os.mkdir(splash_dir)
+
     make_splash_defaults_dir(pconf, sbconf, pbconf)
     get_splash_command(sbconf, pbconf)
     create_jobscripts_for_splash(pconf, sbconf, pbconf)
