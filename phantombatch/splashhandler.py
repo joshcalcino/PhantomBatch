@@ -17,6 +17,7 @@ def make_splash_defaults_dir(pconf, pbconf, sbconf):
     print(splash_directory)
 
     splash_defaults_dir = os.path.join(splash_directory, 'splash_defaults')
+    print(splash_defaults_dir)
 
     if not os.path.exists(splash_defaults_dir):
         os.mkdir('splash_defaults')
