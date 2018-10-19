@@ -57,7 +57,7 @@ def copy_splash_defaults(pconf, pbconf, sbconf, names=None):
 def get_full_splash_config(sbconf, pbconf):
     """ Insert needed information into sbconf that is contained in pbconf. """
 
-    defaults = {'job_scheduler': None, 'user': None, 'no_email': False}
+    defaults = {'job_scheduler': None, 'user': None, 'no_email': False, 'run_dir': os.environ['PWD']}
     for key in defaults:
         if key in pbconf and key not in sbconf:
             sbconf[key] = pbconf[key]
