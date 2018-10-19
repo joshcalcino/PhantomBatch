@@ -78,7 +78,7 @@ class PhantomBatch(object):
             os.mkdir(sims_dir)
 
         self.initiliase_phantom()
-        dirhandler.create_dirs(self.pconf, self.pbconf, self.run_dir, 'simulations')
+        dirhandler.create_dirs(self.pconf, self.pbconf, 'simulations')
 
         for tmp_dir in self.pbconf['dirs']:
             output = subprocess.check_output('cp ' + os.path.join(self.run_dir, self.pbconf['name'],
