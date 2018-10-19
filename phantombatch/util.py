@@ -38,9 +38,9 @@ def check_for_phantom_warnings(output):
     log.debug('Checking for warnings in phantom output..')
 
     warnings_kw = ['WARNING', 'Warning', 'warning']
-
+    output = output.split('\n')
     for line in output:
-        # print(line)  # temporary for debug purposes..
+        print(line)  # temporary for debug purposes..
         # print(any([warning in line for warning in warnings_kw]))
         if any([warning in line for warning in warnings_kw]):
             log.warning('Phantom warning found: ' + line)
