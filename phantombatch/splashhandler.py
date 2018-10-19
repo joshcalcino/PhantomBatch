@@ -130,7 +130,8 @@ def create_jobscripts_for_splash(pconf, pbconf, sbconf):
         shutil.copy(new_jobscript_path, tmp_dir)
 
     # Now use jobhandler.create_jobscripts to include options and names in each jobscript
-    jobscripthandler.create_jobscripts(pconf, pbconf, jobscript_filename=sbconf['name'], jobscript_name=sbconf['name'])
+    jobscripthandler.create_jobscripts(pconf, pbconf, jobscript_filename=sbconf['short_name'],
+                                       jobscript_name=sbconf['short_name'])
 
 
 def initialise_splash_handler(pconf, pbconf, sbconf):
