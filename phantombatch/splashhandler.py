@@ -58,7 +58,7 @@ def copy_splash_defaults(pconf, pbconf, sbconf, names=None):
 def get_full_splash_config(sbconf, pbconf):
     """ Insert needed information into sbconf that is contained in pbconf. """
 
-    defaults = {'job_scheduler': None, 'user': None, 'no_email': False, 'run_dir': os.environ['PWD']}
+    defaults = {'job_scheduler': None, 'user': None, 'no_email': False, 'run_dir': os.environ['PWD'], 'name': None}
     for key in defaults:
         if key in pbconf and key not in sbconf:
             sbconf[key] = pbconf[key]
@@ -67,7 +67,7 @@ def get_full_splash_config(sbconf, pbconf):
                         'in your PhantomBatch config. Setting ' + key + ' as ' + str(defaults[key]))
             sbconf[key] = defaults[key]
 
-    fixed_settings = {'name': 'splash', 'short_name': 'splash'}
+    fixed_settings = {'short_name': 'splash'}
     for key in fixed_settings:
         sbconf[key] = fixed_settings[key]
 
