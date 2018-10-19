@@ -26,6 +26,8 @@ def create_jobscripts(pconf, pbconf, jobscript_filename=None, jobscript_name=Non
 
     for tmp_dir in pbconf['dirs']:
         filename = os.path.join(tmp_dir, jobscript_filename)
+        log.debug('Jobscript filename..')
+        log.debug(filename)
         if pbconf['job_scheduler'] == 'slurm':
             edit_slurm_jobscript(pbconf, filename, jobscript_names[index])
 
