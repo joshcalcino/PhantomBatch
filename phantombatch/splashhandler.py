@@ -108,9 +108,11 @@ def create_jobscripts_for_splash(pconf, pbconf, sbconf):
 
     # Create the jobscript file for splash
     with open(old_jobscript_path, 'r') as f:
-        for line in f:
-            print(line)
         with open(new_jobscript_path, 'w') as g:
+            num_lines = 0
+            for line in f:
+                num_lines += 1
+            print(num_lines)
             num_lines = sum([1 for tmp in f])
             print(num_lines)
             i = 0
