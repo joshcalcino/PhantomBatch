@@ -13,7 +13,7 @@ def loop_keys_dir(pconf, pbconf):
 
         for i in range(0, len(pbconf['no_loop'])):
             print(dirs)
-            dirs = keys_dir(dirs, fw_keys[i], pconf, no_loop=True)
+            dirs = keys_dir(dirs, fw_keys[i], pconf, no_loop=False)
             no_loop_keys.append(fw_keys[i])
 
             dirs = keys_dir(dirs, nl_keys[i], pconf, no_loop=True)
@@ -103,7 +103,8 @@ def dir_func(dirs, string, dict_arr, no_loop=False):
 
     if no_loop:
         # For now, this is only going to work if you're wanting no_loop over one set of parameters...
-        dirs = [dirs[j] + string + str(dict_arr[i]).replace('.', '') for i in range(0, len(dict_arr)) for j in range(0, len(dirs))]
+        dirs = [dirs[i] + string + str(dict_arr[i % len(dict_arr)]).replace('.', '')
+                for i in range(0, len(dirs))]
         return dirs
 
     tmp_dir = ['']*len(dict_arr)
