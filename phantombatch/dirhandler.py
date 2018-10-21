@@ -45,6 +45,9 @@ def keys_dir(dirs, key, pconf, no_loop=False):
     if key == 'm2':
         dirs = dir_func(dirs, 'm2', pconf[key], no_loop=no_loop)
 
+    if key == 'accr2':
+        dirs = dir_func(dirs, 'acr2', pconf[key], no_loop=no_loop)
+
     if key == 'alphaSS':
         dirs = dir_func(dirs, 'aSS', pconf[key], no_loop=no_loop)
 

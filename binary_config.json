@@ -4,6 +4,8 @@
   "binary_e": [0, 0.5],
   "binary_a": [20, 15],
   "binary_i": 0,
+  "m2": [0.1, 0.2, 0.3],
+  "accr2": [0.5, 0.75, 1],
   "disc_mbinary": 0.005,
   "R_inbinary": 30,
   "R_outbinary": 80,
@@ -31,8 +33,8 @@
   "add_dust": 0,
   "add_planets": 0,
   "num_planets": 0,
-  "no_loop": ["binary_a"],
-  "fix_with": ["binary_e"],
+  "no_loop": ["binary_a", "m2"],
+  "fix_with": ["binary_e", "accr2"],
   "make_options": "",
   "make_setup_options": ""
   }
