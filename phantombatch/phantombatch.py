@@ -11,7 +11,7 @@ __all__ = ["PhantomBatch"]
 
 class PhantomBatch(object):
 
-    def __init__(self, config_filename, verbose=False, terminate_at_exit=True, run_dir=None):
+    def __init__(self, config_filename, verbose=False, terminate_at_exit=True, run_dir=None, fresh_start=False):
         #  Set up the level of verbosity
         if verbose:
             log.basicConfig(level=log.DEBUG)
@@ -27,6 +27,10 @@ class PhantomBatch(object):
 
         self.pconf = self.config['phantom_setup']
         self.pbconf = self.config['phantom_batch_setup']
+
+        if fresh_start:
+            if os.path.exists(self.pbconf['name']):
+                os.remove(self.pbconf['name'])
 
         # check if a saved phantombatch configuration file already exists, overwrite current if it does
         if os.path.isfile(os.path.join(self.pbconf['name'], self.pbconf['name'] + '_pbconf.pkl')):
