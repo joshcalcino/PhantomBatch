@@ -1,4 +1,5 @@
 import os
+import shutil
 import logging as log
 import subprocess
 from phantombatch import setuphandler, jobscripthandler, dirhandler, jobhandler, splashhandler, util
@@ -30,7 +31,7 @@ class PhantomBatch(object):
 
         if fresh_start:
             if os.path.exists(self.pbconf['name']):
-                os.remove(self.pbconf['name'])
+                shutil.rmtree(self.pbconf['name'])
 
         # check if a saved phantombatch configuration file already exists, overwrite current if it does
         if os.path.isfile(os.path.join(self.pbconf['name'], self.pbconf['name'] + '_pbconf.pkl')):
