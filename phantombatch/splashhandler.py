@@ -99,7 +99,7 @@ def append_splash_jobscript(sbconf, jobscript_path):
         path = path.split(os.sep)
         print(path)
         # Get the second last part of the directory, this is the folder we are currently looking at
-        image_string = path[:-2]
+        image_string = path[-2]
         print(image_string)
         if 'image_string' in sbconf:
             image_string += sbconf['image_string']
