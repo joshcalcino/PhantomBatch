@@ -12,7 +12,7 @@ from phantombatch import jobscripthandler, dirhandler
 
 def make_splash_defaults_dir(pconf, pbconf, sbconf):
 
-    dirhandler.create_dirs(pconf, pbconf, 'splash')
+    dirhandler.create_dirs(pconf, sbconf, 'splash')
     splash_directory = os.path.join(pbconf['run_dir'], pbconf['name'], 'splash')
 
     splash_defaults_dir = os.path.join(splash_directory, 'splash_defaults')
@@ -57,7 +57,8 @@ def copy_splash_defaults(pconf, pbconf, sbconf, names=None):
 def get_full_splash_config(pbconf, sbconf):
     """ Insert needed information into sbconf that is contained in pbconf. """
 
-    defaults = {'job_scheduler': None, 'user': None, 'no_email': False, 'run_dir': os.environ['PWD'], 'name': None}
+    defaults = {'job_scheduler': None, 'user': None, 'no_email': False, 'run_dir': os.environ['PWD'], 'name': None,
+                "no_loop": None, "fix_with": None}
     for key in defaults:
         if key in pbconf and key not in sbconf:
             sbconf[key] = pbconf[key]
@@ -108,6 +109,7 @@ def append_splash_jobscript(sbconf, jobscript_path):
 
 def create_jobscripts_for_splash(pconf, pbconf, sbconf):
     file = os.path.join(pbconf['dirs'][0], pbconf['setup']+'.jobscript')
+    print(pbconf['dirs'][0], pbconf['setup']+'.jobscript')
     print(file)
     destination = sbconf['splash_defaults_dir']
     print(destination)
