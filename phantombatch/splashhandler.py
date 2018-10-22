@@ -12,7 +12,7 @@ from phantombatch import jobscripthandler, dirhandler
 
 def make_splash_defaults_dir(pconf, pbconf, sbconf):
 
-    dirhandler.create_dirs(pconf, sbconf, 'splash')
+    dirhandler.create_dirs(pconf, pbconf, 'splash')
     splash_directory = os.path.join(pbconf['run_dir'], pbconf['name'], 'splash')
 
     splash_defaults_dir = os.path.join(splash_directory, 'splash_defaults')
@@ -130,7 +130,7 @@ def create_jobscripts_for_splash(pconf, pbconf, sbconf):
                     break
                 i += 1
 
-    os.remove(old_jobscript_path)
+    # os.remove(old_jobscript_path)
 
     path, file = os.path.split(new_jobscript_path)
 
