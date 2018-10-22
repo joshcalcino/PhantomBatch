@@ -130,7 +130,7 @@ def create_jobscripts_for_splash(pconf, pbconf, sbconf):
                     break
                 i += 1
 
-    # os.remove(old_jobscript_path)
+    os.remove(old_jobscript_path)
 
     path, file = os.path.split(new_jobscript_path)
 

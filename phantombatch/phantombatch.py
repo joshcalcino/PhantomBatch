@@ -21,6 +21,7 @@ class PhantomBatch(object):
 
         #  Terminate jobs if PhantomBatch is interrupted
         if terminate_at_exit:
+            log.info('PhantomBatch will cancel all jobs on exiting')
             atexit.register(self.terminate_jobs_at_exit)
 
         #  Load in config file
@@ -30,6 +31,7 @@ class PhantomBatch(object):
         self.pbconf = self.config['phantom_batch_setup']
 
         if fresh_start:
+            log.info('Removing previous run directory..')
             if os.path.exists(self.pbconf['name']):
                 shutil.rmtree(self.pbconf['name'])
 
