@@ -97,7 +97,7 @@ def append_splash_jobscript(sbconf, jobscript_path):
         #  Replace the name of the png file
         path = os.path.normpath(jobscript_path)
         path = path.split(os.sep)
-
+        print(path)
         # Get the second last part of the directory, this is the folder we are currently looking at
         image_string = path[:-2]
         print(image_string)
@@ -137,6 +137,7 @@ def create_jobscripts_for_splash(pconf, pbconf, sbconf):
     # Copy all of these jobscript files to each simulation folder and apply folder level changes
     for tmp_dir in pbconf['dirs']:
         shutil.copy(new_jobscript_path, tmp_dir)
+        print(tmp_dir)
         append_splash_jobscript(sbconf, os.path.join(tmp_dir, file))
 
     # Now use jobhandler.create_jobscripts to include options and names in each jobscript
