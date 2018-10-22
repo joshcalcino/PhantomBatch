@@ -94,7 +94,16 @@ def append_splash_jobscript(sbconf, jobscript_path):
             else:
                 f.write(sbconf['jobscript_lines'].append('\n'))
 
-        f.write(sbconf['splash_command'])
+        #  Replace the name of the png file
+        path = os.path.normpath(jobscript_path)
+        path.split(os.sep)
+
+        # Get the second last part of the directory, this is the folder we are currently looking at
+        image_string = path[:-2]
+        print(image_string)
+        if 'image_string' in sbconf:
+            image_string += sbconf['image_string']
+        f.write(sbconf['splash_command'].replace('Sname', image_string))
 
 
 def create_jobscripts_for_splash(pconf, pbconf, sbconf):
@@ -116,7 +125,6 @@ def create_jobscripts_for_splash(pconf, pbconf, sbconf):
             for line in f:
                 #  -4 below since the last 4 lines in old_jobscript_path are the phantom specific lines
                 if i < num_lines-4:
-                    print(line)
                     g.write(line)
                 else:
                     break
