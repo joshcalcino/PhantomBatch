@@ -131,11 +131,11 @@ def create_jobscripts_for_splash(pconf, pbconf, sbconf):
                 i += 1
 
     os.remove(old_jobscript_path)
-    append_splash_jobscript(sbconf, new_jobscript_path)
 
     # Copy all of these jobscript files to each simulation folder
     for tmp_dir in pbconf['dirs']:
         shutil.copy(new_jobscript_path, tmp_dir)
+        append_splash_jobscript(sbconf, tmp_dir)
 
     # Now use jobhandler.create_jobscripts to include options and names in each jobscript
     jobscripthandler.create_jobscripts(pconf, pbconf, jobscript_filename=sbconf['short_name'],
