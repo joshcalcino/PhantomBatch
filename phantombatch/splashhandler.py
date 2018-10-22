@@ -96,7 +96,7 @@ def append_splash_jobscript(sbconf, jobscript_path):
 
         #  Replace the name of the png file
         path = os.path.normpath(jobscript_path)
-        path.split(os.sep)
+        path = path.split(os.sep)
 
         # Get the second last part of the directory, this is the folder we are currently looking at
         image_string = path[:-2]
