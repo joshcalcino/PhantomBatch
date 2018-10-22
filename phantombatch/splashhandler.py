@@ -77,7 +77,7 @@ def get_splash_command(pbconf, sbconf):
     """ Add in a splash command if one is not defined in sbconf. """
 
     if 'splash_command' not in sbconf:
-        log.warning('No Splash command entered in splash config, add one in using \"splash_command\". Setting default'
+        log.warning('No Splash command entered in splash config, add one in using \"splash_command\". Setting default '
                     'as \'ssplash -x 1 -y 2 -r 6 -dev ')
         sbconf['splash_command'] = 'ssplash -x 1 -y 2 -r 6 -dev ' + 'Sname.png ' + pbconf['setup'] + '_*'
 
@@ -108,6 +108,7 @@ def append_splash_jobscript(sbconf, jobscript_path):
 
 def create_jobscripts_for_splash(pconf, pbconf, sbconf):
     file = os.path.join(pbconf['dirs'][0], pbconf['setup']+'.jobscript')
+    print(pbconf['setup'])
     destination = sbconf['splash_defaults_dir']
 
     shutil.copy(file, destination)
@@ -130,7 +131,7 @@ def create_jobscripts_for_splash(pconf, pbconf, sbconf):
                     break
                 i += 1
 
-    os.remove(old_jobscript_path)
+    # os.remove(old_jobscript_path)
 
     path, file = os.path.split(new_jobscript_path)
 
