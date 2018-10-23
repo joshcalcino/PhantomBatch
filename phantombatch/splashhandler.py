@@ -120,6 +120,7 @@ def create_jobscripts_for_splash(pconf, pbconf, sbconf):
     new_jobscript_path = os.path.join(destination, sbconf['short_name']+'.jobscript')
 
     # Create the jobscript file for splash
+    log.debug('Trying to create splash jobscript file..')
     with open(old_jobscript_path, 'r') as f:
         with open(new_jobscript_path, 'w') as g:
             num_lines = 0
@@ -127,9 +128,10 @@ def create_jobscripts_for_splash(pconf, pbconf, sbconf):
                 print(line)
                 num_lines += 1
             i = 0
+            print(num_lines)
             for line in f:
                 #  -4 below since the last 4 lines in old_jobscript_path are the phantom specific lines
-                print(num_lines)
+                print(line)
                 if i < num_lines-4:
                     print(line)
                     g.write(line)
