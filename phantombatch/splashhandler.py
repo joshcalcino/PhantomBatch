@@ -128,6 +128,7 @@ def create_jobscripts_for_splash(pconf, pbconf, sbconf):
             i = 0
             for line in f:
                 #  -4 below since the last 4 lines in old_jobscript_path are the phantom specific lines
+                print(num_lines)
                 if i < num_lines-4:
                     print(line)
                     g.write(line)
