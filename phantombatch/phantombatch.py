@@ -57,7 +57,7 @@ class PhantomBatch(object):
             if 'no_splash' in self.sbconf and self.sbconf['no_splash'] is True:
                 # Add this in so it is easier to control splash usage without having to remove lines from config file
                 self.run_splash = False
-
+        print(self.run_splash)
         # Get running directory, use current directory if run_dir not specified
         if run_dir is not None:
             self.run_dir = run_dir
