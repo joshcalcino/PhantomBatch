@@ -318,7 +318,7 @@ def check_completed_jobs(pbconf):
                 if any(job in cjob for cjob in current_jobs):
                     log.debug('Cancelling ' + job + ' since it has reached the desired number of dump files.')
 
-                    assert any(job and pbconf['submitted_job_numbers'][i] in cjob for cjob in current_jobs)
+                    # assert any(job and pbconf['submitted_job_numbers'][i] in cjob for cjob in current_jobs)
 
                     cancel_job(pbconf, pbconf['submitted_job_numbers'][i])
 
