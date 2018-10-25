@@ -145,6 +145,7 @@ def create_jobscripts_for_splash(pconf, pbconf, sbconf):
 
     # Copy all of these jobscript files to each simulation folder and apply folder level changes
     for tmp_dir in pbconf['dirs']:
+        print('Printing tmp_dir..')
         print(tmp_dir)
         shutil.copy(new_jobscript_path, tmp_dir)
         append_splash_jobscript(sbconf, os.path.join(tmp_dir, file))

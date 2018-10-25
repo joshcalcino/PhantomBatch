@@ -137,7 +137,6 @@ def check_running_jobs(pbconf):
                                        stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
 
         my_jobs = decipher_slurm_output(jobs, pbconf)
-        log.debug(my_jobs)
 
     elif pbconf['job_scheduler'] == 'pbs':
         my_jobs = get_pbs_jobs()
