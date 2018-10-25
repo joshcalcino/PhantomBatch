@@ -165,14 +165,16 @@ def move_images(pbconf):
             shutil.move(tmp_dir, os.path.join(tmp_dir.replace('simulations', 'splash'), 'images'))
 
 
-def submit_splash_jobs(pbconf, sbconf):
+def submit_splash_job(pbconf, sbconf, directory):
     """ Submit jobs for splash. """
 
     if 'submitted_job_numbers' not in sbconf:
         sbconf['submitted_job_numbers'] = []
 
-    for tmp_dir in pbconf['dirs']:
-        sbconf['submitted_job_numbers'].append(jobhandler.submit_job(pbconf, tmp_dir, 'splash.jobscript'))
+    job_number = jobhandler.submit_job(pbconf, directory, 'splash.jobscript')
+
+    if job_number is not None:
+        sbconf['submitted_job_numbers'].append(job_number)
 
 
 def initialise_splash_handler(pconf, pbconf, sbconf):
@@ -196,6 +198,21 @@ def initialise_splash_handler(pconf, pbconf, sbconf):
     create_jobscripts_for_splash(pconf, pbconf, sbconf)
 
 
-def splash_handler(pconf, pbconf, sbconf):
-    submit_splash_jobs(pbconf, sbconf)
-    # return NotImplementedError
+def splash_handler(pbconf, sbconf):
+
+    if 'last_splash_run' not in sbconf:
+        sbconf['last_splash_run'] = []
+
+    if 'frequency' in sbconf:
+        i = 0
+        for num_dump_files in pbconf['job_num_dumps']:
+            if i < len(sbconf['last_splash_run']):
+                if num_dump_files - num_dump_files % sbconf['frequency'] >= sbconf['frequency']:
+                    submit_splash_job(pbconf, sbconf, pbconf['dirs'][i])
+                    sbconf['last_splash_run'][i] = num_dump_files
+
+            else:
+                if num_dump_files >= sbconf['frequency']:
+                    submit_splash_job(pbconf, sbconf, pbconf['dirs'][i])
+                    sbconf['last_splash_run'].append(num_dump_files - num_dump_files % sbconf['frequency'])
+            i += 1
