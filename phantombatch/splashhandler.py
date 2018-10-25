@@ -4,11 +4,6 @@ import logging as log
 import glob
 from phantombatch import jobscripthandler, dirhandler
 
-# try:
-#     splash_dir = os.environ('SPLASH_DIR')
-# except KeyError:
-#     log.warning('SPLASH_DIR environment variable not set!')
-
 
 def make_splash_defaults_dir(pconf, pbconf, sbconf):
 
@@ -21,6 +16,17 @@ def make_splash_defaults_dir(pconf, pbconf, sbconf):
         os.mkdir(splash_defaults_dir)
 
     sbconf['splash_defaults_dir'] = splash_defaults_dir
+
+    for tmp_dir in sbconf['dirs']:
+        # Make the directories to store movies
+        movies_dir = os.path.join(tmp_dir, 'movies')
+        if not os.path.exists(movies_dir):
+            os.mkdir(movies_dir)
+
+        # Make the directories to store images
+        images_dir = os.path.join(tmp_dir, 'images')
+        if not os.path.exists(images_dir):
+            os.mkdir(images_dir)
 
 
 def copy_splash_defaults(pconf, pbconf, sbconf, names=None):
@@ -98,21 +104,20 @@ def append_splash_jobscript(sbconf, jobscript_path):
         #  Replace the name of the png file
         path = os.path.normpath(jobscript_path)
         path = path.split(os.sep)
-        print(path)
+
         # Get the second last part of the directory, this is the folder we are currently looking at
         image_string = path[-2]
-        print(image_string)
+
         if 'image_string' in sbconf:
             image_string += sbconf['image_string']
         f.write(sbconf['splash_command'].replace('Sname', image_string))
 
 
 def create_jobscripts_for_splash(pconf, pbconf, sbconf):
+    """ Create the splash jobscripts for each simulation. """
+
     file = os.path.join(pbconf['dirs'][0], pbconf['setup']+'.jobscript')
-    print(pbconf['dirs'][0], pbconf['setup']+'.jobscript')
-    print(file)
     destination = sbconf['splash_defaults_dir']
-    print(destination)
 
     shutil.copy(file, destination)
 
@@ -125,35 +130,36 @@ def create_jobscripts_for_splash(pconf, pbconf, sbconf):
     log.debug('Trying to create splash jobscript file..')
     with open(old_jobscript_path, 'r') as f:
         with open(new_jobscript_path, 'w') as g:
-            # num_lines = 0
-            # for line in f:
-            #     print(line)
-            #     num_lines += 1
             i = 0
-            # print(num_lines)
             for line in f:
                 #  -4 below since the last 4 lines in old_jobscript_path are the phantom specific lines
-                # print(line)
                 if i < num_lines-4:
-                    print(line)
                     g.write(line)
                 else:
                     break
                 i += 1
 
-    # os.remove(old_jobscript_path)
+    os.remove(old_jobscript_path)
 
     path, file = os.path.split(new_jobscript_path)
 
     # Copy all of these jobscript files to each simulation folder and apply folder level changes
     for tmp_dir in pbconf['dirs']:
         shutil.copy(new_jobscript_path, tmp_dir)
-        print(tmp_dir)
         append_splash_jobscript(sbconf, os.path.join(tmp_dir, file))
 
     # Now use jobhandler.create_jobscripts to include options and names in each jobscript
     jobscripthandler.create_jobscripts(pconf, pbconf, jobscript_filename=sbconf['short_name'],
                                        jobscript_name=sbconf['short_name'])
+
+
+def move_images(pbconf):
+    """ Move any images from the simulation directory into the splash directory. """
+
+    for tmp_dir in pbconf['dirs']:
+        files = glob.glob(tmp_dir)
+        if any(file.endswith('.png') for file in files):
+            shutil.move(tmp_dir, os.path.join(tmp_dir.replace('simulations', 'splash'), 'images'))
 
 
 def initialise_splash_handler(pconf, pbconf, sbconf):
