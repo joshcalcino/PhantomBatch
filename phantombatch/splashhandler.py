@@ -152,8 +152,8 @@ def create_jobscripts_for_splash(pconf, pbconf, sbconf):
         append_splash_jobscript(sbconf, os.path.join(tmp_dir, file))
 
     # Now use jobhandler.create_jobscripts to include options and names in each jobscript
-        sbconf['job_names'] = jobscripthandler.create_jobscripts(pconf, pbconf, jobscript_filename=sbconf['short_name'],
-                                                                 jobscript_name=sbconf['short_name'])
+    sbconf['job_names'] = jobscripthandler.create_jobscripts(pconf, pbconf, jobscript_filename=sbconf['short_name'],
+                                                             jobscript_name=sbconf['short_name'])
 
 
 def move_images(pbconf):
