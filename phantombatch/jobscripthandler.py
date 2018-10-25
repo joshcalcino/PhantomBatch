@@ -20,7 +20,7 @@ def create_jobscripts(pconf, pbconf, jobscript_filename=None, jobscript_name=Non
     #             for tmp_dir in pbconf['dirs']]
 
     jobscript_names = get_jobscript_names(pconf, pbconf, jobscript_name=jobscript_name)
-    pbconf['job_names'] = jobscript_names
+    # pbconf['job_names'] = jobscript_names
 
     index = 0
 
@@ -39,6 +39,8 @@ def create_jobscripts(pconf, pbconf, jobscript_filename=None, jobscript_name=Non
         index += 1
 
     log.info('Completed.')
+
+    return jobscript_names
 
 
 def edit_slurm_jobscript(pbconf, jobscript_filename, jobscript_names):

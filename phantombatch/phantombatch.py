@@ -53,11 +53,11 @@ class PhantomBatch(object):
         if 'splash_batch_setup' in self.config:
             self.run_splash = True
             self.sbconf = splashhandler.get_full_splash_config(self.pbconf, self.config['splash_batch_setup'])
-            print(self.sbconf['no_splash'])
-            if 'no_splash' in self.sbconf and self.sbconf['no_splash'] == 1:
+
+            if 'no_splash' in self.sbconf and self.sbconf['no_splash'] == 1 is True:
                 # Add this in so it is easier to control splash usage without having to remove lines from config file
                 self.run_splash = False
-        print(self.run_splash)
+
         # Get running directory, use current directory if run_dir not specified
         if run_dir is not None:
             self.run_dir = run_dir
@@ -267,7 +267,7 @@ class PhantomBatch(object):
         self.initialise()
         self.create_setups()
         self.run_phantom_setup()
-        jobscripthandler.create_jobscripts(self.pconf, self.pbconf)
+        self.pbconf['job_names'] = jobscripthandler.create_jobscripts(self.pconf, self.pbconf)
         jobhandler.check_running_jobs(self.pbconf)
         jobhandler.run_batch_jobs(self.pbconf)
 
