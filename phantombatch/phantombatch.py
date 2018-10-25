@@ -284,5 +284,5 @@ class PhantomBatch(object):
             jobhandler.run_batch_jobs(self.pbconf)
             completed = self.check_phantombatch_complete()
 
-            if self.run_splash:
+            if self.run_splash and completed:
                 splashhandler.splash_handler(self.pconf, self.pbconf, self.sbconf)

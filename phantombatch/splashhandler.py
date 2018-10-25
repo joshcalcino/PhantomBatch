@@ -2,7 +2,7 @@ import os
 import shutil
 import logging as log
 import glob
-from phantombatch import jobscripthandler, dirhandler
+from phantombatch import jobhandler, jobscripthandler, dirhandler
 
 
 def make_splash_defaults_dir(pconf, pbconf, sbconf):
@@ -162,6 +162,16 @@ def move_images(pbconf):
             shutil.move(tmp_dir, os.path.join(tmp_dir.replace('simulations', 'splash'), 'images'))
 
 
+def submit_splash_jobs(pbconf, sbconf):
+    """ Submit jobs for splash. """
+
+    if 'submitted_job_numbers' not in sbconf:
+        sbconf['submitted_job_numbers'] = []
+
+    for tmp_dir in pbconf['dirs']:
+        sbconf['submitted_job_numbers'].append(jobhandler.submit_job(pbconf, tmp_dir, 'splash.jobscript'))
+
+
 def initialise_splash_handler(pconf, pbconf, sbconf):
     """ Initialise the splash handler. """
 
@@ -184,4 +194,5 @@ def initialise_splash_handler(pconf, pbconf, sbconf):
 
 
 def splash_handler(pconf, pbconf, sbconf):
-    return NotImplementedError
+    submit_splash_jobs(pbconf, sbconf)
+    # return NotImplementedError
