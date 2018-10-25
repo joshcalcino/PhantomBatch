@@ -197,5 +197,5 @@ def initialise_splash_handler(pconf, pbconf, sbconf):
 
 
 def splash_handler(pconf, pbconf, sbconf):
-    # submit_splash_jobs(pbconf, sbconf)
-    return NotImplementedError
+    submit_splash_jobs(pbconf, sbconf)
+    # return NotImplementedError
