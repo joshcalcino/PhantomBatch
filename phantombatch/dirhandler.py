@@ -12,7 +12,6 @@ def loop_keys_dir(pconf, pbconf):
         fw_keys = pbconf['fix_with']
 
         for i in range(0, len(pbconf['no_loop'])):
-            print(dirs)
             dirs = keys_dir(dirs, fw_keys[i], pconf, no_loop=False)
             no_loop_keys.append(fw_keys[i])
 
@@ -21,7 +20,6 @@ def loop_keys_dir(pconf, pbconf):
 
     for key in pconf:
         if isinstance(pconf[key], list) and key not in no_loop_keys:
-            print(dirs)
             dirs = keys_dir(dirs, key, pconf, no_loop=False)
 
     return dirs

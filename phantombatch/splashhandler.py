@@ -144,10 +144,7 @@ def create_jobscripts_for_splash(pconf, pbconf, sbconf):
     path, file = os.path.split(new_jobscript_path)
 
     # Copy all of these jobscript files to each simulation folder and apply folder level changes
-    print(pbconf['dirs'])
     for tmp_dir in pbconf['dirs']:
-        print('Printing tmp_dir..')
-        print(tmp_dir)
         shutil.copy(new_jobscript_path, tmp_dir)
         append_splash_jobscript(sbconf, os.path.join(tmp_dir, file))
 
@@ -166,15 +163,11 @@ def move_images(pbconf):
     log.debug('Attempting to move any .png images in the simulation directories..')
 
     for tmp_dir in pbconf['dirs']:
-        print(tmp_dir)
         files = glob.glob(os.path.join(tmp_dir, '*.png'))
-        print(files)
         if len(files) > 0:
             for file in files:
                 split_file_path = file.replace('simulations', 'splash').split(os.sep)
-                print(split_file_path)
-                print(split_file_path[:-1])
-                print(split_file_path[-1])
+
                 file_path = os.path.join('/', *split_file_path[:-1], 'images', split_file_path[-1])
                 shutil.move(file, file_path)
 
@@ -219,6 +212,7 @@ def splash_handler(pbconf, sbconf):
 
     if 'frequency' in sbconf:
         i = 0
+        print(sbconf['last_splash_run'])
         for num_dump_files in pbconf['job_num_dumps']:
             if i < len(sbconf['last_splash_run']):
                 if num_dump_files - num_dump_files % sbconf['frequency'] >= sbconf['frequency']:
