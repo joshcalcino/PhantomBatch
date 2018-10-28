@@ -221,6 +221,14 @@ def cancel_job(pbconf, job_number):
         log.debug(output.strip())
 
 
+def cancel_job_by_name(pbconf, job_name):
+    current_jobs = check_running_jobs(pbconf)
+
+    for cjob in current_jobs:
+        if job_name in cjob:
+            cancel_job(pbconf, cjob[0])
+
+
 def cancel_all_submitted_jobs(pbconf):
     """ This function will cancel all of the jobs submitted by PhantomBatch for pbconf['name']. """
 
@@ -317,7 +325,7 @@ def check_completed_jobs(pbconf):
 
                     # assert any(job and pbconf['submitted_job_numbers'][i] in cjob for cjob in current_jobs)
 
-                    cancel_job(pbconf, pbconf['submitted_job_numbers'][i])
+                    cancel_job_by_name(pbconf, pbconf['job_names'][i])
 
                     if 'completed_jobs' in pbconf and job not in pbconf['completed_jobs']:
                         pbconf['completed_jobs'].append(job)
