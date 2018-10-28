@@ -175,7 +175,7 @@ def move_images(pbconf):
                 print(split_file_path)
                 print(split_file_path[:-1])
                 print(split_file_path[-1])
-                file_path = os.path.join(*split_file_path[:-1], 'images', split_file_path[-1])
+                file_path = os.path.join('/', *split_file_path[:-1], 'images', split_file_path[-1])
                 shutil.move(file, file_path)
 
 
