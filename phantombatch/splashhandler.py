@@ -167,6 +167,7 @@ def move_images(pbconf):
 
     for tmp_dir in pbconf['dirs']:
         files = glob.glob(tmp_dir)
+        print(files)
         if any(file.endswith('.png') for file in files):
             shutil.move(tmp_dir, os.path.join(tmp_dir.replace('simulations', 'splash'), 'images'))
 
@@ -221,8 +222,6 @@ def splash_handler(pbconf, sbconf):
                 if num_dump_files >= sbconf['frequency']:
                     submit_splash_job(pbconf, sbconf, pbconf['dirs'][i])
                     sbconf['last_splash_run'].append(num_dump_files - num_dump_files % sbconf['frequency'])
-
-            files = glob.glob(pbconf['dirs'][i])
 
             i += 1
 
