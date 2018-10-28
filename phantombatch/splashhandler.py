@@ -166,6 +166,7 @@ def move_images(pbconf):
     log.debug('Attempting to move any .png images in the simulation directories..')
 
     for tmp_dir in pbconf['dirs']:
+        print(tmp_dir)
         files = glob.glob(tmp_dir)
         print(files)
         if any(file.endswith('.png') for file in files):
