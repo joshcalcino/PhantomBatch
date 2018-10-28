@@ -216,12 +216,12 @@ def splash_handler(pbconf, sbconf):
         for num_dump_files in pbconf['job_num_dumps']:
             if i < len(sbconf['last_splash_run']):
                 print(num_dump_files - num_dump_files % sbconf['frequency'], sbconf['last_splash_run'][i])
-                if num_dump_files - num_dump_files % sbconf['frequency'] >= sbconf['last_splash_run'][i]:
+                if num_dump_files - num_dump_files % sbconf['frequency'] > sbconf['last_splash_run'][i]:
                     submit_splash_job(pbconf, sbconf, pbconf['dirs'][i])
                     sbconf['last_splash_run'][i] = num_dump_files - num_dump_files % sbconf['frequency']
 
             else:
-                if num_dump_files >= sbconf['frequency']:
+                if num_dump_files >=sbconf['frequency']:
                     submit_splash_job(pbconf, sbconf, pbconf['dirs'][i])
                     sbconf['last_splash_run'].append(num_dump_files - num_dump_files % sbconf['frequency'])
 
