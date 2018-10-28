@@ -312,7 +312,7 @@ def check_completed_jobs(pbconf):
             #  the directory that stores pbconf['job_names'][i]
 
             #  Make a list of all of the dump files in the simulation directory
-            job_list = glob.glob(pbconf['sim_dirs'][i] + '/' + pbconf['setup'] + '_*')
+            job_list = glob.glob(os.path.join(pbconf['sim_dirs'][i], pbconf['setup'] + '_*'))
 
             pbconf['job_num_dumps'][i] = len(job_list)
 

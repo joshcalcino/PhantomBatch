@@ -167,7 +167,7 @@ def move_images(pbconf):
 
     for tmp_dir in pbconf['dirs']:
         print(tmp_dir)
-        files = glob.glob(tmp_dir)
+        files = glob.glob(os.path.join(tmp_dir, '*.png'))
         print(files)
         if any(file.endswith('.png') for file in files):
             shutil.move(tmp_dir, os.path.join(tmp_dir.replace('simulations', 'splash'), 'images'))
