@@ -125,7 +125,7 @@ def get_pbs_jobs():
 
 
 def check_running_jobs(pbconf):
-    log.info('Checking jobs currently running..')
+    log.debug('Checking jobs currently running..')
 
     my_pb_jobs = []
     my_jobs = []
@@ -207,18 +207,18 @@ def submit_job(pbconf, directory, jobscript_name=None):
 
 def cancel_job(pbconf, job_number):
     """ Cancel a single job. """
-    log.info('Cancelling job ' + str(job_number))
+    log.debug('Cancelling job ' + str(job_number))
 
     if pbconf['job_scheduler'] == 'slurm':
         output = subprocess.check_output('scancel ' + str(job_number), stderr=subprocess.STDOUT,
                                          universal_newlines=True, shell=True)
-        log.debug(output.strip())
+        log.info(output.strip())
         # util.
 
     elif pbconf['job_scheduler'] == 'pbs':
         output = subprocess.check_output('qdel ' + str(job_number), stderr=subprocess.STDOUT,
                                          universal_newlines=True, shell=True)
-        log.debug(output.strip())
+        log.info(output.strip())
 
 
 def cancel_job_by_name(pbconf, job_name):
