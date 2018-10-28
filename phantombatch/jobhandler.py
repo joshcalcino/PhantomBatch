@@ -207,18 +207,18 @@ def submit_job(pbconf, directory, jobscript_name=None):
 
 def cancel_job(pbconf, job_number):
     """ Cancel a single job. """
-    log.debug('Cancelling job ' + str(job_number))
+    log.info('Cancelling job ' + str(job_number))
 
     if pbconf['job_scheduler'] == 'slurm':
         output = subprocess.check_output('scancel ' + str(job_number), stderr=subprocess.STDOUT,
                                          universal_newlines=True, shell=True)
-        log.info(output.strip())
+        log.debug(output.strip())
         # util.
 
     elif pbconf['job_scheduler'] == 'pbs':
         output = subprocess.check_output('qdel ' + str(job_number), stderr=subprocess.STDOUT,
                                          universal_newlines=True, shell=True)
-        log.info(output.strip())
+        log.debug(output.strip())
 
 
 def cancel_job_by_name(pbconf, job_name):
@@ -256,12 +256,16 @@ def run_batch_jobs(pbconf):
     for job in pbconf['job_names']:
         log.debug('Looking to submit ' + job)
         current_jobs = check_running_jobs(pbconf)
-        if not any(job in cjob for cjob in current_jobs) and \
-                ('job_limit' in pbconf and (len(current_jobs) <= pbconf['job_limit'])):
+        if not any(job in cjob for cjob in current_jobs):
+            if 'job_limit' in pbconf and (len(current_jobs) < pbconf['job_limit']):
+                break
+
             if (job in pbconf['submitted_job_names']) and any(job in cjob for cjob in current_jobs):
                 pass
+
             elif ('completed_jobs' in pbconf) and (job in pbconf['completed_jobs']):
                 pass
+
             else:
                 log.debug('Printing job name that is being submitted')
                 log.debug(job)

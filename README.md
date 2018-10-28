@@ -22,6 +22,8 @@ Below is a list of features that have been added, or that will be added, in no p
     - Support for looping over planet parameters
 - Terminates jobs if PhantomBatch is interrupted
 
+Adding in any additional Phantom setup should be trivial. All we require is a copy of the `.setup` file,
+and a few lines in the code to make the setup available for use.
 
 ## Features to add:
 - Full support for binary discs
@@ -29,9 +31,9 @@ Below is a list of features that have been added, or that will be added, in no p
     - Support for potential
 - Support for all disc setups
 - Support for non-disc setups
-- Editing setup.in files before running phantom simulations
-- Ability to pick up where it left off if aborted (should be easy to implement)
-- Ability to render splash images/movies
+- Editing setup.in files before running phantom simulations (should be easy)
+- Ability to pick up where it left off if aborted (should be working, but will be buggy)
+- Ability to render splash images/movies (currently being implemented)
 - Support for more job schedulers (e.g. SGE)
 - Ability to stop simulations, moddump, and restart.
 
@@ -40,9 +42,10 @@ And below is a list of known issues.
 
 ## Known issues:
 - Some job and dir names might be excessively long if user specifies unusual numbers
+- Definitely numerous bugs.. As I am currently the sole writer/user, I only find issues I stumble on
 
 Excessive number of commits is due to me writing the code on my laptop, but running on a cluster. I will eventually
-make a new branch for testing and implementing changes to prevent this interfering with users in the future.
+make a stable to prevent this interfering with users in the future.
 
 # Brief User guide
 I will turn this into a wiki if PhantomBatch generates enough interest
@@ -57,7 +60,7 @@ which will return something like\
 
 This will make sure that nothing is printed to the terminal, all output is printed to `example.out`.
 This means that PhantomBatch will run in the background on the login node of a cluster, and will continue to run when
-you log out.
+you log out. But this probably depends on how long your particular cluster will let background jobs run for..
 
 If you want to cancel running a PhantomBatch job running in the background, do not `kill` it. This will prevent any exit
 functions from running. Instead, you want to interrupt PhantomBatch.
@@ -115,11 +118,13 @@ other variables specifying planet parameters will be neglected in creating your 
 Please make sure that you add your cluster into the Phantom `Makefile`, and set your `SYSTEM` environment variable.
 PhantomBatch WILL NOT WORK if you do not do this!
 
-There are also two other environment variables you will need to set (these are likely to be removed in a future release).
-The first is `PHANTOM_DIR`, which should provide the path to your copy of Phantom. This is usually `~/phantom` in most cases.
-The second is `PHANTOM_DATA`, which is not appropriately named for its task, but it is the directory where you have PhantomBatch cloned.
-Please run all of your PhantomBatch simulations INSIDE the PhantomBatch directory. I will eventually make it such that you can
-invoke PhantomBatch anywhere, but for now this is how you must do it.
+There are also two other environment variables you will need to set.
+The first is `PHANTOM_DIR`, which should provide the path to your copy of Phantom. 
+This is usually `~/phantom` in most cases.
+The second is `PHANTOMBATCH_DIR`, which is the directory where you have PhantomBatch cloned.
+
+You can run PhantomBatch from where ever you like, but make sure that the directory has plenty
+of space available for the number of dump files you expect to generate.
 
 There are a few example config files. Please look at them if you need help making your `config.json` files.
 
