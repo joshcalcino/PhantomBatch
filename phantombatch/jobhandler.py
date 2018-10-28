@@ -338,12 +338,6 @@ def check_completed_jobs(pbconf):
                 log.warning('You have not specified the number of dump files you would like for each simulation. '
                             'Please specify this in your .config file with the \'num_dumps\' key.')
 
-            if job not in current_job_names:
-                log.debug('job not in current_jobs.. going to submit....')
-                print(job)
-                print(current_jobs)
-                pbconf['submitted_job_numbers'].append(submit_job(pbconf, pbconf['dirs'][i]))
-
         i += 1
 
     log.info('----------------------------------------------------------------')
