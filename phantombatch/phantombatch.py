@@ -236,7 +236,7 @@ class PhantomBatch(object):
     def check_phantombatch_complete(self):
         """ Check if all the desired phantombatch jobs have been completed. """
 
-        log.info('Checking if PhantomBatch has completed all requested jobs.')
+        log.debug('Checking if PhantomBatch has completed all requested jobs.')
 
         current_jobs = jobhandler.check_running_jobs(self.pbconf)
         jobhandler.check_completed_jobs(self.pbconf)

@@ -300,9 +300,6 @@ def check_completed_jobs(pbconf):
     if 'job_num_dumps' not in pbconf:
         pbconf['job_num_dumps'] = [0]*len(pbconf['job_names'])
 
-    # log.debug('Printing pbconf[\'completed_jobs\'] in check_completed_jobs')
-    # log.debug(pbconf['completed_jobs'])
-
     i = 0
     for job in pbconf['job_names']:
         if util.check_pbconf_sim_dir_consistency(job, pbconf['sim_dirs'][i], pbconf):
