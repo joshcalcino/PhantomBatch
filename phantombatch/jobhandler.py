@@ -250,7 +250,9 @@ def run_batch_jobs(pbconf):
         current_jobs = check_running_jobs(pbconf)
         if not any(job in cjob for cjob in current_jobs) and \
                 ('job_limit' in pbconf and (len(current_jobs) <= pbconf['job_limit'])):
-
+            log.debug('IS JOB IN COMPLETED JOB NAMES????')
+            log.debug(job)
+            log.debug(pbconf['completed_job_names'])
             if job in pbconf['submitted_job_names'] and any(job in cjob for cjob in current_jobs):
                 pass
             elif 'completed_job_names' in pbconf and job in pbconf['completed_job_names']:
@@ -267,14 +269,14 @@ def run_batch_jobs(pbconf):
                     pbconf['submitted_job_names'].append(job)
                     log.debug(pbconf['submitted_job_names'])
 
-                log.debug('Printing submitted job numbers..')
-                log.debug(pbconf['submitted_job_numbers'])
-
-                log.debug('Printing submitted job names..')
-                log.debug(pbconf['submitted_job_names'])
-
-                log.debug('Printing job names..')
-                log.debug(pbconf['job_names'])
+                # log.debug('Printing submitted job numbers..')
+                # log.debug(pbconf['submitted_job_numbers'])
+                #
+                # log.debug('Printing submitted job names..')
+                # log.debug(pbconf['submitted_job_names'])
+                #
+                # log.debug('Printing job names..')
+                # log.debug(pbconf['job_names'])
 
         elif 'job_limit' in pbconf and (len(current_jobs) <= pbconf['job_limit']):
             log.debug('Hit maximum number of allowed jobs.')
