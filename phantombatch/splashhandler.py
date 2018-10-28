@@ -169,8 +169,9 @@ def move_images(pbconf):
         print(tmp_dir)
         files = glob.glob(os.path.join(tmp_dir, '*.png'))
         print(files)
-        if any(file.endswith('.png') for file in files):
-            shutil.move(os.path.join(tmp_dir, '*.png'), os.path.join(tmp_dir.replace('simulations', 'splash'), 'images'))
+        if len(files) > 0:
+            for file in files:
+                shutil.move(file, os.path.join(tmp_dir.replace('simulations', 'splash'), 'images'))
 
 
 def submit_splash_job(pbconf, sbconf, directory):
