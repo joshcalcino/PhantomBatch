@@ -257,7 +257,7 @@ def run_batch_jobs(pbconf):
         log.debug('Looking to submit ' + job)
         current_jobs = check_running_jobs(pbconf)
         if not any(job in cjob for cjob in current_jobs):
-            if 'job_limit' in pbconf and (len(current_jobs) < pbconf['job_limit']):
+            if 'job_limit' in pbconf and (len(current_jobs) >= pbconf['job_limit']):
                 break
 
             if (job in pbconf['submitted_job_names']) and any(job in cjob for cjob in current_jobs):
