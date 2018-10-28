@@ -173,9 +173,9 @@ def move_images(pbconf):
             for file in files:
                 split_file_path = file.replace('simulations', 'splash').split(os.sep)
                 print(split_file_path)
-                print(split_file_path[:-1])
+                print(split_file_path[:-2])
                 print(split_file_path[-1])
-                file_path = os.path.join(split_file_path[:-1], 'images', split_file_path[-1])
+                file_path = os.path.join(*split_file_path[:-2], 'images', split_file_path[-1])
                 shutil.move(file, file_path)
 
 
