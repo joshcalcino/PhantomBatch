@@ -263,7 +263,9 @@ def run_batch_jobs(pbconf):
                 pbconf['submitted_job_numbers'].append(str(job_number))
 
                 if job not in pbconf['submitted_job_names']:
+                    log.debug('adding ' + str(job) + ' into submitted_job_names')
                     pbconf['submitted_job_names'].append(job)
+                    log.debug(pbconf['submitted_job_names'])
 
                 log.debug('Printing submitted job numbers..')
                 log.debug(pbconf['submitted_job_numbers'])
@@ -349,6 +351,7 @@ def check_completed_jobs(pbconf):
 
     log.info('There are now ' + str(len(current_jobs)) + ' jobs still running.')
     log.info('There are now ' + str(len(pbconf['completed_jobs'])) + ' jobs finished.')
+    log.debug(pbconf['completed_jobs'])
     log.info('There are now ' + str(len(pbconf['job_names']) - len(pbconf['submitted_job_names'])) +
              ' jobs to be started.')
 

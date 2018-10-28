@@ -69,6 +69,8 @@ class PhantomBatch(object):
 
     def terminate_jobs_at_exit(self):
         jobhandler.cancel_all_submitted_jobs(self.pbconf)
+        if self.run_splash:
+            jobhandler.cancel_all_submitted_jobs(self.sbconf)
 
     def initialise(self):
         log.info('Initialising ' + self.pbconf['name'] + '..')

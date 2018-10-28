@@ -156,8 +156,14 @@ def create_jobscripts_for_splash(pconf, pbconf, sbconf):
                                                              jobscript_name=sbconf['short_name'])
 
 
+def make_movies(pbconf, sbconf):
+
+    return NotImplementedError
+
+
 def move_images(pbconf):
     """ Move any images from the simulation directory into the splash directory. """
+    log.debug('Attempting to move any .png images in the simulation directories..')
 
     for tmp_dir in pbconf['dirs']:
         files = glob.glob(tmp_dir)
@@ -215,4 +221,9 @@ def splash_handler(pbconf, sbconf):
                 if num_dump_files >= sbconf['frequency']:
                     submit_splash_job(pbconf, sbconf, pbconf['dirs'][i])
                     sbconf['last_splash_run'].append(num_dump_files - num_dump_files % sbconf['frequency'])
+
+            files = glob.glob(pbconf['dirs'][i])
+
             i += 1
+
+    move_images(pbconf)
