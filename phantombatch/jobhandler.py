@@ -148,11 +148,11 @@ def check_running_jobs(pbconf):
         log.debug(line)
         if any([job in line[1] for job in pbconf['job_names']]) and 'C' not in line[4]:
             #  line[1] holds the name of the job in my_job
-            log.debug('Adding in a new line to my_pb_jobs..')
+            # log.debug('Adding in a new line to my_pb_jobs..')
             my_pb_jobs.append(line)
 
-    log.debug('Printing PhantomBatch jobs..')
-    log.debug(my_pb_jobs)
+    # log.debug('Printing PhantomBatch jobs..')
+    # log.debug(my_pb_jobs)
     return my_pb_jobs
 
 
@@ -302,8 +302,8 @@ def check_completed_jobs(pbconf):
     if 'job_num_dumps' not in pbconf:
         pbconf['job_num_dumps'] = [0]*len(pbconf['job_names'])
 
-    log.debug('Printing pbconf[\'completed_jobs\'] in check_completed_jobs')
-    log.debug(pbconf['completed_jobs'])
+    # log.debug('Printing pbconf[\'completed_jobs\'] in check_completed_jobs')
+    # log.debug(pbconf['completed_jobs'])
 
     i = 0
     for job in pbconf['job_names']:
@@ -350,7 +350,6 @@ def check_completed_jobs(pbconf):
 
     log.info('There are now ' + str(len(current_jobs)) + ' jobs still running.')
     log.info('There are now ' + str(len(pbconf['completed_jobs'])) + ' jobs finished.')
-    log.debug(pbconf['completed_jobs'])
     log.info('There are now ' + str(len(pbconf['job_names']) - len(pbconf['submitted_job_names'])) +
              ' jobs to be started.')
 
