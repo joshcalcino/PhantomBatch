@@ -337,6 +337,9 @@ def check_completed_jobs(pbconf):
                             'Please specify this in your .config file with the \'num_dumps\' key.')
 
             if job not in current_jobs:
+                log.debug('job not in current_jobs.. going to submit....')
+                print(job)
+                print(current_jobs)
                 pbconf['submitted_job_numbers'].append(submit_job(pbconf, pbconf['dirs'][i]))
 
         i += 1
