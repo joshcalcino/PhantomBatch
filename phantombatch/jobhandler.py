@@ -253,6 +253,7 @@ def run_batch_jobs(pbconf):
             log.debug('IS JOB IN COMPLETED JOB NAMES????')
             log.debug(job)
             log.debug(pbconf['completed_jobs'])
+            log.debug('completed_job_names' in pbconf and job in pbconf['completed_jobs'])
             if job in pbconf['submitted_job_names'] and any(job in cjob for cjob in current_jobs):
                 pass
             elif 'completed_job_names' in pbconf and job in pbconf['completed_jobs']:
