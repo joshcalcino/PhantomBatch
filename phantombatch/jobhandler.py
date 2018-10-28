@@ -253,7 +253,7 @@ def run_batch_jobs(pbconf):
 
             if job in pbconf['submitted_job_names'] and any(job in cjob for cjob in current_jobs):
                 pass
-            elif 'completed_job_names' in pbconf and job not in pbconf['completed_job_names']:
+            elif 'completed_job_names' in pbconf and job in pbconf['completed_job_names']:
                 pass
             else:
                 log.debug('Printing job name that is being submitted')
