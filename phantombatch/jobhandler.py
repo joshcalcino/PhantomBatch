@@ -156,10 +156,13 @@ def check_running_jobs(pbconf):
     return my_pb_jobs
 
 
-def submit_job(pbconf, directory, jobscript_name):
+def submit_job(pbconf, directory, jobscript_name=None):
     """ Submit a job to the cluster. Both SLURM and PBS job schedulers are supported. """
 
     log.debug('Attempting to submit job in directory ' + directory)
+
+    if jobscript_name is None:
+        jobscript_name = pbconf['setup'] + '.jobscript'
 
     os.chdir(directory)
 
@@ -250,14 +253,17 @@ def run_batch_jobs(pbconf):
 
             if job in pbconf['submitted_job_names'] and any(job in cjob for cjob in current_jobs):
                 pass
-
+            elif 'completed_job_names' in pbconf and job not in pbconf['completed_job_names']:
+                pass
             else:
                 log.debug('Printing job name that is being submitted')
                 log.debug(job)
                 job_number = submit_job(pbconf, pbconf['sim_dirs'][i], pbconf['setup'] + '.jobscript')
 
                 pbconf['submitted_job_numbers'].append(str(job_number))
-                pbconf['submitted_job_names'].append(job)
+
+                if job not in pbconf['submitted_job_names']:
+                    pbconf['submitted_job_names'].append(job)
 
                 log.debug('Printing submitted job numbers..')
                 log.debug(pbconf['submitted_job_numbers'])
@@ -297,7 +303,6 @@ def check_completed_jobs(pbconf):
 
     i = 0
     for job in pbconf['job_names']:
-
         if util.check_pbconf_sim_dir_consistency(job, pbconf['sim_dirs'][i], pbconf):
             #  This check makes sure that we keep ordering in place. Currently, pbconf['sim_dirs'][i] corrosponds to
             #  the directory that stores pbconf['job_names'][i]
@@ -314,6 +319,7 @@ def check_completed_jobs(pbconf):
                 log.info('Job ' + job + ' has reached the desired number of dump files.')
                 log.debug('Printing current_jobs in check_completed_jobs')
                 log.debug(current_jobs)
+
                 if any(job in cjob for cjob in current_jobs):
                     log.debug('Cancelling ' + job + ' since it has reached the desired number of dump files.')
 
@@ -321,12 +327,15 @@ def check_completed_jobs(pbconf):
 
                     cancel_job(pbconf, pbconf['submitted_job_numbers'][i])
 
-                    if 'completed_jobs' in pbconf:
+                    if 'completed_jobs' in pbconf and job not in pbconf['completed_jobs']:
                         pbconf['completed_jobs'].append(job)
 
             if 'num_dumps' not in pbconf:
                 log.warning('You have not specified the number of dump files you would like for each simulation. '
                             'Please specify this in your .config file with the \'num_dumps\' key.')
+
+            if job not in current_jobs:
+                pbconf['submitted_job_numbers'].append(submit_job(pbconf, pbconf['dirs'][i]))
 
         i += 1
 

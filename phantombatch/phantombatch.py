@@ -281,7 +281,6 @@ class PhantomBatch(object):
             log.info('PhantomBatch will now sleep for ' + str(self.pbconf['sleep_time']) + ' minutes.')
             time.sleep(self.pbconf['sleep_time']*60)
 
-            jobhandler.run_batch_jobs(self.pbconf)
             completed = self.check_phantombatch_complete()
 
             if self.run_splash:
