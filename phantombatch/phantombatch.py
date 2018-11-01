@@ -35,13 +35,18 @@ class PhantomBatch(object):
             if os.path.exists(self.pbconf['name']):
                 shutil.rmtree(self.pbconf['name'])
 
+        # self.initialise_phantom decides whether or not we reinitilise everything
+        self.initialise_phantombatch = True
+
         # check if a saved phantombatch configuration file already exists, overwrite current if it does
         if os.path.isfile(os.path.join(self.pbconf['name'], self.pbconf['name'] + '_pbconf.pkl')):
+            self.initialise_phantombatch = False
             pbconf_tmp = util.load_config(self.pbconf)
             for key in self.pbconf:
                 if key in pbconf_tmp and (self.pbconf[key] != pbconf_tmp[key]):
                     pbconf_tmp[key] = self.pbconf[key]
                     log.warning('key ' + key + ' has changed since your last run of PhantomBatch.')
+
                 elif key not in pbconf_tmp:
                     pbconf_tmp[key] = self.pbconf[key]
 
@@ -68,7 +73,10 @@ class PhantomBatch(object):
         self.pbconf['run_dir'] = self.run_dir
 
     def terminate_jobs_at_exit(self):
+        """ Cancel all jobs running when PhantomBatch exits. Mainly useful for debugging purposes. """
         jobhandler.cancel_all_submitted_jobs(self.pbconf)
+
+        # Cancel all splash jobs if splash has been invoked
         if self.run_splash:
             jobhandler.cancel_all_submitted_jobs(self.sbconf)
 
@@ -266,9 +274,11 @@ class PhantomBatch(object):
         """ The default monitor for PhantomBatch. This monitor will set up Phantom and PhantomBatch, create simulations,
         submit and monitor jobs until completion. """
 
-        self.initialise()
-        self.create_setups()
-        self.run_phantom_setup()
+        if self.initialise_phantombatch:
+            self.initialise()
+            self.create_setups()
+            self.run_phantom_setup()
+
         self.pbconf['job_names'] = jobscripthandler.create_jobscripts(self.pconf, self.pbconf)
         jobhandler.check_running_jobs(self.pbconf)
         jobhandler.run_batch_jobs(self.pbconf)

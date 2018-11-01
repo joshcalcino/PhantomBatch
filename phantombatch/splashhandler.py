@@ -212,7 +212,6 @@ def splash_handler(pbconf, sbconf):
 
     if 'frequency' in sbconf:
         i = 0
-        # print(sbconf['last_splash_run'])
         for num_dump_files in pbconf['job_num_dumps']:
             if i < len(sbconf['last_splash_run']):
                 # print(num_dump_files - num_dump_files % sbconf['frequency'], sbconf['last_splash_run'][i])

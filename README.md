@@ -32,11 +32,11 @@ and a few lines in the code to make the setup available for use.
 - Support for all disc setups
 - Support for non-disc setups
 - Editing setup.in files before running phantom simulations (should be easy)
-- Ability to pick up where it left off if aborted (should be working, but will be buggy)
+- Ability to pick up where it left off if aborted (basic implementation for now)
 - Ability to render splash images/movies (currently being implemented)
 - Support for more job schedulers (e.g. SGE)
 - Ability to stop simulations, moddump, and restart.
-
+- Support to change parameters being looped over
 
 And below is a list of known issues.
 
