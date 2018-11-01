@@ -2,7 +2,7 @@ import os
 import shutil
 import logging as log
 import subprocess
-from phantombatch import setuphandler, jobscripthandler, dirhandler, jobhandler, splashhandler, util
+from phantombatch import setuphandler, inhandler, jobscripthandler, dirhandler, jobhandler, splashhandler, util
 import time
 import atexit
 
@@ -30,6 +30,10 @@ class PhantomBatch(object):
         self.pconf = self.config['phantom_setup']
         self.pbconf = self.config['phantom_batch_setup']
 
+        self.piconf = None
+        if 'phantom_in' in self.config:
+            self.piconf = self.config['phantom_in']
+
         if fresh_start:
             log.info('Removing previous run directory..')
             if os.path.exists(self.pbconf['name']):
@@ -54,12 +58,12 @@ class PhantomBatch(object):
 
         self.run_splash = False
 
-        # Set up splashbatch if it is going to be used
-        if 'splash_batch_setup' in self.config:
+        # Set up splash if it is going to be used
+        if 'splash_setup' in self.config:
             self.run_splash = True
-            self.sbconf = splashhandler.get_full_splash_config(self.pbconf, self.config['splash_batch_setup'])
+            self.sconf = splashhandler.get_full_splash_config(self.pbconf, self.config['splash_batch_setup'])
 
-            if 'no_splash' in self.sbconf and self.sbconf['no_splash'] == 1 is True:
+            if 'no_splash' in self.sconf and self.sconf['no_splash'] == 1 is True:
                 # Add this in so it is easier to control splash usage without having to remove lines from config file
                 self.run_splash = False
 
@@ -78,7 +82,7 @@ class PhantomBatch(object):
 
         # Cancel all splash jobs if splash has been invoked
         if self.run_splash:
-            jobhandler.cancel_all_submitted_jobs(self.sbconf)
+            jobhandler.cancel_all_submitted_jobs(self.sconf)
 
     def initialise(self):
         log.info('Initialising ' + self.pbconf['name'] + '..')
@@ -284,7 +288,7 @@ class PhantomBatch(object):
         jobhandler.run_batch_jobs(self.pbconf)
 
         if self.run_splash:
-            splashhandler.initialise_splash_handler(self.pconf, self.pbconf, self.sbconf)
+            splashhandler.initialise_splash_handler(self.pconf, self.pbconf, self.sconf)
 
         completed = False
 
@@ -296,4 +300,4 @@ class PhantomBatch(object):
             completed = self.check_phantombatch_complete()
 
             if self.run_splash:
-                splashhandler.splash_handler(self.pbconf, self.sbconf)
+                splashhandler.splash_handler(self.pbconf, self.sconf)
