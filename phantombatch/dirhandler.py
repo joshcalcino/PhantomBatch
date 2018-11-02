@@ -54,9 +54,53 @@ def keys_dir(dirs, key, pconf, no_loop=False):
 
     if key == 'binary_i':
         dirs = dir_func(dirs, 'i', pconf[key], no_loop=no_loop)
-
+    
+    # ---------------------------------------------------------------------------
+    # |                         BINARY DISC PARAMETERS                          |
+    # ---------------------------------------------------------------------------
+    
+    # Binary
     if key == 'disc_mbinary':
-        dirs = dir_func(dirs, 'dm', pconf[key], no_loop=no_loop)
+        dirs = dir_func(dirs, 'dmb', pconf[key], no_loop=no_loop)
+    
+    if key == 'R_inbinary':
+        dirs = dir_func(dirs, 'Rinb', pconf[key], no_loop=no_loop)
+    
+    if key == 'R_refbinary':
+        dirs = dir_func(dirs, 'Rrefb', pconf[key], no_loop=no_loop)
+        
+    if key == 'R_outbinary':
+        dirs = dir_func(dirs, 'Rob', pconf[key], no_loop=no_loop)
+
+    # Primary
+    if key == 'disc_mprimary':
+        dirs = dir_func(dirs, 'dmp', pconf[key], no_loop=no_loop)
+
+    if key == 'R_inprimary':
+        dirs = dir_func(dirs, 'Rinp', pconf[key], no_loop=no_loop)
+
+    if key == 'R_refprimary':
+        dirs = dir_func(dirs, 'Rrefp', pconf[key], no_loop=no_loop)
+
+    if key == 'R_outprimary':
+        dirs = dir_func(dirs, 'Rop', pconf[key], no_loop=no_loop)
+
+    # Secondary
+    if key == 'disc_msecondary':
+        dirs = dir_func(dirs, 'dmp', pconf[key], no_loop=no_loop)
+
+    if key == 'R_insecondary':
+        dirs = dir_func(dirs, 'Rinp', pconf[key], no_loop=no_loop)
+
+    if key == 'R_refsecondary':
+        dirs = dir_func(dirs, 'Rrefp', pconf[key], no_loop=no_loop)
+
+    if key == 'R_outsecondary':
+        dirs = dir_func(dirs, 'Rop', pconf[key], no_loop=no_loop)
+
+    # ---------------------------------------------------------------------------
+    # |                            PLANET PARAMETERS                            |
+    # ---------------------------------------------------------------------------
 
     # Loop over planet parameters
     if 'mplanet' in key:
