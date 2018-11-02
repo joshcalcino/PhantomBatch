@@ -189,36 +189,24 @@ def set_up_binary(setup_filename, setup_strings, pconf):
                   'r') as binary_setup:
             write_to_setup(new_setup, binary_setup, setup_strings, pconf)
 
-        use_primarydisc = False
-        if 'use_primarydisc' in pconf and (pconf['use_primarydisc'] == 'T'):
-            use_primarydisc = True
-
-        use_secondarydisc = False
-        if 'use_secondarydisc' in pconf and (pconf['use_secondarydisc'] == 'T'):
-            use_secondarydisc = True
-
-        use_binarydisc = False
-        if 'use_binarydisc' in pconf and (pconf['use_binarydisc'] == 'T'):
-            use_binarydisc = True
-
         # Now add in the correct syntax if more than one disc is to be added in
-        if use_primarydisc and (use_secondarydisc or use_binarydisc):
+        if 'use_primarydisc' in pconf and (pconf['use_primarydisc'] == 'T'):
             log.debug('Adding in a primary disc.')
             with open(os.path.join(os.environ['PHANTOMBATCH_DIR'], 'phantombatch/setups/primarydisc_binary.setup'),
                       'r') as pd_binary_setup:
                 write_to_setup(new_setup, pd_binary_setup, setup_strings, pconf)
 
-        if use_secondarydisc and (use_primarydisc or use_binarydisc):
+        if 'use_secondarydisc' in pconf and (pconf['use_secondarydisc'] == 'T'):
             log.debug('Adding in a secondary disc.')
             with open(os.path.join(os.environ['PHANTOMBATCH_DIR'], 'phantombatch/setups/secondarydisc_binary.setup'),
                       'r') as sd_binary_setup:
                 write_to_setup(new_setup, sd_binary_setup, setup_strings, pconf)
 
-        if use_binarydisc and (use_primarydisc or use_secondarydisc):
-            log.debug('Adding in a binary disc.')
-            with open(os.path.join(os.environ['PHANTOMBATCH_DIR'], 'phantombatch/setups/binarydisc_binary.setup'),
-                      'r') as bd_binary_setup:
-                write_to_setup(new_setup, bd_binary_setup, setup_strings, pconf)
+        # if 'use_binarydisc' in pconf and (pconf['use_binarydisc'] == 'T'):
+        #     log.debug('Adding in a binary disc.')
+        #     with open(os.path.join(os.environ['PHANTOMBATCH_DIR'], 'phantombatch/setups/binarydisc_binary.setup'),
+        #               'r') as bd_binary_setup:
+        #         write_to_setup(new_setup, bd_binary_setup, setup_strings, pconf)
 
     #  Now loop over lines in new_setup to change any additional options
     with open(setup_filename, 'r+') as new_setup:
