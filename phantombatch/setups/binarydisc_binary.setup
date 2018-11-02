@@ -1,0 +1,16 @@
+# options for circumbinary gas disc
+      mass_setbinary =           0    ! how to set gas density profile (0=total disc mass,1=mass within annulus,2=surface density normalisation,3=surface den
+sity at reference radius,4=minimum Toomre Q)
+     itapergasbinary =           F    ! exponentially taper the outer disc profile
+    ismoothgasbinary =           F    ! smooth inner disc
+         iwarpbinary =           F    ! warp disc
+          R_inbinary =         25.    ! inner radius
+         R_refbinary =         25.    ! reference radius
+         R_outbinary =        125.    ! outer radius
+        disc_mbinary =       0.050    ! disc mass
+        pindexbinary =       1.000    ! p index
+        qindexbinary =       0.000    ! q index
+       posanglbinary =       0.000    ! position angle (deg)
+          inclbinary =       0.000    ! inclination (deg)
+           H_Rbinary =       0.050    ! H/R at R=R_ref
+             alphaSS =       0.005    ! desired alphaSS
