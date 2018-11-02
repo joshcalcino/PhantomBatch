@@ -101,9 +101,13 @@ def get_pbs_jobs():
 
     i = 0
     for column in columns:
-        output = str(subprocess.check_output('qstat -f | grep \'' + column + '\'',
-                                             stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
-                     ).split('\n')[:-1]  # since the last value is an empty string
+        try:
+            output = str(subprocess.check_output('qstat -f | grep \'' + column + '\'',
+                                                 stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
+                        ).split('\n')[:-1]  # since the last value is an empty string
+        except subprocess.CalledProcessError:
+            log.warning('Could not get PSB job information using qstat -f')
+            return None
 
         stripped_output = [out.replace(str(column), '').strip() for out in output]
 
