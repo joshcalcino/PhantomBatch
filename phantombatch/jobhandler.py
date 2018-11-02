@@ -147,6 +147,9 @@ def check_running_jobs(pbconf):
     else:
         log.error('Job scheduler not recognised!')
 
+    if my_jobs is None:
+        my_jobs = []
+
     # log.debug('Filtering through the job scheduler output to find PhantomBatch jobs..')
     for line in my_jobs:
         # log.debug(line)
