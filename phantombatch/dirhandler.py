@@ -26,92 +26,47 @@ def loop_keys_dir(pconf, pbconf):
 
 
 def keys_dir(dirs, key, pconf, no_loop=False):
-    if key == 'pindex':
-        dirs = dir_func(dirs, 'p', pconf[key], no_loop=no_loop)
 
-    if key == 'qindex':
-        dirs = dir_func(dirs, 'q', pconf[key], no_loop=no_loop)
+    key_dict = {'pindex': 'p', 'qindex': 'q', 'm2': 'm2', 'accr2': 'acr2', 'alphaSS': 'aSS', 'binary_i': 'i'}
 
-    if key == 'binary_e':
-        # Build up an array of e's that isn't too long and disregard the '0.'
-        dict_arr = [format(i, '.2f')[2:] for i in pconf[key]]
-        dirs = dir_func(dirs, 'e', dict_arr, no_loop=no_loop)
+    if key in key_dict:
+        dirs = dir_func(dirs, key_dict[key], pconf[key], no_loop=no_loop)
 
     if key == 'binary_a':
         # Build array of a's, which are rounded, to get rid of unnecessary decimal places
         dict_arr = [round(i, 1) for i in pconf[key]]
         dirs = dir_func(dirs, 'a', dict_arr, no_loop=no_loop)
 
-    if key == 'm2':
-        dirs = dir_func(dirs, 'm2', pconf[key], no_loop=no_loop)
-
-    if key == 'accr2':
-        # dirs = dir_func(dirs, 'acr2', pconf[key], no_loop=no_loop)
-        pass
-
-    if key == 'alphaSS':
-        dirs = dir_func(dirs, 'aSS', pconf[key], no_loop=no_loop)
-
-    if key == 'binary_i':
-        dirs = dir_func(dirs, 'i', pconf[key], no_loop=no_loop)
+    if key == 'binary_e':
+        # Build up an array of e's that isn't too long and disregard the '0.'
+        dict_arr = [format(i, '.2f')[2:] for i in pconf[key]]
+        dirs = dir_func(dirs, 'e', dict_arr, no_loop=no_loop)
     
     # ---------------------------------------------------------------------------
     # |                         BINARY DISC PARAMETERS                          |
     # ---------------------------------------------------------------------------
     
-    # Binary
-    if key == 'disc_mbinary':
-        dirs = dir_func(dirs, 'dmb', pconf[key], no_loop=no_loop)
-    
-    if key == 'R_inbinary':
-        dirs = dir_func(dirs, 'Rinb', pconf[key], no_loop=no_loop)
-    
-    if key == 'R_refbinary':
-        dirs = dir_func(dirs, 'Rrefb', pconf[key], no_loop=no_loop)
-        
-    if key == 'R_outbinary':
-        dirs = dir_func(dirs, 'Rob', pconf[key], no_loop=no_loop)
+    binary_disc_keys = { # Binary
+                        'disc_mbinary': 'dmb', 'R_inbinary': ' Rinb', 'R_refbinary': 'Rrefb', 'R_outbinary': 'Rob',
+                        # Primary
+                        'disc_mprimary': 'dmp', 'R_inprimary': 'Rinp', 'R_refprimary': 'Rrefp', 'R_outprimary': 'Rop',
+                        # Secondary
+                        'disc_msecondary': 'dmp', 'R_insecondary': 'Rinp', 'R_refsecondary': 'Rrefp', 'R_outsecondary': 'Rop'
+                        }
 
-    # Primary
-    if key == 'disc_mprimary':
-        dirs = dir_func(dirs, 'dmp', pconf[key], no_loop=no_loop)
-
-    if key == 'R_inprimary':
-        dirs = dir_func(dirs, 'Rinp', pconf[key], no_loop=no_loop)
-
-    if key == 'R_refprimary':
-        dirs = dir_func(dirs, 'Rrefp', pconf[key], no_loop=no_loop)
-
-    if key == 'R_outprimary':
-        dirs = dir_func(dirs, 'Rop', pconf[key], no_loop=no_loop)
-
-    # Secondary
-    if key == 'disc_msecondary':
-        dirs = dir_func(dirs, 'dmp', pconf[key], no_loop=no_loop)
-
-    if key == 'R_insecondary':
-        dirs = dir_func(dirs, 'Rinp', pconf[key], no_loop=no_loop)
-
-    if key == 'R_refsecondary':
-        dirs = dir_func(dirs, 'Rrefp', pconf[key], no_loop=no_loop)
-
-    if key == 'R_outsecondary':
-        dirs = dir_func(dirs, 'Rop', pconf[key], no_loop=no_loop)
+    if key in binary_disc_keys:
+        dirs = dir_func(dirs, binary_disc_keys[key], pconf[key], no_loop=no_loop)
 
     # ---------------------------------------------------------------------------
     # |                            PLANET PARAMETERS                            |
     # ---------------------------------------------------------------------------
 
-    # Loop over planet parameters
-    if 'mplanet' in key:
-        #  Adding in key[-1] makes sure that we select the write planet number
-        dirs = dir_func(dirs, 'mp' + key[-1], pconf[key], no_loop=no_loop)
+    planet_keys = {'mplanet': 'mp', 'rplanet': 'rp', 'inclplanet': 'ip'}
 
-    if 'rplanet' in key:
-        dirs = dir_func(dirs, 'rp' + key[-1], pconf[key], no_loop=no_loop)
-
-    if 'inclplanet' in key:
-        dirs = dir_func(dirs, 'ip' + key[-1], pconf[key], no_loop=no_loop)
+    for param in planet_keys:
+        if param in key:
+            #  Adding in key[-1] makes sure that we select the write planet number
+            dirs = dir_func(dirs, planet_keys[param] + key[-1], pconf[key], no_loop=no_loop)
 
     return dirs
 
