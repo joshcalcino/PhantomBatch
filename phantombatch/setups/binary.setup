@@ -31,7 +31,7 @@
       use_global_iso =           F    ! globally isothermal or Farris et al. (2014)
 
 # options for circumbinary gas disc
-      mass_setbinary =           0    ! how to set gas density profile (0=total disc mass,1=mass within annulus,2=surface density normalisation,3=surface density at reference radius,4=minimum Toomre Q)
+       isetgasbinary =           0    ! how to set gas density profile (0=total disc mass,1=mass within annulus,2=surface density normalisation,3=surface density at reference radius,4=minimum Toomre Q)
      itapergasbinary =           F    ! exponentially taper the outer disc profile
     ismoothgasbinary =           F    ! smooth inner disc
          iwarpbinary =           F    ! warp disc

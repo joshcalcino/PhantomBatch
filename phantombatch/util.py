@@ -47,7 +47,7 @@ def check_for_phantom_warnings(output):
     error_kw = ['ERROR', 'Error', 'error']
     for line in output:
         if any([error in line for error in error_kw]):
-            if 'please check output' not in line:
+            if 'please check output' or 'Check output for warnings and errors' not in line:
                 log.error('Phantom error found: ' + line)
                 log.error('PhantomBatch will now exit.')
                 exit()
