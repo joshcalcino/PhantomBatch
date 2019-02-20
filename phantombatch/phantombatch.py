@@ -79,11 +79,16 @@ class PhantomBatch(object):
 
     def terminate_jobs_at_exit(self):
         """ Cancel all jobs running when PhantomBatch exits. Mainly useful for debugging purposes. """
-        jobhandler.cancel_all_submitted_jobs(self.pbconf)
+
+        log.info('Attempting to terminate all jobs as PhantomBatch is exiting..')
+
+        if 'job_names' in self.pbconf:
+            jobhandler.cancel_all_submitted_jobs(self.pbconf)
 
         # Cancel all splash jobs if splash has been invoked
         if self.run_splash:
-            jobhandler.cancel_all_submitted_jobs(self.sconf)
+            if 'job_names' in self.sconf:
+                jobhandler.cancel_all_submitted_jobs(self.sconf)
 
     def initialise(self):
         log.info('Initialising ' + self.pbconf['name'] + '..')
