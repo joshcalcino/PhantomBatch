@@ -224,15 +224,14 @@ class PhantomBatch(object):
 
                     execution_string = 'make qscript INFILE=' + self.pbconf['setup'] + '.in ' + self.system_string +\
                                         ' ' + qsys_string
-                    print(execution_string)
+
+                    log.debug('Running ' + execution_string)
+
                     output = subprocess.check_output(execution_string,
                                                      stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
 
-                    subprocess.check_output(output + ' > ' + self.pbconf['setup'] + '.jobscript',
-                                            stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
-
-                    util.save_phantom_output(
-                        output.rstrip(), self.pbconf, self.run_dir)
+                    with open(self.pbconf['setup'] + '.jobscript', 'w+') as f:
+                        f.write(output)
 
                 except subprocess.CalledProcessError:
                     if 'Error: qscript needs known SYSTEM variable set' in output:
@@ -312,6 +311,11 @@ class PhantomBatch(object):
             os.chdir(tmp_dir)
             output = subprocess.check_output('./phantomsetup ' + self.pbconf['setup'], stderr=subprocess.STDOUT,
                                              universal_newlines=True, shell=True)
+
+            if 'writing setup options file' in output:
+                # Rerun phantomsetup because there might be some annoying
+                output = subprocess.check_output('./phantomsetup ' + self.pbconf['setup'], stderr=subprocess.STDOUT,
+                                                 universal_newlines=True, shell=True)
 
             util.check_for_phantom_warnings(output.rstrip())
             util.save_phantom_output(

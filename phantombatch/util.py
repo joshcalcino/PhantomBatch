@@ -38,20 +38,24 @@ def check_for_phantom_warnings(output):
     log.debug('Checking for warnings and errors in phantom output..')
 
     warnings_kw = ['WARNING', 'Warning', 'warning']
+    error_kw = ['ERROR', 'Error', 'error']
+
+    ignore_lines = ['please check output', 'Check output for warnings and errors']
+
+    error = False
+
     output = output.split('\n')
     for line in output:
         if any([warning in line for warning in warnings_kw]):
-            if 'please check output' not in line:
+            if all([ignore_line not in line for ignore_line in ignore_lines]):
                 log.warning('Phantom warning found: ' + line)
 
-    error_kw = ['ERROR', 'Error', 'error']
-    for line in output:
         if any([error in line for error in error_kw]):
-            ignore_lines = ['please check output', 'Check output for warnings and errors']
-            if any([ignore_line not in line for ignore_line in ignore_lines]):
+            if all([ignore_line not in line for ignore_line in ignore_lines]):
                 log.error('Phantom error found: ' + line)
-                log.error('PhantomBatch will now exit.')
-                exit()
+                error = True
+
+    return error
 
 
 def check_pbconf_sim_dir_consistency(job_name, sim_dir, pbconf):
@@ -83,3 +87,8 @@ def save_phantom_output(output, pbconf, run_dir):
     else:
         with open(output_filename, 'w') as f:
             f.write(output)
+
+
+def call_exit():
+    log.info('PhantomBatch will now exit')
+    exit()

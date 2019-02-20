@@ -171,12 +171,39 @@ def submit_job(pbconf, directory, jobscript_name=None):
     os.chdir(directory)
 
     job_number = None
+    job_scheduluer_call = None
 
     if pbconf['job_scheduler'] == 'slurm':
         log.debug('Attempting to submit SLURM job..')
-        output = subprocess.check_output('sbatch ' + jobscript_name, stderr=subprocess.STDOUT,
+        job_scheduluer_call = 'sbatch '
+
+    elif pbconf['job_scheduler'] == 'pbs':
+        log.debug('Attempting to submit PBS job..')
+        job_scheduluer_call = 'qsub '
+
+    elif job_scheduluer_call is None:
+        log.error('Job scheduler not recognised, cannot submit jobs!')
+        log.info('Please use a known job scheduler, or add in your own.')
+        util.call_exit()
+
+    output = None
+
+    try:
+        output = subprocess.check_output(job_scheduluer_call + jobscript_name, stderr=subprocess.STDOUT,
                                          universal_newlines=True, shell=True).strip()
-        log.info(output)
+    except subprocess.CalledProcessError:
+        log.error('Could not submit ' + pbconf['job_scheduler'].upper() +
+                  ' job. There may be something wrong in the jobscript file, or ' + pbconf['job_scheduler'].upper() +
+                  ' may not be on your cluster.')
+
+        if output is None:
+            util.call_exit()
+
+        else:
+            log.info('Here is the output from my attempt to run ' + job_scheduluer_call)
+            log.info(output)
+
+    if pbconf['job_scheduler'] == 'slurm':
         len_slurm_output = len('Submitted batch job ')  # Change this string if your slurm prints something else out
         job_number = output[len_slurm_output:].strip()
         log.debug('Printing job_number from submit_job')
@@ -195,10 +222,6 @@ def submit_job(pbconf, directory, jobscript_name=None):
                 job_number = line.strip()
         log.debug('Printing job_number from submit_job')
         log.debug(job_number)
-    else:
-        log.error('Job scheduler not recognised, cannot submit jobs!')
-        log.info('Please use a known job scheduler, or add in your own.')
-        exit()
 
     os.chdir(pbconf['run_dir'])
 
@@ -206,6 +229,7 @@ def submit_job(pbconf, directory, jobscript_name=None):
         log.error('Unable to submit job.')
         exit()
     else:
+        log.info('Submitted job number ' + str(job_number))
         return job_number
 
 
