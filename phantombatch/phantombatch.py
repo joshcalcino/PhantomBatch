@@ -172,7 +172,13 @@ class PhantomBatch(object):
                 log.debug('Writing jobscript template.')
 
                 try:
-                    sys_environ = os.environ['SYSTEM']
+                    # Try to find a SYSTEM variable
+                    if "system" in self.pbconf:
+                        sys_environ = self.pbconf['system']
+                    else:
+                        sys_environ = os.environ['SYSTEM']
+
+                    log.info('Attempting to create jobscript files using SYSTEM='+str(sys_environ)+'.')
                     output = subprocess.check_output('make qscript INFILE=' + self.pbconf['setup'] + '.in ' +
                                                      'SYSTEM=' + sys_environ + ' > ' +
                                                      self.pbconf['setup'] +
@@ -189,15 +195,23 @@ class PhantomBatch(object):
                         'You should make sure that your SYSTEM variable is defined in the Phantom Makefile.')
                     log.info('This will make sure that the correct Fortran compiler and system job scheduler '
                              'is selected by make qscript.')
+                    log.info('PhantomBatch will now exit.')
+                    exit()
 
-                    output = subprocess.check_output('make qscript INFILE=' + self.pbconf['setup']+'.in ' +
-                                                     self.pbconf['make_options'] + ' > ' +
-                                                     self.pbconf['setup'] +
-                                                     '.jobscript',
-                                                     stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
+                except subprocess.CalledProcessError:
+                    if 'Error: qscript needs known SYSTEM variable set' in output:
+                        log.error('Error attempting to create jobscript file. SYSTEM variable is not defined or not '
+                                  'recognised. If SYSTEM is not ifort or gfortran, please define it in the Phantom '
+                                  'Makefile before continuing to use PhantomBatch.')
+                    else:
+                        log.error('Error attempting to create jobscript file. Please check the \'phantom_output\' file '
+                                  'in the phantom_'+self.pbconf['setup']+' directory.')
 
                     util.save_phantom_output(
                         output.rstrip(), self.pbconf, self.run_dir)
+
+                    log.info('PhantomBatch will now exit.')
+                    exit()
 
                 if 'make_moddump_options' in self.pbconf:
                     output = subprocess.check_output('make moddump ' + self.pbconf['make_moddump_options'],
