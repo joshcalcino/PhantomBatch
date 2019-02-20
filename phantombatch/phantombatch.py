@@ -77,6 +77,26 @@ class PhantomBatch(object):
         # Save run_dir in the PhantomBatch config dict
         self.pbconf['run_dir'] = self.run_dir
 
+        # Try to find a SYSTEM variable
+        if "system" in self.pbconf:
+            sys_environ = self.pbconf['system']
+            self.system_string = 'SYSTEM=' + str(sys_environ)
+
+        else:
+            try:
+                sys_environ = os.environ['SYSTEM']
+                self.system_string = 'SYSTEM=' + str(sys_environ)
+
+            except KeyError:
+                log.warning(
+                    'SYSTEM environment variable is not set, this is required for Phantom.')
+                log.info(
+                    'You should make sure that your SYSTEM variable is defined in the Phantom Makefile.')
+                log.info('This will make sure that the correct Fortran compiler and system job scheduler '
+                         'is selected by make qscript.')
+                log.info('PhantomBatch will now exit.')
+                exit()
+
     def terminate_jobs_at_exit(self):
         """ Cancel all jobs running when PhantomBatch exits. Mainly useful for debugging purposes. """
 
@@ -153,10 +173,10 @@ class PhantomBatch(object):
 
                 if 'make_options' in self.pbconf and (len(self.pbconf['make_options']) is not 0):
                     log.debug('Compiling with pbconf[\'make_setup\']')
-                    output = subprocess.check_output('make ' + self.pbconf['make_options'],
+                    output = subprocess.check_output('make ' + self.pbconf['make_options'] + self.system_string,
                                                      stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
                 else:
-                    output = subprocess.check_output('make',
+                    output = subprocess.check_output('make ' + self.system_string,
                                                      stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
 
                 util.save_phantom_output(
@@ -165,10 +185,11 @@ class PhantomBatch(object):
                 if 'make_setup_options' in self.pbconf and (len(self.pbconf['make_setup_options']) is not 0):
                     log.debug('Compiling with pbconf[\'make_setup_options\']')
 
-                    output = subprocess.check_output('make setup ' + self.pbconf['make_setup_options'],
+                    output = subprocess.check_output('make setup ' + self.pbconf['make_setup_options']
+                                                     + self.system_string,
                                                      stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
                 else:
-                    output = subprocess.check_output('make setup',
+                    output = subprocess.check_output('make setup ' + self.system_string,
                                                      stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
 
                 util.save_phantom_output(
@@ -177,16 +198,6 @@ class PhantomBatch(object):
                 log.debug('Writing jobscript template.')
 
                 try:
-                    # Try to find a SYSTEM variable
-                    if "system" in self.pbconf:
-                        sys_environ = self.pbconf['system']
-
-                    else:
-                        sys_environ = os.environ['SYSTEM']
-
-                    # Define a system string, make sure all characters are uppercase
-                    system_string = 'SYSTEM='+str(sys_environ).upper()
-
                     # Use the job scheduler provided in pbconf if one has been defined
                     if "job_scheduler" in self.pbconf:
                         log.info('Creating jobscripts using the job_scheduler provided in the '
@@ -197,9 +208,9 @@ class PhantomBatch(object):
                     else:
                         qsys_string = ''
 
-                    log.info('Attempting to create jobscript files using SYSTEM='+str(sys_environ)+'.')
+                    log.info('Attempting to create jobscript files using '+self.system_string+'.')
                     output = subprocess.check_output('make qscript INFILE=' + self.pbconf['setup'] + '.in ' +
-                                                     system_string +
+                                                     self.system_string +
                                                      qsys_string +
                                                      ' > ' +
                                                      self.pbconf['setup'] +
@@ -208,16 +219,6 @@ class PhantomBatch(object):
 
                     util.save_phantom_output(
                         output.rstrip(), self.pbconf, self.run_dir)
-
-                except KeyError:
-                    log.warning(
-                        'SYSTEM environment variable is not set, jobscript may not be created.')
-                    log.info(
-                        'You should make sure that your SYSTEM variable is defined in the Phantom Makefile.')
-                    log.info('This will make sure that the correct Fortran compiler and system job scheduler '
-                             'is selected by make qscript.')
-                    log.info('PhantomBatch will now exit.')
-                    exit()
 
                 except subprocess.CalledProcessError:
                     if 'Error: qscript needs known SYSTEM variable set' in output:
