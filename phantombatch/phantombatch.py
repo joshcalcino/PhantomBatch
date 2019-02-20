@@ -43,7 +43,7 @@ class PhantomBatch(object):
         # self.initialise_phantom decides whether or not we reinitilise everything
         self.initialise_phantombatch = True
 
-        # check if a saved phantombatch configuration file already exists, overwrite current if it does
+        # check if a saved PhantomBatch configuration file already exists, overwrite current if it does
         if os.path.isfile(os.path.join(self.pbconf['name'], self.pbconf['name'] + '_pbconf.pkl')):
             self.initialise_phantombatch = False
             pbconf_tmp = util.load_config(self.pbconf)
@@ -76,6 +76,18 @@ class PhantomBatch(object):
 
         # Save run_dir in the PhantomBatch config dict
         self.pbconf['run_dir'] = self.run_dir
+
+        # Confirm that the PHANTOM_DIR environment variable has been set
+        try:
+            os.environ['PHANTOM_DIR']
+
+        except KeyError:
+            log.warning(
+                'You have not defined the PHANTOM_DIR system variable. Please define this. In most cases, this will be '
+                '\'PHANTOM_DIR=~/Phantom\'.')
+
+            log.info('PhantomBatch will now exit.')
+            exit()
 
         # Try to find a SYSTEM variable
         if "system" in self.pbconf:
