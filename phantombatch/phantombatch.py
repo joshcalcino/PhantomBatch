@@ -156,8 +156,8 @@ class PhantomBatch(object):
                  self.pbconf['name'] + '..')
 
         if isinstance(self.pbconf['setup'], list):
-            """ Imagining that we can have an array of setups which would be consecutively executed.. Say if we wanted to
-            run some gas and then moddump with dust grains.."""
+            """ Imagining that we can have an array of setups which would be consecutively executed.. 
+            Say if we wanted to run some gas and then moddump with dust grains.."""
             log.error(
                 'You added a list for setup options. This functionality has not been implemented yet.')
             raise NotImplementedError
@@ -221,13 +221,15 @@ class PhantomBatch(object):
                         qsys_string = ''
 
                     log.info('Attempting to create jobscript files using '+self.system_string+'.')
-                    output = subprocess.check_output('make qscript INFILE=' + self.pbconf['setup'] + '.in ' +
-                                                     self.system_string +
-                                                     qsys_string +
-                                                     ' > ' +
-                                                     self.pbconf['setup'] +
-                                                     '.jobscript',
+
+                    execution_string = 'make qscript INFILE=' + self.pbconf['setup'] + '.in ' + self.system_string +\
+                                        ' ' + qsys_string
+                    print(execution_string)
+                    output = subprocess.check_output(execution_string,
                                                      stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
+
+                    subprocess.check_output(output + ' > ' + self.pbconf['setup'] + '.jobscript',
+                                            stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
 
                     util.save_phantom_output(
                         output.rstrip(), self.pbconf, self.run_dir)
@@ -238,8 +240,9 @@ class PhantomBatch(object):
                                   'recognised. If SYSTEM is not ifort or gfortran, please define it in the Phantom '
                                   'Makefile before continuing to use PhantomBatch.')
                     else:
-                        log.error('Error attempting to create jobscript file. Please check the \'phantom_output\' file '
-                                  'in the phantom_'+self.pbconf['setup']+' directory.')
+                        log.info(output)
+                        log.error('Error attempting to create jobscript file. '
+                                  'Please check the \'phantom_output\' file.')
 
                     util.save_phantom_output(
                         output.rstrip(), self.pbconf, self.run_dir)
@@ -256,8 +259,9 @@ class PhantomBatch(object):
                 os.chdir(self.run_dir)
 
     def create_setups(self):
-        """ This function will create all of the setup files for the simulation parameters specified in the phantom config
-        dictionary, pconf. It does not matter if this is adding in a messy fashion, as phantomsetup solves it for us."""
+        """ This function will create all of the setup files for the simulation parameters
+        specified in the phantom config dictionary, pconf.
+        It does not matter if this is adding in a messy fashion, as phantomsetup solves it for us."""
 
         log.info('Creating the Phantom setup files for ' +
                  self.pbconf['name'] + '..')
@@ -295,8 +299,8 @@ class PhantomBatch(object):
         log.info('Completed.')
 
     def run_phantom_setup(self):
-        """ This function will execute phantomsetup in each directory in pbconf['sim_dirs'] to produce pbconf['name'].in,
-         which is the file that is read in by phantom. """
+        """ This function will execute phantomsetup in each directory in pbconf['sim_dirs']
+         to produce pbconf['name'].in, which is the file that is read in by phantom. """
 
         log.info('Running phantomsetup for each setup file in each simulation for ' +
                  self.pbconf['name'] + '..')
