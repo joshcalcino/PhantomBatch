@@ -27,6 +27,7 @@
   "ncpus": 4,
   "memory": "16G",
   "user": "uqjcalci",
+  "system": "ifort",
   "no_email": 1,
   "job_limit": 4,
   "binary": 1,

@@ -180,12 +180,28 @@ class PhantomBatch(object):
                     # Try to find a SYSTEM variable
                     if "system" in self.pbconf:
                         sys_environ = self.pbconf['system']
+
                     else:
                         sys_environ = os.environ['SYSTEM']
 
+                    # Define a system string, make sure all characters are uppercase
+                    system_string = 'SYSTEM='+str(sys_environ).upper()
+
+                    # Use the job scheduler provided in pbconf if one has been defined
+                    if "job_scheduler" in self.pbconf:
+                        log.info('Creating jobscripts using the job_scheduler provided in the '
+                                 'PhantomBatch config file..')
+                        qsys = self.pbconf['job_scheduler']
+                        qsys_string = 'QSYS='+str(qsys).upper()
+
+                    else:
+                        qsys_string = ''
+
                     log.info('Attempting to create jobscript files using SYSTEM='+str(sys_environ)+'.')
                     output = subprocess.check_output('make qscript INFILE=' + self.pbconf['setup'] + '.in ' +
-                                                     'SYSTEM=' + sys_environ + ' > ' +
+                                                     system_string +
+                                                     qsys_string +
+                                                     ' > ' +
                                                      self.pbconf['setup'] +
                                                      '.jobscript',
                                                      stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
