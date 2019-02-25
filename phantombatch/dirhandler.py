@@ -1,5 +1,6 @@
 import os
 import logging as log
+from phantombatch import util
 
 
 def loop_keys_dir(pconf, pbconf):
@@ -11,7 +12,18 @@ def loop_keys_dir(pconf, pbconf):
         nl_keys = pbconf['no_loop']
         fw_keys = pbconf['fix_with']
 
+        for key in fw_keys and nl_keys:
+            # Assert that the parameters listed in no_loop are actually lists
+            try:
+                assert type(pconf[key]) is list
+            except AssertionError:
+                no_loop_or_fix_with = 'fix_with' if key in fw_keys else 'no_loop'
+                log.error('You have added parameter ' + str(key) + ' to the ' + str(no_loop_or_fix_with) +
+                          ' options, but ' + str(key) + ' does not contain a list.')
+                util.call_exit()
+
         for i in range(0, len(pbconf['no_loop'])):
+
             dirs = keys_dir(dirs, fw_keys[i], pconf, no_loop=False)
             no_loop_keys.append(fw_keys[i])
 

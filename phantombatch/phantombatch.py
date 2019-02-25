@@ -6,7 +6,6 @@ from phantombatch import setuphandler, inhandler, jobscripthandler, dirhandler, 
 import time
 import atexit
 
-
 __all__ = ["PhantomBatch"]
 
 
@@ -86,8 +85,7 @@ class PhantomBatch(object):
                 'You have not defined the PHANTOM_DIR system variable. Please define this. In most cases, this will be '
                 '\'PHANTOM_DIR=~/Phantom\'.')
 
-            log.info('PhantomBatch will now exit.')
-            exit()
+            util.call_exit()
 
         # Try to find a SYSTEM variable
         if "system" in self.pbconf:
@@ -101,13 +99,12 @@ class PhantomBatch(object):
 
             except KeyError:
                 log.warning(
-                    'SYSTEM environment variable is not set, this is required for Phantom.')
+                    'SYSTEM environment variable is not set, this is required to run Phantom.')
                 log.info(
                     'You should make sure that your SYSTEM variable is defined in the Phantom Makefile.')
                 log.info('This will make sure that the correct Fortran compiler and system job scheduler '
                          'is selected by make qscript.')
-                log.info('PhantomBatch will now exit.')
-                exit()
+                util.call_exit()
 
     def terminate_jobs_at_exit(self):
         """ Cancel all jobs running when PhantomBatch exits. Mainly useful for debugging purposes. """
@@ -215,15 +212,15 @@ class PhantomBatch(object):
                         log.info('Creating jobscripts using the job_scheduler provided in the '
                                  'PhantomBatch config file..')
                         qsys = self.pbconf['job_scheduler']
-                        qsys_string = 'QSYS='+str(qsys).upper()
+                        qsys_string = 'QSYS=' + str(qsys).upper()
 
                     else:
                         qsys_string = ''
 
-                    log.info('Attempting to create jobscript files using '+self.system_string+'.')
+                    log.info('Attempting to create jobscript files using ' + self.system_string + '.')
 
-                    execution_string = 'make qscript INFILE=' + self.pbconf['setup'] + '.in ' + self.system_string +\
-                                        ' ' + qsys_string
+                    execution_string = 'make qscript INFILE=' + self.pbconf['setup'] + '.in ' + self.system_string + \
+                                       ' ' + qsys_string
 
                     log.debug('Running ' + execution_string)
 
@@ -377,7 +374,7 @@ class PhantomBatch(object):
 
             log.info('PhantomBatch will now sleep for ' +
                      str(self.pbconf['sleep_time']) + ' minutes.')
-            time.sleep(self.pbconf['sleep_time']*60)
+            time.sleep(self.pbconf['sleep_time'] * 60)
 
             completed = self.check_phantombatch_complete()
 
