@@ -59,11 +59,12 @@ def keys_dir(dirs, key, pconf, no_loop=False):
     # ---------------------------------------------------------------------------
     
     binary_disc_keys = { # Binary
-                        'disc_mbinary': 'dmb', 'R_inbinary': ' Rinb', 'R_refbinary': 'Rrefb', 'R_outbinary': 'Rob',
+                        'disc_mbinary': 'dmb', 'R_inbinary': 'Rinb', 'R_refbinary': 'Rrefb', 'R_outbinary': 'Rob',
                         # Primary
                         'disc_mprimary': 'dmp', 'R_inprimary': 'Rinp', 'R_refprimary': 'Rrefp', 'R_outprimary': 'Rop',
                         # Secondary
-                        'disc_msecondary': 'dmp', 'R_insecondary': 'Rinp', 'R_refsecondary': 'Rrefp', 'R_outsecondary': 'Rop'
+                        'disc_msecondary': 'dmp', 'R_insecondary': 'Rinp', 'R_refsecondary': 'Rrefp',
+                        'R_outsecondary': 'Rop'
                         }
 
     if key in binary_disc_keys:
