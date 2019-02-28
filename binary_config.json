@@ -36,7 +36,6 @@
   "num_planets": 0,
   "no_loop": ["binary_a", "m2"],
   "fix_with": ["binary_e", "accr2"],
-  "make_options": "",
-  "make_setup_options": ""
+  "make_options": "MAXP=1000000"
   }
 }

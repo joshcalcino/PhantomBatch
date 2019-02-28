@@ -32,7 +32,7 @@ def load_config(pbconf):
         return pickle.load(f)
 
 
-def check_for_phantom_warnings(output):
+def check_for_phantom_warnings(output, exit_at_error=False):
     """ Check for any warnings and errors in the phantom routines. """
 
     log.debug('Checking for warnings and errors in phantom output..')
@@ -40,7 +40,7 @@ def check_for_phantom_warnings(output):
     warnings_kw = ['WARNING', 'Warning', 'warning']
     error_kw = ['ERROR', 'Error', 'error']
 
-    ignore_lines = ['please check output', 'Check output for warnings and errors']
+    ignore_lines = ['please check output', 'Check output for warnings and errors', 'max relative error']
 
     error = False
 
@@ -55,7 +55,9 @@ def check_for_phantom_warnings(output):
                 log.error('Phantom error found: ' + line)
                 error = True
 
-    return error
+    if exit_at_error:
+        if error:
+            call_exit()
 
 
 def check_pbconf_sim_dir_consistency(job_name, sim_dir, pbconf):
