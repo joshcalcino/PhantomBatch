@@ -5,6 +5,7 @@ import subprocess
 from phantombatch import setuphandler, inhandler, jobscripthandler, dirhandler, jobhandler, splashhandler, util
 import time
 import atexit
+import glob
 
 __all__ = ["PhantomBatch"]
 
@@ -12,10 +13,11 @@ __all__ = ["PhantomBatch"]
 class PhantomBatch(object):
 
     def __init__(self, config_filename, verbose=False, terminate_at_exit=True,
-                 run_dir=None, fresh_start=False):
+                 run_dir=None, fresh_start=False, do_not_recompile=False):
         # Set class variables
         self.terminate_at_exit = terminate_at_exit
         self.fresh_start = fresh_start
+        self.do_not_recompile = do_not_recompile
 
         # Get running directory, use current directory if run_dir not specified
         if run_dir is not None:
@@ -43,10 +45,31 @@ class PhantomBatch(object):
         if 'phantom_in' in self.config:
             self.piconf = self.config['phantom_in']
 
+        # Set up any  class variables that depend on config files
+
+        # Get the setup directory for Phantom
+        self.setup_dir = os.path.join(self.run_dir, self.pbconf['name'], 'phantom_' + self.pbconf['setup'])
+
+        # Get the suite_directory
+        self.suite_directory = os.path.join(self.run_dir, self.pbconf['name'])
+
+        # Get the simulations directory
+        self.sims_dir = os.path.join(self.suite_directory, 'simulations')
+
         if self.fresh_start:
-            log.info('Removing previous run directory..')
-            if os.path.exists(self.pbconf['name']):
-                shutil.rmtree(self.pbconf['name'])
+            if self.do_not_recompile:
+                log.info('Removing previous simulation directory but keeping the compiled copy of Phantom.')
+                if os.path.exists(self.pbconf['name']):
+                    print(self.suite_directory)
+                    contents = glob.glob(self.suite_directory + '/*')
+                    for content in contents:
+                        if 'phantom_' not in content:
+                            shutil.rmtree(content)
+
+            else:
+                log.info('Removing previous run directory..')
+                if os.path.exists(self.pbconf['name']):
+                    shutil.rmtree(self.pbconf['name'])
 
         # self.initialise_phantom decides whether or not we reinitilise everything
         self.initialise_phantombatch = True
@@ -80,15 +103,22 @@ class PhantomBatch(object):
         self.pbconf['run_dir'] = self.run_dir
 
         # Confirm that the PHANTOM_DIR environment variable has been set
+        self.phantom_dir = None
         try:
-            os.environ['PHANTOM_DIR']
+            self.phantom_dir = os.environ['PHANTOM_DIR']
 
         except KeyError:
             log.warning(
-                'You have not defined the PHANTOM_DIR system variable. Please define this. In most cases, this will be '
-                '\'PHANTOM_DIR=~/Phantom\'.')
+                'PHANTOM_DIR system variable not defined. If no Phantom directory is defined, I wil use '
+                '\'PHANTOM_DIR=~/phantom\'.')
 
-            util.call_exit()
+        if "phantom_dir" in self.pbconf:
+            self.phantom_dir = self.pbconf['phantom_dir']
+
+            log.warning('Found phantom_dir in the PhantomBatch config file. I will use this directory to find phantom.')
+
+        if self.phantom_dir is None:
+            self.phantom_dir = '~/phantom'
 
         # Try to find a SYSTEM variable
         self.system_in_make_options = False
@@ -150,16 +180,12 @@ class PhantomBatch(object):
     def initialise(self):
         log.info('Initialising ' + self.pbconf['name'] + '..')
 
-        suite_directory = os.path.join(self.run_dir, self.pbconf['name'])
-
         #  Check if the directory already exists
-        if not os.path.exists(suite_directory):
-            os.mkdir(suite_directory)
+        if not os.path.exists(self.suite_directory):
+            os.mkdir(self.suite_directory)
 
-        sims_dir = os.path.join(suite_directory, 'simulations')
-
-        if not os.path.exists(sims_dir):
-            os.mkdir(sims_dir)
+        if not os.path.exists(self.sims_dir):
+            os.mkdir(self.sims_dir)
 
         self.initiliase_phantom()
         dirhandler.create_dirs(self.pconf, self.pbconf, 'simulations')
@@ -167,7 +193,7 @@ class PhantomBatch(object):
         for tmp_dir in self.pbconf['dirs']:
             output = subprocess.check_output('cp ' + os.path.join(self.run_dir, self.pbconf['name'],
                                                                   'phantom_' + self.pbconf['setup']) + '/* ' +
-                                             os.path.join(sims_dir, tmp_dir), stderr=subprocess.STDOUT,
+                                             os.path.join(self.sims_dir, tmp_dir), stderr=subprocess.STDOUT,
                                              universal_newlines=True, shell=True)
 
             util.save_phantom_output(
@@ -196,7 +222,7 @@ class PhantomBatch(object):
             if not os.path.exists(os.path.join(setup_dir, 'Makefile')):
                 log.info('Setting up Phantom.. This may take a few moments.')
 
-                output = subprocess.check_output(os.path.join(os.environ['PHANTOM_DIR'], 'scripts', 'writemake.sh') +
+                output = subprocess.check_output(os.path.join(self.phantom_dir, 'scripts', 'writemake.sh') +
                                                  ' ' + self.pbconf['setup'] + ' > ' +
                                                  os.path.join(setup_dir, 'Makefile'),
                                                  stderr=subprocess.STDOUT, universal_newlines=True, shell=True)

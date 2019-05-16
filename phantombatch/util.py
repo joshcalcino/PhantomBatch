@@ -40,7 +40,8 @@ def check_for_phantom_warnings(output, exit_at_error=False):
     warnings_kw = ['WARNING', 'Warning', 'warning']
     error_kw = ['ERROR', 'Error', 'error']
 
-    ignore_lines = ['please check output', 'Check output for warnings and errors', 'max relative error']
+    ignore_lines = ['please check output', 'Check output for warnings and errors', 'max relative error',
+                    'subroutine check_velocity_error']
 
     error = False
 

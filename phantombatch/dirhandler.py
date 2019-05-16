@@ -12,7 +12,7 @@ def loop_keys_dir(pconf, pbconf):
         nl_keys = pbconf['no_loop']
         fw_keys = pbconf['fix_with']
 
-        for key in fw_keys and nl_keys:
+        for key in [fw_keys + nl_keys]:
             # Assert that the parameters listed in no_loop are actually lists
             try:
                 assert type(pconf[key]) is list
@@ -23,15 +23,16 @@ def loop_keys_dir(pconf, pbconf):
                 util.call_exit()
 
         for i in range(0, len(pbconf['no_loop'])):
+            if pbconf['no_loop'][i] not in no_loop_keys:
+                dirs = keys_dir(dirs, fw_keys[i], pconf, no_loop=False)
+                no_loop_keys.append(fw_keys[i])
 
-            dirs = keys_dir(dirs, fw_keys[i], pconf, no_loop=False)
-            no_loop_keys.append(fw_keys[i])
-
-            dirs = keys_dir(dirs, nl_keys[i], pconf, no_loop=True)
-            no_loop_keys.append(nl_keys[i])
+                # dirs = keys_dir(dirs, nl_keys[i], pconf, no_loop=True)
+                no_loop_keys.append(nl_keys[i])
 
     for key in pconf:
-        if isinstance(pconf[key], list) and key not in no_loop_keys:
+        if isinstance(pconf[key], list) and (key not in no_loop_keys):
+            print(key)
             dirs = keys_dir(dirs, key, pconf, no_loop=False)
 
     return dirs
@@ -87,7 +88,7 @@ def keys_dir(dirs, key, pconf, no_loop=False):
 def create_dirs(pconf, conf, setup_directory):
     """ Create directories and save them into conf dictionary. """
 
-    log.info('Checking if ' + setup_directory + ' directory exist..')
+    log.debug('Checking if ' + setup_directory + ' directory exist..')
 
     suite_directory = os.path.join(conf['run_dir'], conf['name'])
 
@@ -101,7 +102,7 @@ def create_dirs(pconf, conf, setup_directory):
             os.mkdir(cdir)
 
     conf['dirs'] = dirs
-    log.info('Completed.')
+    log.debug('Completed.')
 
 
 def dir_func(dirs, string, dict_arr, no_loop=False):
@@ -124,3 +125,4 @@ def dir_func(dirs, string, dict_arr, no_loop=False):
 
     dirs = [dirs[i] + tmp_dir[j] for i in range(0, len(dirs)) for j in range(0, len(tmp_dir))]
     return dirs
+
