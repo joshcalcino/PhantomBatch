@@ -77,7 +77,9 @@ def edit_pbs_jobscript(pbconf, jobscript_filename, jobscript_names):
     for line in fileinput.input(jobscript_filename, inplace=True):
         if '#PBS -l nodes' in line and ('ncpus' in pbconf):
             print(('#PBS -l nodes=1:ppn=' + str(pbconf['ncpus'])).strip())
-            print('#PBS -A name'.strip())  # Adding this here since my PBS cluster needs an account specified..
+
+        elif 'acocunt' in pbconf:
+            print(('#PBS -A ' + pbconf['account']).strip())  # Adding this here since my PBS cluster needs an account specified..
 
         elif '#PBS -N' in line:
             print(('#PBS -N ' + jobscript_names).strip())
