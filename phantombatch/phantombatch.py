@@ -269,7 +269,7 @@ class PhantomBatch(object):
                                  'PhantomBatch config file..')
 
                         qsys = self.pbconf['job_scheduler']
-                        qsys_string = 'QSYS=' + str(qsys).upper()
+                        qsys_string = 'QSYS=' + str(qsys)#.upper()
 
                     else:
                         qsys_string = ''
