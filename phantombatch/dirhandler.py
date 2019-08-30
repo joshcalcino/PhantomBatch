@@ -12,10 +12,11 @@ def loop_keys_dir(pconf, pbconf):
         nl_keys = pbconf['no_loop']
         fw_keys = pbconf['fix_with']
 
-        for key in [fw_keys + nl_keys]:
+        for key in fw_keys + nl_keys:
             # Assert that the parameters listed in no_loop are actually lists
             try:
-                assert type(pconf[key]) is list
+                assert isinstance(pconf[key], list)
+                # type(pconf[key]) isinstance() type(list())
             except AssertionError:
                 no_loop_or_fix_with = 'fix_with' if key in fw_keys else 'no_loop'
                 log.error('You have added parameter ' + str(key) + ' to the ' + str(no_loop_or_fix_with) +
@@ -61,11 +62,13 @@ def keys_dir(dirs, key, pconf, no_loop=False):
     
     binary_disc_keys = { # Binary
                         'disc_mbinary': 'dmb', 'R_inbinary': 'Rinb', 'R_refbinary': 'Rrefb', 'R_outbinary': 'Rob',
+                        'qindexbinary': 'qib', 'pindexbinary': 'pib',
                         # Primary
                         'disc_mprimary': 'dmp', 'R_inprimary': 'Rinp', 'R_refprimary': 'Rrefp', 'R_outprimary': 'Rop',
+                        'qindexprimary': 'qip', 'pindexprimary': 'pip',
                         # Secondary
                         'disc_msecondary': 'dmp', 'R_insecondary': 'Rinp', 'R_refsecondary': 'Rrefp',
-                        'R_outsecondary': 'Rop'
+                        'R_outsecondary': 'Rop', 'qindexsecondary': 'qis', 'pindexsecondary': 'pis',
                         }
 
     if key in binary_disc_keys:

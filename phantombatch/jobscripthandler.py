@@ -74,18 +74,21 @@ def edit_slurm_jobscript(pbconf, jobscript_filename, jobscript_names):
 
 
 def edit_pbs_jobscript(pbconf, jobscript_filename, jobscript_names):
+    account_added = False
     for line in fileinput.input(jobscript_filename, inplace=True):
         if '#PBS -l nodes' in line and ('ncpus' in pbconf):
             print(('#PBS -l nodes=1:ppn=' + str(pbconf['ncpus'])).strip())
 
-        elif 'account' in pbconf:
-            print(('#PBS -A ' + pbconf['account']).strip())  # Adding this here since my PBS cluster needs an account specified..
-
         elif '#PBS -N' in line:
             print(('#PBS -N ' + jobscript_names).strip())
 
-        elif '#PBS -A' in line:
-            print(('#PBS -A ' + pbconf['user']).strip())
+        elif ('#PBS -A' in line) and not account_added:
+            account_added = True
+            print(('#PBS -A ' + pbconf['account']).strip())
+
+        elif ('account' in pbconf) and not account_added:
+            account_added = True
+            print(('#PBS -A ' + pbconf['account']).strip())  # Adding this here since my PBS cluster needs an account specified..
 
         elif '#PBS -M' in line and ('no_email' in pbconf) and (pbconf['no_email']):
             print('##PBS -M'.strip())
@@ -123,6 +126,9 @@ def get_jobscript_names(pconf, pbconf, jobscript_name=None):
 
     else:
         jobscript_names = [pbconf['name'] + '_' + name for name in jobscript_names]
+
+    log.debug('Printing joscript_names from get_jobscript_names')
+    log.debug(jobscript_names)
 
     if len(jobscript_names[0]) > 40:
         log.warning('Job names are too long. Consider adding in a \'short_name\' to PhantomBatch config.')

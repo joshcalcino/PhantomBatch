@@ -274,10 +274,12 @@ class PhantomBatch(object):
                     else:
                         qsys_string = ''
 
+                    jobname_string = 'JOBNAME=' + 'phantombatch'
+
                     log.debug('Attempting to create jobscript files using ' + self.system_string + '.')
 
                     execution_string = 'make qscript INFILE=' + self.pbconf['setup'] + '.in ' + self.system_string + \
-                                       ' ' + qsys_string
+                                       ' ' + qsys_string + ' ' + jobname_string
 
                     log.debug('Running ' + execution_string)
 
