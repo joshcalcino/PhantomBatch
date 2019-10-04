@@ -154,7 +154,11 @@ class PhantomBatch(object):
             if self.system_string is not None:
                 log.warning('You have an environment variable for SYSTEM set, but have also specified a SYSTEM in '
                             '\"make_options\", which will be used to run Phantom.')
-                self.system_string = None
+                make_options_components = self.pbconf["make_options"].split(' ')
+
+                for string in make_options_components:
+                    if "SYSTEM=" in string:
+                        self.system_string = string
 
         if self.system_string is None and self.system_in_make_options is False:
             log.error('No system setting found. Add onto into the phantombatch config (either ifort or gfortran), or '
@@ -170,12 +174,12 @@ class PhantomBatch(object):
         log.info('Attempting to terminate all jobs as PhantomBatch is exiting..')
 
         if 'job_names' in self.pbconf:
-            jobhandler.cancel_all_submitted_jobs(self.pbconf)
+            jobhandler.cancel_all_jobs_by_name(self.pbconf)
 
         # Cancel all splash jobs if splash has been invoked
         if self.run_splash:
             if 'job_names' in self.sconf:
-                jobhandler.cancel_all_submitted_jobs(self.sconf)
+                jobhandler.cancel_all_jobs_by_name(self.sconf)
 
     def initialise(self):
         log.info('Initialising ' + self.pbconf['name'] + '..')

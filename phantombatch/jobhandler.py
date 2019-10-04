@@ -9,7 +9,7 @@ def decipher_slurm_output(slurm_output, pbconf):
     """ This function deciphers the output from executing 'qstat' in the terminal so that we have a usable list
     of all jobs currently running on the cluster.
 
-    There is an issue here this this doesn't work if there are no jobs running on a cluster in order for the function to
+    There is an issue here this doesn't work if there are no jobs running on a cluster in order for the function to
     decipher the output.. Will need to figure a way around this, but may be an issue with things further down the
     pipeline.
     """
@@ -93,6 +93,15 @@ def decipher_slurm_output(slurm_output, pbconf):
     return my_jobs
 
 
+def get_slurm_jobs(pbconf):
+    jobs = subprocess.check_output('squeue -u ' + pbconf['user'] +
+                                   ' -o  "%.18i %.12P %.40j %.12u %.2t %.14M %.6D %.20R"',
+                                   stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
+
+    my_jobs = decipher_slurm_output(jobs, pbconf)
+    return my_jobs
+
+
 def get_pbs_jobs():
 
     columns = ['Job Id: ', 'Job_Name = ', 'Job_Owner = ', 'resources_used.walltime = ', 'job_state = ']
@@ -135,11 +144,7 @@ def check_running_jobs(pbconf):
     my_jobs = []
 
     if pbconf['job_scheduler'] == 'slurm':
-        jobs = subprocess.check_output('squeue -u ' + pbconf['user'] +
-                                       ' -o  "%.18i %.12P %.40j %.12u %.2t %.14M %.6D %.20R"',
-                                       stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
-
-        my_jobs = decipher_slurm_output(jobs, pbconf)
+        my_jobs = get_slurm_jobs(pbconf)
 
     elif pbconf['job_scheduler'] == 'pbs':
         my_jobs = get_pbs_jobs()
@@ -160,6 +165,42 @@ def check_running_jobs(pbconf):
     return my_pb_jobs
 
 
+def submit_slurm_job(pbconf, jobscript_name):
+    log.debug('Attempting to submit SLURM job..')
+    job_scheduluer_call = 'sbatch '
+    output = _job_submit(pbconf, job_scheduluer_call, jobscript_name)
+
+    len_slurm_output = len('Submitted batch job ')  # Change this string if your slurm prints something else out
+    job_number = output[len_slurm_output:].strip()
+    log.debug('Printing job_number from submit_job')
+    log.debug(job_number)
+
+    return job_number
+
+
+def submit_pbs_job(pbconf, jobscript_name):
+    log.debug('Attempting to submit PBS job..')
+    job_scheduluer_call = 'qsub '
+    output = _job_submit(pbconf, job_scheduluer_call, jobscript_name)
+    char
+
+    #  Want to get the line that contains the job number and ignore other lines
+    output.split(' ')
+    job_number = ''
+    number = None
+    for char in output:
+        # log.debug(line)
+        if char[0].isdigit():
+            number = True
+            job_number += char
+        else:
+            number=False
+    log.debug('Printing job_number from submit_job')
+    log.debug(job_number)
+
+    return job_number
+
+
 def submit_job(pbconf, directory, jobscript_name=None):
     """ Submit a job to the cluster. Both SLURM and PBS job schedulers are supported. """
 
@@ -175,53 +216,16 @@ def submit_job(pbconf, directory, jobscript_name=None):
 
     if pbconf['job_scheduler'] == 'slurm':
         log.debug('Attempting to submit SLURM job..')
-        job_scheduluer_call = 'sbatch '
+        job_number = submit_slurm_job(pbconf, jobscript_name)
 
     elif pbconf['job_scheduler'] == 'pbs':
         log.debug('Attempting to submit PBS job..')
-        job_scheduluer_call = 'qsub '
+        job_number = submit_pbs_job(pbconf, jobscript_name)
 
     elif job_scheduluer_call is None:
         log.error('Job scheduler not recognised, cannot submit jobs!')
         log.info('Please use a known job scheduler, or add in your own.')
         util.call_exit()
-
-    output = None
-
-    try:
-        output = subprocess.check_output(job_scheduluer_call + jobscript_name, stderr=subprocess.STDOUT,
-                                         universal_newlines=True, shell=True).strip()
-    except subprocess.CalledProcessError:
-        log.error('Could not submit ' + pbconf['job_scheduler'].upper() +
-                  ' job. There may be something wrong in the jobscript file, or ' + pbconf['job_scheduler'].upper() +
-                  ' may not be on your cluster.')
-
-        if output is None:
-            util.call_exit()
-
-        else:
-            log.info('Here is the output from my attempt to run ' + job_scheduluer_call)
-            log.info(output)
-
-    if pbconf['job_scheduler'] == 'slurm':
-        len_slurm_output = len('Submitted batch job ')  # Change this string if your slurm prints something else out
-        job_number = output[len_slurm_output:].strip()
-        log.debug('Printing job_number from submit_job')
-        log.debug(job_number)
-
-    elif pbconf['job_scheduler'] == 'pbs':
-        # log.debug('Attempting to submit PBS job..')
-        # output = str(subprocess.check_output('qsub ' + jobscript_name, stderr=subprocess.STDOUT,
-        #                                      universal_newlines=True, shell=True))
-        # log.info(output.strip())
-        # output = output.split('\n')[:-1]  # remove last line since it is empty
-
-        #  Want to get the line that contains the job number and ignore other lines
-        for line in output:
-            if line[0].isdigit():
-                job_number = line.strip()
-        log.debug('Printing job_number from submit_job')
-        log.debug(job_number)
 
     os.chdir(pbconf['run_dir'])
 
@@ -257,14 +261,38 @@ def cancel_job_by_name(pbconf, job_name):
             cancel_job(pbconf, cjob[0])
 
 
+def cancel_all_jobs_by_name(pbconf):
+    """ This function will cancel all of the jobs with jobnames for this run of PhantomBatch """
+
+    log.info('Cancelling all submitted jobs.')
+    current_jobs = check_running_jobs(pbconf)
+    log.debug('Current jobs are:')
+    log.debug(current_jobs)
+
+    for job_name in pbconf['submitted_job_names']:
+        log.debug('See if ' + job_name + ' is in current submitted jobs.')
+        if any(job_name in cjob for cjob in current_jobs):
+            log.debug('Job number ' + job_name + ' is in current jobs, going to cancel this job now.')
+            cancel_job_by_name(pbconf, job_name)
+
+    log.info('All submitted jobs have been cancelled.')
+
+
 def cancel_all_submitted_jobs(pbconf):
     """ This function will cancel all of the jobs submitted by PhantomBatch for pbconf['name']. """
 
     log.info('Cancelling all submitted jobs.')
     current_jobs = check_running_jobs(pbconf)
+    log.debug('Current jobs are:')
+    log.debug(current_jobs)
+
+    log.debug('Submitted jobs are:')
+    log.debug(pbconf['submitted_job_numbers'])
 
     for job_number in pbconf['submitted_job_numbers']:
+        log.debug('See if ' + job_number + ' is in current submitted jobs.')
         if any(job_number in cjob for cjob in current_jobs):
+            log.debug('Job number ' + job_number + ' is in current jobs, going to cancel this job now.')
             cancel_job(pbconf, job_number)
 
     log.info('All submitted jobs have been cancelled.')
@@ -377,3 +405,24 @@ def check_completed_jobs(pbconf):
              ' jobs to be started.')
 
     util.save_config(pbconf)
+
+
+def _job_submit(pbconf, job_scheduluer_call, jobscript_name):
+    output = None
+
+    try:
+        output = subprocess.check_output(job_scheduluer_call + jobscript_name, stderr=subprocess.STDOUT,
+                                         universal_newlines=True, shell=True).strip()
+    except subprocess.CalledProcessError:
+        log.error('Could not submit ' + pbconf['job_scheduler'].upper() +
+                  ' job. There may be something wrong in the jobscript file, or ' + pbconf['job_scheduler'].upper() +
+                  ' may not be on your cluster.')
+
+        if output is None:
+            util.call_exit()
+
+        else:
+            log.info('Here is the output from my attempt to run ' + job_scheduluer_call)
+            log.info(output)
+
+    return output
