@@ -62,7 +62,7 @@ def keys_dir(dirs, key, pconf, no_loop=False):
     
     binary_disc_keys = { # Binary
                         'disc_mbinary': 'dmb', 'R_inbinary': 'Rinb', 'R_refbinary': 'Rrefb', 'R_outbinary': 'Rob',
-                        'qindexbinary': 'qib', 'pindexbinary': 'pib',
+                        'qindexbinary': 'qib', 'pindexbinary': 'pib', 'H_Rbinary': 'hrb',
                         # Primary
                         'disc_mprimary': 'dmp', 'R_inprimary': 'Rinp', 'R_refprimary': 'Rrefp', 'R_outprimary': 'Rop',
                         'qindexprimary': 'qip', 'pindexprimary': 'pip',
@@ -103,6 +103,8 @@ def create_dirs(pconf, conf, setup_directory):
         dirs.append(cdir)
         if not os.path.exists(cdir):
             os.mkdir(cdir)
+        else:
+            log.debug('Directory ' + cdir + ' already exists.')
 
     conf['dirs'] = dirs
     log.debug('Completed.')

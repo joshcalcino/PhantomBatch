@@ -13,7 +13,14 @@ def load_init_config(filename):
     return d
 
 
-def save_config(pbconf):
+def save_pcongif(pbconf, pconf):
+    log.debug('Saving Phantom config to disk.')
+
+    with open(pbconf['name'] + '/' + pbconf['name'] + '_pconf.pkl', 'wb') as f:
+        pickle.dump(pconf, f, pickle.HIGHEST_PROTOCOL)
+
+
+def save_pbconfig(pbconf):
     """ Save the phantombatch config file to disk. """
 
     log.debug('Saving PhantomBatch config to disk.')
@@ -28,8 +35,18 @@ def load_config(pbconf):
 
     log.debug('Loading in a saved copy of PhantomBatch config..')
 
-    with open(pbconf['name'] + '/' + pbconf['name'] + '_pbconf.pkl', 'rb') as f:
-        return pickle.load(f)
+    # pbconf = None
+    pconf = None
+
+    if os.path.isfile(os.path.join(pbconf['name'], pbconf['name'] + '_pbconf.pkl')):
+        with open(pbconf['name'] + '/' + pbconf['name'] + '_pbconf.pkl', 'rb') as f:
+            pbconf = pickle.load(f)
+
+    if os.path.isfile(os.path.join(pbconf['name'], pbconf['name'] + '_pconf.pkl')):
+        with open(pbconf['name'] + '/' + pbconf['name'] + '_pconf.pkl', 'rb') as f:
+            pconf = pickle.load(f)
+
+    return pbconf, pconf
 
 
 def check_for_phantom_warnings(output, exit_at_error=False):
@@ -90,6 +107,19 @@ def save_phantom_output(output, pbconf, run_dir):
     else:
         with open(output_filename, 'w') as f:
             f.write(output)
+
+
+def check_config_key_change(conf, conf_tmp, key_change):
+    for key in conf:
+        if key in conf_tmp and (conf_tmp[key] != conf[key]):
+            conf_tmp[key] = conf[key]
+            log.warning(
+                'key ' + key + ' has changed since your last run of PhantomBatch.')
+            key_change = True
+        elif key not in conf_tmp:
+            conf_tmp[key] = conf[key]
+
+    return conf_tmp, key_change
 
 
 def call_exit():

@@ -182,19 +182,19 @@ def submit_pbs_job(pbconf, jobscript_name):
     log.debug('Attempting to submit PBS job..')
     job_scheduluer_call = 'qsub '
     output = _job_submit(pbconf, job_scheduluer_call, jobscript_name)
-    char
 
     #  Want to get the line that contains the job number and ignore other lines
-    output.split(' ')
-    job_number = ''
-    number = None
-    for char in output:
-        # log.debug(line)
-        if char[0].isdigit():
-            number = True
-            job_number += char
-        else:
-            number=False
+    # output.split(' ')
+    # job_number = ''
+    # number = None
+    # for char in output:
+    #     # log.debug(line)
+    #     if char[0].isdigit():
+    #         number = True
+    #         job_number += char
+    #     else:
+    #         number = False
+    job_number = output
     log.debug('Printing job_number from submit_job')
     log.debug(job_number)
 
@@ -312,8 +312,12 @@ def run_batch_jobs(pbconf):
     for job in pbconf['job_names']:
         log.debug('Looking to submit ' + job)
         current_jobs = check_running_jobs(pbconf)
+        # log.debug(current_jobs)
+
         if not any(job in cjob for cjob in current_jobs):
             if 'job_limit' in pbconf and (len(current_jobs) >= pbconf['job_limit']):
+                log.info('Will not submit any more jobs since ' + str(len(current_jobs)) + ' are running'
+                         ' and there is a limit of ' + str(pbconf['job_limit']) + ' jobs allowed to be submitted.')
                 break
 
             if (job in pbconf['submitted_job_names']) and any(job in cjob for cjob in current_jobs):
@@ -334,13 +338,14 @@ def run_batch_jobs(pbconf):
                     pbconf['submitted_job_names'].append(job)
                     log.debug(pbconf['submitted_job_names'])
 
-        elif 'job_limit' in pbconf and (len(current_jobs) <= pbconf['job_limit']):
-            log.debug('Hit maximum number of allowed jobs.')
-            break
+        # elif 'job_limit' in pbconf and (len(current_jobs) >= pbconf['job_limit']):
+        #     log.info('Will not submit any more jobs since ' + str(len(current_jobs)) + ' are running'
+        #              ' and there is a limit of ' + str(pbconf['job_limit']) + ' jobs allowed to be submitted.')
+        #     break
 
         i += 1
 
-    util.save_config(pbconf)
+    util.save_pbconfig(pbconf)
 
 
 def check_completed_jobs(pbconf):
@@ -404,7 +409,7 @@ def check_completed_jobs(pbconf):
     log.info('There are now ' + str(len(pbconf['job_names']) - len(pbconf['submitted_job_names'])) +
              ' jobs to be started.')
 
-    util.save_config(pbconf)
+    util.save_pbconfig(pbconf)
 
 
 def _job_submit(pbconf, job_scheduluer_call, jobscript_name):

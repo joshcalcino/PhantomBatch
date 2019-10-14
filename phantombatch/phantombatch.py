@@ -60,7 +60,7 @@ class PhantomBatch(object):
             if self.do_not_recompile:
                 log.info('Removing previous simulation directory but keeping the compiled copy of Phantom.')
                 if os.path.exists(self.pbconf['name']):
-                    print(self.suite_directory)
+                    log.debug(self.suite_directory)
                     contents = glob.glob(self.suite_directory + '/*')
                     for content in contents:
                         if 'phantom_' not in content:
@@ -74,19 +74,25 @@ class PhantomBatch(object):
         # self.initialise_phantom decides whether or not we reinitilise everything
         self.initialise_phantombatch = True
 
-        # check if a saved PhantomBatch configuration file already exists, overwrite current if it does
-        if os.path.isfile(os.path.join(self.pbconf['name'], self.pbconf['name'] + '_pbconf.pkl')):
-            self.initialise_phantombatch = False
-            pbconf_tmp = util.load_config(self.pbconf)
+        pbconf_tmp, pconf_tmp = util.load_config(self.pbconf)
+        key_change = False
 
-            for key in self.pbconf:
-                if key in pbconf_tmp and (self.pbconf[key] != pbconf_tmp[key]):
-                    pbconf_tmp[key] = self.pbconf[key]
-                    log.warning(
-                        'key ' + key + ' has changed since your last run of PhantomBatch.')
-                elif key not in pbconf_tmp:
-                    pbconf_tmp[key] = self.pbconf[key]
-            self.pbconf = pbconf_tmp
+        # check if a saved PhantomBatch configuration file already exists, overwrite current if it does
+        if pbconf_tmp is not None:
+            self.initialise_phantombatch = False
+            self.pbconf, key_change = util.check_config_key_change(self.pbconf, pbconf_tmp, key_change)
+
+        # check if a saved Phantom configuration file already exists, overwrite current if it does
+        if pconf_tmp is not None:
+            self.initialise_phantombatch = False
+            self.pconf, key_change = util.check_config_key_change(self.pconf, pconf_tmp, key_change)
+
+        if key_change:
+            self.initialise_phantombatch = True
+            log.debug('I will be reinitialising PhantomBatch.')
+
+        # Save a copy of the pconf file so we know if any changes are made to it
+        util.save_pcongif(self.pbconf, self.pconf)
 
         self.run_splash = False
         # Set up splash if it is going to be used
@@ -195,13 +201,15 @@ class PhantomBatch(object):
         dirhandler.create_dirs(self.pconf, self.pbconf, 'simulations')
 
         for tmp_dir in self.pbconf['dirs']:
-            output = subprocess.check_output('cp ' + os.path.join(self.run_dir, self.pbconf['name'],
-                                                                  'phantom_' + self.pbconf['setup']) + '/* ' +
-                                             os.path.join(self.sims_dir, tmp_dir), stderr=subprocess.STDOUT,
-                                             universal_newlines=True, shell=True)
+            tmp_dir = os.path.join(self.sims_dir, tmp_dir)
 
-            util.save_phantom_output(
-                output.rstrip(), self.pbconf, self.run_dir)
+            if not os.path.isfile(os.path.join(tmp_dir, 'phantom')):
+                # If phantom is not already in the current directory, copy it there
+                output = subprocess.check_output('cp ' + os.path.join(self.run_dir, self.pbconf['name'],
+                                                 'phantom_' + self.pbconf['setup']) + '/* ' + tmp_dir,
+                                                 stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
+
+                util.save_phantom_output(output.rstrip(), self.pbconf, self.run_dir)
 
     def initiliase_phantom(self):
         """ This function will initialise phantom in a special directory called phantom_pbconfg['setup']. We do this so
@@ -366,19 +374,21 @@ class PhantomBatch(object):
         setup_dirs = self.pbconf['sim_dirs']
 
         for tmp_dir in setup_dirs:
-            log.debug('Changing directory to ' + tmp_dir)
-            os.chdir(tmp_dir)
-            output = subprocess.check_output('./phantomsetup ' + self.pbconf['setup'], stderr=subprocess.STDOUT,
-                                             universal_newlines=True, shell=True)
-
-            if 'writing setup options file' in output:
-                # Rerun phantomsetup because there might be some annoying
+            if not os.path.isfile(os.path.join(tmp_dir, 'disc.in')):
+                # Do not run phantomsetup if disc.in already exists, since it means phantomsetup has already run
+                log.debug('Changing directory to ' + tmp_dir)
+                os.chdir(tmp_dir)
                 output = subprocess.check_output('./phantomsetup ' + self.pbconf['setup'], stderr=subprocess.STDOUT,
                                                  universal_newlines=True, shell=True)
 
-            util.check_for_phantom_warnings(output.rstrip())
-            util.save_phantom_output(
-                output.rstrip(), self.pbconf, self.run_dir)
+                if 'writing setup options file' in output:
+                    # Rerun phantomsetup because there might be some annoying
+                    output = subprocess.check_output('./phantomsetup ' + self.pbconf['setup'], stderr=subprocess.STDOUT,
+                                                     universal_newlines=True, shell=True)
+
+                util.check_for_phantom_warnings(output.rstrip())
+                util.save_phantom_output(
+                    output.rstrip(), self.pbconf, self.run_dir)
 
         os.chdir(self.run_dir)
         log.info('Completed.')
