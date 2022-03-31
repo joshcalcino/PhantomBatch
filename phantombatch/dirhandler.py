@@ -1,7 +1,7 @@
 import os
 import logging as log
 from phantombatch import util
-
+from phantombatch import param_keys
 
 def loop_keys_dir(pconf, pbconf):
     """ A function for generating both directory names and job names for the job scripts. """
@@ -41,11 +41,6 @@ def loop_keys_dir(pconf, pbconf):
 
 def keys_dir(dirs, key, pconf, no_loop=False):
 
-    key_dict = {'pindex': 'p', 'qindex': 'q', 'm2': 'm2', 'accr2': 'acr2', 'alphaSS': 'aSS', 'binary_i': 'i'}
-
-    if key in key_dict:
-        dirs = dir_func(dirs, key_dict[key], pconf[key], no_loop=no_loop)
-
     if key == 'binary_a':
         # Build array of a's, which are rounded, to get rid of unnecessary decimal places
         dict_arr = [round(i, 1) for i in pconf[key]]
@@ -55,35 +50,18 @@ def keys_dir(dirs, key, pconf, no_loop=False):
         # Build up an array of e's that isn't too long and disregard the '0.'
         dict_arr = [format(i, '.2f')[2:] for i in pconf[key]]
         dirs = dir_func(dirs, 'e', dict_arr, no_loop=no_loop)
-    
-    # ---------------------------------------------------------------------------
-    # |                         BINARY DISC PARAMETERS                          |
-    # ---------------------------------------------------------------------------
-    
-    binary_disc_keys = { # Binary
-                        'disc_mbinary': 'dmb', 'R_inbinary': 'Rinb', 'R_refbinary': 'Rrefb', 'R_outbinary': 'Rob',
-                        'qindexbinary': 'qib', 'pindexbinary': 'pib', 'H_Rbinary': 'hrb',
-                        # Primary
-                        'disc_mprimary': 'dmp', 'R_inprimary': 'Rinp', 'R_refprimary': 'Rrefp', 'R_outprimary': 'Rop',
-                        'qindexprimary': 'qip', 'pindexprimary': 'pip',
-                        # Secondary
-                        'disc_msecondary': 'dmp', 'R_insecondary': 'Rinp', 'R_refsecondary': 'Rrefp',
-                        'R_outsecondary': 'Rop', 'qindexsecondary': 'qis', 'pindexsecondary': 'pis',
-                        }
 
-    if key in binary_disc_keys:
-        dirs = dir_func(dirs, binary_disc_keys[key], pconf[key], no_loop=no_loop)
+    if key in param_keys.disc_key_dict:
+        dirs = dir_func(dirs, param_keys.disc_key_dict[key], pconf[key], no_loop=no_loop)
 
-    # ---------------------------------------------------------------------------
-    # |                            PLANET PARAMETERS                            |
-    # ---------------------------------------------------------------------------
+    # if key in param_keys.binary_disc_keys:
+    #     dirs = dir_func(dirs, param_keys.binary_disc_keys[key], pconf[key], no_loop=no_loop)
 
-    planet_keys = {'mplanet': 'mp', 'rplanet': 'rp', 'inclplanet': 'ip'}
 
-    for param in planet_keys:
+    for param in param_keys.planet_keys:
         if param in key:
-            #  Adding in key[-1] makes sure that we select the write planet number
-            dirs = dir_func(dirs, planet_keys[param] + key[-1], pconf[key], no_loop=no_loop)
+            #  Adding in key[-1] makes sure that we select the right planet number
+            dirs = dir_func(dirs, param_keys.planet_keys[param] + key[-1], pconf[key], no_loop=no_loop)
 
     return dirs
 
@@ -130,4 +108,3 @@ def dir_func(dirs, string, dict_arr, no_loop=False):
 
     dirs = [dirs[i] + tmp_dir[j] for i in range(0, len(dirs)) for j in range(0, len(tmp_dir))]
     return dirs
-
