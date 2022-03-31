@@ -51,17 +51,8 @@ def keys_dir(dirs, key, pconf, no_loop=False):
         dict_arr = [format(i, '.2f')[2:] for i in pconf[key]]
         dirs = dir_func(dirs, 'e', dict_arr, no_loop=no_loop)
 
-    if key in param_keys.disc_key_dict:
-        dirs = dir_func(dirs, param_keys.disc_key_dict[key], pconf[key], no_loop=no_loop)
-
-    # if key in param_keys.binary_disc_keys:
-    #     dirs = dir_func(dirs, param_keys.binary_disc_keys[key], pconf[key], no_loop=no_loop)
-
-
-    for param in param_keys.planet_keys:
-        if param in key:
-            #  Adding in key[-1] makes sure that we select the right planet number
-            dirs = dir_func(dirs, param_keys.planet_keys[param] + key[-1], pconf[key], no_loop=no_loop)
+    if key in param_keys.all_names:
+        dirs = dir_func(dirs, param_keys.all_names[key], pconf[key], no_loop=no_loop)
 
     return dirs
 
