@@ -13,13 +13,6 @@ def load_init_config(filename):
     return d
 
 
-def save_pcongif(pbconf, pconf):
-    log.debug('Saving Phantom config to disk.')
-
-    with open(pbconf['name'] + '/' + pbconf['name'] + '_pconf.pkl', 'wb') as f:
-        pickle.dump(pconf, f, pickle.HIGHEST_PROTOCOL)
-
-
 def save_pbconfig(pbconf):
     """ Save the phantombatch config file to disk. """
 
@@ -35,27 +28,20 @@ def load_config(pbconf):
 
     log.debug('Loading in a saved copy of PhantomBatch config..')
 
-    # pbconf = None
-    pconf = None
+    filename = os.path.join(pbconf['name'], pbconf['name'] + '_pbconf.pkl')
 
-    if os.path.isfile(os.path.join(pbconf['name'], pbconf['name'] + '_pbconf.pkl')):
+    if os.path.isfile(filename):
+        print(filename)
         with open(pbconf['name'] + '/' + pbconf['name'] + '_pbconf.pkl', 'rb') as f:
             pbconf = pickle.load(f)
 
-    if os.path.isfile(os.path.join(pbconf['name'], pbconf['name'] + '_pconf.pkl')):
-        with open(pbconf['name'] + '/' + pbconf['name'] + '_pconf.pkl', 'rb') as f:
-            pconf = pickle.load(f)
-
-    return pbconf, pconf
+    return pbconf
 
 
 def check_for_phantom_warnings(output, exit_at_error=False):
     """ Check for any warnings and errors in the phantom routines. """
 
     log.debug('Checking for warnings and errors in phantom output..')
-
-    warnings_kw = ['WARNING', 'Warning', 'warning']
-    error_kw = ['ERROR', 'Error', 'error']
 
     ignore_lines = ['please check output', 'Check output for warnings and errors', 'max relative error',
                     'subroutine check_velocity_error']
@@ -64,11 +50,11 @@ def check_for_phantom_warnings(output, exit_at_error=False):
 
     output = output.split('\n')
     for line in output:
-        if any([warning in line for warning in warnings_kw]):
+        if 'warning' in line.lower():
             if all([ignore_line not in line for ignore_line in ignore_lines]):
                 log.warning('Phantom warning found: ' + line)
 
-        if any([error in line for error in error_kw]):
+        if 'error' in line.lower():
             if all([ignore_line not in line for ignore_line in ignore_lines]):
                 log.error('Phantom error found: ' + line)
                 error = True
@@ -120,6 +106,25 @@ def check_config_key_change(conf, conf_tmp, key_change):
             conf_tmp[key] = conf[key]
 
     return conf_tmp, key_change
+
+
+def extract_string_list_values(stupid_string):
+    """ Extract values from a list that's a stupid string and return them
+            as an actual list."""
+
+    # Trunctate the start and end
+    stupid_string = stupid_string.replace('[', '')
+    stupid_string = stupid_string.replace(']', '')
+
+    # Now split the string from a comma delimiter
+    split_string = stupid_string.split(',')
+
+    # Populate a list with the values
+    values = []
+    for string in split_string:
+        values.append(float(string))
+
+    return values
 
 
 def call_exit():

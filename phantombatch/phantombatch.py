@@ -2,22 +2,24 @@ import os
 import shutil
 import logging as log
 import subprocess
-from phantombatch import setuphandler, inhandler, jobscripthandler, dirhandler, jobhandler, splashhandler, util
+from phantombatch import setuphandler, inhandler, jobscripthandler, dirhandler, jobhandler, util
 import time
 import atexit
 import glob
+import phantomconfig as pc
 
 __all__ = ["PhantomBatch"]
 
 
 class PhantomBatch(object):
 
-    def __init__(self, config_filename, verbose=False, terminate_at_exit=True,
-                 run_dir=None, fresh_start=False, do_not_recompile=False):
+    def __init__(self, config_filename, setup_filename, verbose=False, terminate_at_exit=True,
+                 run_dir=None, fresh_start=False, do_not_recompile=False, submit_jobs=False):
         # Set class variables
         self.terminate_at_exit = terminate_at_exit
         self.fresh_start = fresh_start
         self.do_not_recompile = do_not_recompile
+        self.submit_jobs = False
 
         # Get running directory, use current directory if run_dir not specified
         if run_dir is not None:
@@ -37,16 +39,18 @@ class PhantomBatch(object):
             atexit.register(self.terminate_jobs_at_exit)
 
         # Load in config file
-        self.config = util.load_init_config(config_filename)
-        self.pconf = self.config['phantom_setup']
-        self.pbconf = self.config['phantom_batch_setup']
+        self.pbconf = util.load_init_config(config_filename)
 
-        self.piconf = None
-        if 'phantom_in' in self.config:
-            self.piconf = self.config['phantom_in']
+        self.setup = pc.read_config(setup_filename)
+        self.loop_variables = {}
+        for key in self.setup.config.keys():
+            # phantomconfig saves lists as strings...
+            if isinstance(self.setup.config[key].value, str):
+                if self.setup.config[key].value[0] == '[':
+                    print(key)
+                    self.loop_variables[key] = util.extract_string_list_values(self.setup.config[key].value)
 
         # Set up any  class variables that depend on config files
-
         # Get the setup directory for Phantom
         self.setup_dir = os.path.join(self.run_dir, self.pbconf['name'], 'phantom_' + self.pbconf['setup'])
 
@@ -74,36 +78,25 @@ class PhantomBatch(object):
         # self.initialise_phantom decides whether or not we reinitilise everything
         self.initialise_phantombatch = True
 
-        pbconf_tmp, pconf_tmp = util.load_config(self.pbconf)
-        key_change = False
-
-        # check if a saved PhantomBatch configuration file already exists, overwrite current if it does
-        if pbconf_tmp is not None:
-            self.initialise_phantombatch = False
-            self.pbconf, key_change = util.check_config_key_change(self.pbconf, pbconf_tmp, key_change)
-
-        # check if a saved Phantom configuration file already exists, overwrite current if it does
-        if pconf_tmp is not None:
-            self.initialise_phantombatch = False
-            self.pconf, key_change = util.check_config_key_change(self.pconf, pconf_tmp, key_change)
-
-        if key_change:
-            self.initialise_phantombatch = True
-            log.debug('I will be reinitialising PhantomBatch.')
+        # pbconf_tmp, pconf_tmp = util.load_config(self.pbconf)
+        # key_change = False
+        #
+        # # check if a saved PhantomBatch configuration file already exists, overwrite current if it does
+        # if pbconf_tmp is not None:
+        #     self.initialise_phantombatch = False
+        #     self.pbconf, key_change = util.check_config_key_change(self.pbconf, pbconf_tmp, key_change)
+        #
+        # # check if a saved Phantom configuration file already exists, overwrite current if it does
+        # if pconf_tmp is not None:
+        #     self.initialise_phantombatch = False
+        #     self.pconf, key_change = util.check_config_key_change(self.pconf, pconf_tmp, key_change)
+        #
+        # if key_change:
+        #     self.initialise_phantombatch = True
+        #     log.debug('I will be reinitialising PhantomBatch.')
 
         # Save a copy of the pconf file so we know if any changes are made to it
-        util.save_pcongif(self.pbconf, self.pconf)
-
-        self.run_splash = False
-        # Set up splash if it is going to be used
-        if 'splash_setup' in self.config:
-            self.run_splash = True
-            self.sconf = splashhandler.get_full_splash_config(
-                self.pbconf, self.config['splash_batch_setup'])
-
-            if 'no_splash' in self.sconf and self.sconf['no_splash'] == 1 is True:
-                # Add this in so it is easier to control splash usage without having to remove lines from config file
-                self.run_splash = False
+        # util.save_pcongif(self.pbconf, self.pconf)
 
         # Save run_dir in the PhantomBatch config dict
         self.pbconf['run_dir'] = self.run_dir
@@ -114,17 +107,14 @@ class PhantomBatch(object):
             self.phantom_dir = os.environ['PHANTOM_DIR']
 
         except KeyError:
-            log.warning(
-                'PHANTOM_DIR system variable not defined. If no Phantom directory is defined, I wil use '
-                '\'PHANTOM_DIR=~/phantom\'.')
+            if "phantom_dir" in self.pbconf:
+                self.phantom_dir = self.pbconf['phantom_dir']
 
-        if "phantom_dir" in self.pbconf:
-            self.phantom_dir = self.pbconf['phantom_dir']
+                log.warning('Found phantom_dir in the PhantomBatch config file. I will use this directory to find phantom.')
 
-            log.warning('Found phantom_dir in the PhantomBatch config file. I will use this directory to find phantom.')
-
-        if self.phantom_dir is None:
-            self.phantom_dir = '~/phantom'
+            if self.phantom_dir is None:
+                self.phantom_dir = '~/phantom'
+                log.warning('Could not find the phantom directory, assuming PHANTOM_DIR=~/phantom.')
 
         # Try to find a SYSTEM variable
         self.system_in_make_options = False
@@ -182,11 +172,6 @@ class PhantomBatch(object):
         if 'job_names' in self.pbconf:
             jobhandler.cancel_all_jobs_by_name(self.pbconf)
 
-        # Cancel all splash jobs if splash has been invoked
-        if self.run_splash:
-            if 'job_names' in self.sconf:
-                jobhandler.cancel_all_jobs_by_name(self.sconf)
-
     def initialise(self):
         log.info('Initialising ' + self.pbconf['name'] + '..')
 
@@ -198,7 +183,7 @@ class PhantomBatch(object):
             os.mkdir(self.sims_dir)
 
         self.initiliase_phantom()
-        dirhandler.create_dirs(self.pconf, self.pbconf, 'simulations')
+        dirhandler.create_dirs(self.loop_variables, self.setup, self.pbconf, 'simulations')
 
         for tmp_dir in self.pbconf['dirs']:
             tmp_dir = os.path.join(self.sims_dir, tmp_dir)
@@ -218,7 +203,7 @@ class PhantomBatch(object):
         log.info('Checking if Phantom has been compiled for ' + self.pbconf['name'] + '..')
 
         if isinstance(self.pbconf['setup'], list):
-            """ Imagining that we can have an array of setups which would be consecutively executed.. 
+            """ Imagining that we can have an array of setups which would be consecutively executed..
             Say if we wanted to run some gas and then moddump with dust grains.."""
             log.error(
                 'You added a list for setup options. This functionality has not been implemented yet.')
@@ -336,31 +321,7 @@ class PhantomBatch(object):
                       for tmp_dir in self.pbconf['dirs']]
 
         self.pbconf['sim_dirs'] = setup_dirs
-        setup_strings = setuphandler.get_setup_strings(self.pconf, self.pbconf)
-
-        #  index keeps track setup_strings go into correct setup file
-        index = 0
-        for tmp_dir in setup_dirs:
-            #  This is where all of the different setups will be defined
-            filename = os.path.join(tmp_dir, setup_filename)
-
-            if self.pbconf['setup'] == 'disc':
-                if 'binary' in self.pbconf and self.pbconf['binary']:
-                    setuphandler.set_up_binary(
-                        filename, setup_strings[index], self.pconf)
-                else:
-                    setuphandler.set_up_disc(
-                        filename, setup_strings[index], self.pconf)
-
-            if 'setplanets' in self.pconf and (self.pconf['setplanets'] == 1):
-                setuphandler.add_planets(
-                    filename, setup_strings[index], self.pconf)
-
-            if 'add_dust' in self.pbconf and self.pbconf['add_dust']:
-                setuphandler.add_dust(
-                    filename, setup_strings[index], self.pconf)
-
-            index += 1
+        setuphandler.write_setup_files(self.pconf, self.pbconf)
 
         log.info('Completed.')
 
@@ -425,6 +386,7 @@ class PhantomBatch(object):
     def phantombatch_monitor(self):
         """ The default monitor for PhantomBatch. This monitor will set up Phantom and PhantomBatch, create simulations,
         submit and monitor jobs until completion. """
+        print("initialise is ", self.initialise_phantombatch)
 
         if self.initialise_phantombatch:
             self.initialise()
@@ -433,14 +395,12 @@ class PhantomBatch(object):
 
         self.pbconf['job_names'] = jobscripthandler.create_jobscripts(
             self.pconf, self.pbconf)
-        jobhandler.check_running_jobs(self.pbconf)
-        jobhandler.run_batch_jobs(self.pbconf)
-
-        if self.run_splash:
-            splashhandler.initialise_splash_handler(
-                self.pconf, self.pbconf, self.sconf)
-
-        completed = False
+        if self.submit_jobs:
+            jobhandler.check_running_jobs(self.pbconf)
+            jobhandler.run_batch_jobs(self.pbconf)
+            completed = False
+        else:
+            completed = True
 
         while not completed:
 
@@ -449,6 +409,3 @@ class PhantomBatch(object):
             time.sleep(self.pbconf['sleep_time'] * 60)
 
             completed = self.check_phantombatch_complete()
-
-            if self.run_splash:
-                splashhandler.splash_handler(self.pbconf, self.sconf)

@@ -2,8 +2,10 @@ import os
 import logging as log
 from phantombatch import util
 from phantombatch import param_keys
+import phantomconfig as pc
 
-def loop_keys_dir(pconf, pbconf):
+
+def loop_keys_dir(variables, setup, pbconf):
     """ A function for generating both directory names and job names for the job scripts. """
     dirs = []
     no_loop_keys = []
@@ -13,9 +15,19 @@ def loop_keys_dir(pconf, pbconf):
         fw_keys = pbconf['fix_with']
 
         for key in fw_keys + nl_keys:
+            print('key in fw and nl', key)
             # Assert that the parameters listed in no_loop are actually lists
             try:
-                assert isinstance(pconf[key], list)
+                value_list = util.extract_string_list_values(setup.config[key].value)
+            except KeyError:
+                log.error('Parmaeter {} is set in no_loop or fix_with, but is not in the setup file'.format(key))
+                util.call_exit()
+            except AttributeError:
+                log.error('Parmaeter {} is set in no_loop or fix_with, but is not a list in the setup file'.format(key))
+                util.call_exit()
+
+            try:
+                assert isinstance(value_list, list)
                 # type(pconf[key]) isinstance() type(list())
             except AssertionError:
                 no_loop_or_fix_with = 'fix_with' if key in fw_keys else 'no_loop'
@@ -25,46 +37,49 @@ def loop_keys_dir(pconf, pbconf):
 
         for i in range(0, len(pbconf['no_loop'])):
             if pbconf['no_loop'][i] not in no_loop_keys:
-                dirs = keys_dir(dirs, fw_keys[i], pconf, no_loop=False)
+                dirs = keys_dir(dirs, fw_keys[i], variables, no_loop=False)
                 no_loop_keys.append(fw_keys[i])
-
-                # dirs = keys_dir(dirs, nl_keys[i], pconf, no_loop=True)
                 no_loop_keys.append(nl_keys[i])
 
-    for key in pconf:
-        if isinstance(pconf[key], list) and (key not in no_loop_keys):
+    for key in variables:
+        if isinstance(setup.config[key].value, list) and (key not in no_loop_keys):
             print(key)
-            dirs = keys_dir(dirs, key, pconf, no_loop=False)
+            dirs = keys_dir(dirs, key, variables, no_loop=False)
 
     return dirs
 
 
-def keys_dir(dirs, key, pconf, no_loop=False):
+def keys_dir(dirs, key, variables, no_loop=False):
+    # print()
+    #
+    # if key == 'binary_a':
+    #     # Build array of a's, which are rounded, to get rid of unnecessary decimal places
+    #     dict_arr = [round(i, 1) for i in variables[key]]
+    #     dirs = dir_func(dirs, 'a', dict_arr, no_loop=no_loop)
+    #
+    # if key == 'binary_e':
+    #     # Build up an array of e's that isn't too long and disregard the '0.'
+    #     dict_arr = [format(i, '.2f')[2:] for i in variables[key]]
+    #     dirs = dir_func(dirs, 'e', dict_arr, no_loop=no_loop)
 
-    if key == 'binary_a':
-        # Build array of a's, which are rounded, to get rid of unnecessary decimal places
-        dict_arr = [round(i, 1) for i in pconf[key]]
-        dirs = dir_func(dirs, 'a', dict_arr, no_loop=no_loop)
+    # if key in param_keys.all_names:
+    #     dirs = dir_func(dirs, param_keys.all_names[key], variables[key], no_loop=no_loop)
+    # else:
+    #     dirs = dir_func(dirs, key, variables[key], no_loop=no_loop)
 
-    if key == 'binary_e':
-        # Build up an array of e's that isn't too long and disregard the '0.'
-        dict_arr = [format(i, '.2f')[2:] for i in pconf[key]]
-        dirs = dir_func(dirs, 'e', dict_arr, no_loop=no_loop)
-
-    if key in param_keys.all_names:
-        dirs = dir_func(dirs, param_keys.all_names[key], pconf[key], no_loop=no_loop)
+    dirs = dir_func(dirs, key, variables[key], no_loop=no_loop)
 
     return dirs
 
 
-def create_dirs(pconf, conf, setup_directory):
+def create_dirs(variables, setup, pbconf, setup_directory):
     """ Create directories and save them into conf dictionary. """
 
     log.debug('Checking if ' + setup_directory + ' directory exist..')
 
-    suite_directory = os.path.join(conf['run_dir'], conf['name'])
+    suite_directory = os.path.join(pbconf['run_dir'], pbconf['name'])
 
-    dir_names = loop_keys_dir(pconf, conf)
+    dir_names = loop_keys_dir(variables, setup, pbconf)
     dirs = []
 
     for tmp_dir in dir_names:
@@ -75,12 +90,12 @@ def create_dirs(pconf, conf, setup_directory):
         else:
             log.debug('Directory ' + cdir + ' already exists.')
 
-    conf['dirs'] = dirs
-    log.debug('Completed.')
+    pbconf['dirs'] = dirs
+    log.debug('Completed create_dirs.')
 
 
 def dir_func(dirs, string, dict_arr, no_loop=False):
-    if len(dirs) is not 0:
+    if len(dirs) != 0:
         dirs = [i+'_' for i in dirs]
 
     else:
