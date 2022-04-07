@@ -124,6 +124,7 @@ def keys_dir(dirs, key, variables, no_loop=False):
     #     dict_arr = [format(i, '.2f')[2:] for i in variables[key]]
     #     dirs = dir_func(dirs, 'e', dict_arr, no_loop=no_loop)
 
+
     if key in param_keys.all_names:
         dirs = dir_func(dirs, param_keys.all_names[key], variables[key], no_loop=no_loop)
     else:
@@ -150,6 +151,7 @@ def create_dirs_and_setup(variables, setup, pbconf):
             log.debug('Directory ' + cdir + ' already exists.')
 
     pbconf['sim_dirs'] = dirs
+    # print(pbconf['sim_dirs'])
     pbconf['setup_names'] = dir_names
     log.debug('Completed create_dirs.')
 
@@ -190,15 +192,15 @@ def setup_func(setup, setup_list, key, values, no_loop=False, fixed_pair=False, 
         # print(values)
         # print([(key[0], values[0][i], key[1], values[1][i]) for j in range(0, len(setup_list)) for i in range(0, len(values[0]))])
         # print("printing keys in the setup list")
-        for i in range(len(setup_list)):
-            print(key[0], setup_list[i].config[key[0]].value, key[1], setup_list[i].config[key[1]].value)
+        # for i in range(len(setup_list)):
+            # print(key[0], setup_list[i].config[key[0]].value, key[1], setup_list[i].config[key[1]].value)
 
 
         # print(len([(key[0], values[0][i], key[1], values[1][i]) for j in range(0, len(setup_list)) for i in range(0, len(values[0]))]))
         return setup_list
     else:
         setup_list = [deepcopy(setup_list[j]).change_value(key, values[i]) for j in range(0, len(setup_list)) for i in range(0, len(values))]
-        print(setup_list)
+        # print(setup_list)
         return setup_list
 
 
