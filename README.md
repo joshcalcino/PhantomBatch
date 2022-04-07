@@ -8,6 +8,9 @@ PhantomBatch is only compatible with Python 3.
 
 Below is a list of features that have been added, or that will be added, in no particular order of importance.
 
+To install, clone this repository, `cd` into it, and run `python setup.py develop` so that you can automatically become
+a developer of the code and help me maintain it :) 
+
 ## Current features:
 - Support for SLURM and PBS job schedulers
 - Any arbitrary Phantom setup is supported
@@ -114,13 +117,11 @@ varied for each combination of `a` and `e`.
 Please make sure that you add your cluster into the Phantom `Makefile`, and set your `SYSTEM` environment variable.
 PhantomBatch WILL NOT WORK if you do not do this!
 
-There are also two other environment variables you will need to set.
-The first is `PHANTOM_DIR`, which should provide the path to your copy of Phantom. 
+You must set an environment variable that specifies the `phantom` directory, `PHANTOM_DIR`.
 This is usually `~/phantom` in most cases.
-The second is `PHANTOMBATCH_DIR`, which is the directory where you have PhantomBatch cloned.
 
 You can run PhantomBatch from where ever you like, but make sure that the directory has plenty
 of space available for the number of dump files you expect to generate.
 
-There are a few example config files. Please look at them if you need help making your `config.json` files.
+There are an example config file with accompanying setup file. Please look at it if you need help making your `config.json` files.
 
