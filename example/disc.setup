@@ -1,0 +1,63 @@
+# input file for disc setup routine
+
+# resolution
+                  np =     1000000    ! number of gas particles
+
+# units
+           dist_unit =          au    ! distance unit (e.g. au,pc,kpc,0.1pc)
+           mass_unit =      solarm    ! mass unit (e.g. solarm,jupiterm,earthm)
+
+# central object(s)/potential
+            icentral =           1    ! use sink particles or external potential (0=potential,1=sinks)
+              nsinks =           3    ! number of sinks
+
+# options for hierarchical triple
+                  m1 =       0.170    ! first hierarchical level primary mass
+                  m2 =       1.000    ! first hierarchical level secondary mass
+                  q2 =       0.770    ! tight binary mass ratio
+               subst =          12    ! star to substitute
+            binary_a =      [1500, 1400, 1300]    ! wide binary semi-major axis
+            binary_e =       [0.000, 0.1, 0.2]    ! wide binary eccentricity
+            binary_i =       0.000    ! wide binary i, inclination (deg)
+            binary_O =       0.000    ! wide binary Omega, PA of ascending node (deg)
+            binary_w =        270.    ! wide binary w, argument of periapsis (deg)
+            binary_f =        180.    ! wide binary f, initial true anomaly (deg,180=apastron)
+           binary2_a =     [60., 50., 40.]    ! tight binary semi-major axis
+           binary2_e =    [0.000, 0.2, 0.4]    ! tight binary eccentricity
+           binary2_i =       [0, 15, 30]    ! tight binary i, inclination (deg)
+           binary2_O =       0.000    ! tight binary Omega, PA of ascending node (deg)
+           binary2_w =        270.    ! tight binary w, argument of periapsis (deg)
+           binary2_f =        180.    ! tight binary f, initial true anomaly (deg,180=apastron)
+               accr1 =       1.000    ! single star accretion radius
+              accr2a =       1.000    ! tight binary primary accretion radius
+              accr2b =       1.000    ! tight binary secondary accretion radius
+
+# options for multiple discs
+      use_binarydisc =           T    ! setup circumbinary disc
+     use_primarydisc =           F    ! setup circumprimary disc
+   use_secondarydisc =           F    ! setup circumsecondary disc
+      use_tripledisc =           F    ! setup circumtriple disc
+      use_global_iso =           F    ! globally isothermal or Farris et al. (2014)
+
+# options for circumbinary gas disc
+       isetgasbinary =           0    ! how to set gas density profile (0=total disc mass,1=mass within annulus,2=surface density normalisation,3=surface density at reference radius,4=minimum Toomre Q)
+     itapergasbinary =           F    ! exponentially taper the outer disc profile
+    ismoothgasbinary =           T    ! smooth inner disc
+         iwarpbinary =           F    ! warp disc
+          R_inbinary =        150.    ! inner radius
+         R_refbinary =        200.    ! reference radius
+         R_outbinary =       1000.    ! outer radius
+        disc_mbinary =       0.050    ! disc mass
+        pindexbinary =       1.000    ! p index
+        qindexbinary =       0.250    ! q index
+       posanglbinary =       0.000    ! position angle (deg)
+          inclbinary =       0.000    ! inclination (deg)
+           H_Rbinary =       0.050    ! H/R at R=R_ref
+             alphaSS =       0.005    ! desired alphaSS
+
+# set planets
+          setplanets =           0    ! add planets? (0=no,1=yes)
+
+# timestepping
+             norbits =         100    ! maximum number of binary orbits
+              deltat =       0.100    ! output interval as fraction of orbital period
