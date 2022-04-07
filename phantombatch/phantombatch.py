@@ -2,7 +2,7 @@ import os
 import shutil
 import logging as log
 import subprocess
-from phantombatch import setuphandler, inhandler, jobscripthandler, dirhandler, jobhandler, util
+from phantombatch import jobscripthandler, dirhandler, jobhandler, util
 import time
 import atexit
 import glob
@@ -309,22 +309,6 @@ class PhantomBatch(object):
 
             os.chdir(self.run_dir)
 
-    def create_setups(self):
-        """ This function will create all of the setup files for the simulation parameters
-        specified in the phantom config dictionary, pconf.
-        It does not matter if this is adding in a messy fashion, as phantomsetup solves it for us."""
-
-        log.info('Creating the Phantom setup files for ' + self.pbconf['name'] + '..')
-
-        setup_filename = os.path.join(self.pbconf['setup'] + '.setup')
-        setup_dirs = [os.path.join(self.run_dir, self.pbconf['name'], 'simulations', tmp_dir)
-                      for tmp_dir in self.pbconf['dirs']]
-
-        self.pbconf['sim_dirs'] = setup_dirs
-        setuphandler.create_setup_files(self.pconf, self.pbconf)
-
-        log.info('Completed.')
-
     def run_phantom_setup(self):
         """ This function will execute phantomsetup in each directory in pbconf['sim_dirs']
          to produce pbconf['name'].in, which is the file that is read in by phantom. """
@@ -390,7 +374,6 @@ class PhantomBatch(object):
 
         if self.initialise_phantombatch:
             self.initialise()
-            # self.create_setups()
             self.run_phantom_setup()
 
         self.pbconf['job_names'] = jobscripthandler.create_jobscripts(
