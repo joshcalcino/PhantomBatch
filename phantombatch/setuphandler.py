@@ -80,12 +80,12 @@ def get_setup_strings_noloop(pconf, pbconf):
     return setup_strings
 
 
-def setup_from_array(setup_strings, string, dict_arr, no_loop=False):
+def setup_from_array(setup_list, setup, key, dict_arr, no_loop=False):
     """ Create strings for the parameter arrays provided in pconf. """
-    print('Printing setup_string!!!!!!')
+    print('Printing setup_list!!!!!')
     print(setup_strings)
 
-    if len(setup_strings) is 0:
+    if len(setup_list) is 0:
         setup_strings = [string + ' = ' + str(i) for i in dict_arr]
         return setup_strings
 
@@ -121,36 +121,16 @@ def setup_from_array(setup_strings, string, dict_arr, no_loop=False):
     return setup_strings
 
 
-def edit_setup_file(new_setup, line, setup_strings, pconf):
-    """ Edit the setup file to add in setup_strings """
-    log.debug('Attempting to edit setup file.')
-
-    #  Make sure setup_strings is a list
-    if not isinstance(setup_strings, list):
-        setup_strings = [setup_strings]
-
-    for key in pconf:
-        if isinstance(pconf[key], list):
-            for string in setup_strings:  # loop over the strings that need to be written into setup file
-                if (key in line) and string.startswith(key):
-                    log.debug('Editing setup file..')
-                    new_setup.write(string + '\n')
-
-        else:
-            if line.strip().startswith(key):
-                new_setup.write(key + ' = ' + str(pconf[key]) + '\n')
-
-
-def write_setup_files(pconf, pbconf):
+def create_setup_files(variables, setup, pbconf):
     """ This function creates the strings to go into each simulation setup file. This should be changed. """
 
-    setup_strings = []
+    setup_list = []
     completed_keys = []
 
     if 'no_loop' not in pbconf and 'fix_with' not in pbconf:
-        for key in pconf:
-            if isinstance(pconf[key], list) and (key not in completed_keys):
-                setup_strings = setup_from_array(setup_strings, key, pconf[key], no_loop=False)
+        for key in variables.keys():
+            if isinstance(variables[key], list) and (key not in completed_keys):
+                setup_list= setup_from_array(setup_list, setup, key, variables[key], no_loop=False)
                 completed_keys.append(key)
 
     elif 'no_loop' in pbconf and 'fix_with' in pbconf:#  len(pbconf['no_loop']) > 0:

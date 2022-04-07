@@ -3,22 +3,27 @@ import logging as log
 from phantombatch import util
 from phantombatch import param_keys
 import phantomconfig as pc
+from copy import deepcopy
 
 
 def loop_keys_dir(variables, setup, pbconf):
     """ A function for generating both directory names and job names for the job scripts. """
     dirs = []
     no_loop_keys = []
+    setup_list = []
+
+    print(pbconf['no_loop'], pbconf['fix_with'])
 
     if 'no_loop' in pbconf and len(pbconf['no_loop']) > 0:
         nl_keys = pbconf['no_loop']
         fw_keys = pbconf['fix_with']
 
+        # Error checking...
         for key in fw_keys + nl_keys:
             print('key in fw and nl', key)
             # Assert that the parameters listed in no_loop are actually lists
             try:
-                value_list = util.extract_string_list_values(setup.config[key].value)
+                value_list = setup.config[key].value
             except KeyError:
                 log.error('Parmaeter {} is set in no_loop or fix_with, but is not in the setup file'.format(key))
                 util.call_exit()
@@ -35,9 +40,12 @@ def loop_keys_dir(variables, setup, pbconf):
                           ' options, but ' + str(key) + ' does not contain a list.')
                 util.call_exit()
 
-        for i in range(0, len(pbconf['no_loop'])):
-            if pbconf['no_loop'][i] not in no_loop_keys:
-                dirs = keys_dir(dirs, fw_keys[i], variables, no_loop=False)
+        for i in range(0, len(nl_keys)):
+            if nl_keys[i] not in no_loop_keys:
+                key = fw_keys[i]
+                dirs = keys_dir(dirs, key, variables, no_loop=False)
+                setup_list = setup_func(setup, setup_list, [fw_keys[i], nl_keys[i]], [variables[fw_keys[i]],
+                                    variables[nl_keys[i]]], no_loop=False, fixed_pair=True)
                 no_loop_keys.append(fw_keys[i])
                 no_loop_keys.append(nl_keys[i])
 
@@ -45,8 +53,9 @@ def loop_keys_dir(variables, setup, pbconf):
         if isinstance(setup.config[key].value, list) and (key not in no_loop_keys):
             print(key)
             dirs = keys_dir(dirs, key, variables, no_loop=False)
+            setup_list = setup_func(setup, setup_list, key, variables[key], no_loop=False)
 
-    return dirs
+    return dirs, setup_list
 
 
 def keys_dir(dirs, key, variables, no_loop=False):
@@ -72,26 +81,50 @@ def keys_dir(dirs, key, variables, no_loop=False):
     return dirs
 
 
-def create_dirs(variables, setup, pbconf, setup_directory):
+def create_dirs_and_setup(variables, setup, pbconf):
     """ Create directories and save them into conf dictionary. """
+    print(variables)
+    print(setup)
 
-    log.debug('Checking if ' + setup_directory + ' directory exist..')
-
-    suite_directory = os.path.join(pbconf['run_dir'], pbconf['name'])
-
-    dir_names = loop_keys_dir(variables, setup, pbconf)
+    dir_names, setup_list = loop_keys_dir(variables, setup, pbconf)
     dirs = []
 
-    for tmp_dir in dir_names:
-        cdir = os.path.join(suite_directory, setup_directory, tmp_dir)
+    for i, tmp_dir in enumerate(dir_names):
+        cdir = os.path.join(pbconf['sims_dir'], tmp_dir)
         dirs.append(cdir)
         if not os.path.exists(cdir):
             os.mkdir(cdir)
+            setup_filename = os.path.join(cdir, pbconf['name']+'.setup')
+            setup_list[i].write_phantom(setup_filename)
         else:
             log.debug('Directory ' + cdir + ' already exists.')
 
-    pbconf['dirs'] = dirs
+    pbconf['sim_dirs'] = dirs
     log.debug('Completed create_dirs.')
+
+
+def setup_func(setup, setup_list, key, values, no_loop=False, fixed_pair=False):
+    print('setup_list', setup_list)
+    print('key', key)
+    print('values', values)
+    if len(setup_list) == 0:
+        if fixed_pair:
+            setup_list = [deepcopy(setup).change_value(key[0], values[0][i]).change_value(key[1], values[0][i]) for i in range(0, len(values[0]))]
+        else:
+            setup_list = [deepcopy(setup).change_value(key, val) for val in values]
+        return setup_list
+
+    if no_loop:
+        # For now, this is only going to work if you're wanting no_loop over one set of parameters...
+        setup_list = [setup_list[i].change_value(key, values[i]) for i in range(0, len(setup_list))]
+        return setup_list
+
+    if fixed_pair:
+        setup_list = [deepcopy(setup_list[j].change_value(key[0], values[0][i]).change_value(key[1], values[1][i])) \
+                            for i in range(0, len(values[0])) for j in range(0, len(setup_list)) ]
+    else:
+        setup_list = [setup_list[j].change_value(key, values[i]) for j in range(0, len(setup_list)) for i in range(0, len(values))]
+    return setup_list
 
 
 def dir_func(dirs, string, dict_arr, no_loop=False):

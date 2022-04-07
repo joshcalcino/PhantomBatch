@@ -7,6 +7,7 @@ import time
 import atexit
 import glob
 import phantomconfig as pc
+from copy import deepcopy
 
 __all__ = ["PhantomBatch"]
 
@@ -42,23 +43,33 @@ class PhantomBatch(object):
         self.pbconf = util.load_init_config(config_filename)
 
         self.setup = pc.read_config(setup_filename)
+        print(self.setup.summary())
         self.loop_variables = {}
         for key in self.setup.config.keys():
             # phantomconfig saves lists as strings...
-            if isinstance(self.setup.config[key].value, str):
-                if self.setup.config[key].value[0] == '[':
-                    print(key)
-                    self.loop_variables[key] = util.extract_string_list_values(self.setup.config[key].value)
+            # print(key, type(self.setup.config[key].value))
+            if isinstance(self.setup.config[key].value, list):
+                print(key, self.setup.config[key].value)
+                self.loop_variables[key] = deepcopy(self.setup.config[key].value)
+                # if self.setup.config[key].value[0] == '[':
+                #     print(key)
+                #     self.loop_variables[key] = util.extract_string_list_values(self.setup.config[key].value)
 
         # Set up any  class variables that depend on config files
         # Get the setup directory for Phantom
-        self.setup_dir = os.path.join(self.run_dir, self.pbconf['name'], 'phantom_' + self.pbconf['setup'])
+        self.setup_dir = os.path.join(self.run_dir, self.pbconf['name'], 'phantom')
 
         # Get the suite_directory
         self.suite_directory = os.path.join(self.run_dir, self.pbconf['name'])
 
         # Get the simulations directory
         self.sims_dir = os.path.join(self.suite_directory, 'simulations')
+
+        # Save directories to the config file
+        self.pbconf['run_dir'] = self.run_dir
+        self.pbconf['setup_dir'] = self.setup_dir
+        self.pbconf['suite_dir'] = self.suite_directory
+        self.pbconf['sims_dir'] = self.sims_dir
 
         if self.fresh_start:
             if self.do_not_recompile:
@@ -183,15 +194,14 @@ class PhantomBatch(object):
             os.mkdir(self.sims_dir)
 
         self.initiliase_phantom()
-        dirhandler.create_dirs(self.loop_variables, self.setup, self.pbconf, 'simulations')
+        dirhandler.create_dirs_and_setup(self.loop_variables, self.setup, self.pbconf)
 
-        for tmp_dir in self.pbconf['dirs']:
+        for tmp_dir in self.pbconf['sim_dirs']:
             tmp_dir = os.path.join(self.sims_dir, tmp_dir)
 
             if not os.path.isfile(os.path.join(tmp_dir, 'phantom')):
                 # If phantom is not already in the current directory, copy it there
-                output = subprocess.check_output('cp ' + os.path.join(self.run_dir, self.pbconf['name'],
-                                                 'phantom_' + self.pbconf['setup']) + '/* ' + tmp_dir,
+                output = subprocess.check_output('cp ' + self.pbconf['setup_dir'] + '/* ' + tmp_dir,
                                                  stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
 
                 util.save_phantom_output(output.rstrip(), self.pbconf, self.run_dir)
@@ -202,112 +212,102 @@ class PhantomBatch(object):
 
         log.info('Checking if Phantom has been compiled for ' + self.pbconf['name'] + '..')
 
-        if isinstance(self.pbconf['setup'], list):
-            """ Imagining that we can have an array of setups which would be consecutively executed..
-            Say if we wanted to run some gas and then moddump with dust grains.."""
-            log.error(
-                'You added a list for setup options. This functionality has not been implemented yet.')
-            raise NotImplementedError
+        setup_dir = self.pbconf['setup_dir']
+        if not os.path.exists(setup_dir):
+            os.mkdir(setup_dir)
 
-        else:
-            setup_dir = os.path.join(
-                self.run_dir, self.pbconf['name'], 'phantom_' + self.pbconf['setup'])
+        if not os.path.exists(os.path.join(setup_dir, 'Makefile')):
+            log.info('Setting up Phantom.. This may take a few moments.')
 
-            if not os.path.exists(setup_dir):
-                os.mkdir(setup_dir)
+            output = subprocess.check_output(os.path.join(self.phantom_dir, 'scripts', 'writemake.sh') +
+                                             ' ' + self.pbconf['setup'] + ' > ' +
+                                             os.path.join(setup_dir, 'Makefile'),
+                                             stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
 
-            if not os.path.exists(os.path.join(setup_dir, 'Makefile')):
-                log.info('Setting up Phantom.. This may take a few moments.')
+            util.save_phantom_output(
+                output.rstrip(), self.pbconf, self.run_dir)
 
-                output = subprocess.check_output(os.path.join(self.phantom_dir, 'scripts', 'writemake.sh') +
-                                                 ' ' + self.pbconf['setup'] + ' > ' +
-                                                 os.path.join(setup_dir, 'Makefile'),
+            os.chdir(setup_dir)
+
+            make_settings = ''
+
+            if self.system_in_make_options:
+                make_settings = str(self.pbconf['make_options'])
+
+            elif self.system_string is not None:
+                make_settings = self.system_string
+
+                if 'make_options' in self.pbconf:
+                    make_settings = make_settings + ' ' + str(self.pbconf['make_options'])
+
+            log.info('Compiling Phantom with ' + make_settings)
+
+            # Compile the Phantom code with make_settings
+            output = subprocess.check_output('make ' + make_settings,
+                                             stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
+
+            # Check for warnings and errors, then save output
+            util.check_for_phantom_warnings(output, exit_at_error=True)
+            util.save_phantom_output(output.rstrip(), self.pbconf, self.run_dir)
+
+            # Compile phantomsetup with make_settings
+            output = subprocess.check_output('make setup ' + make_settings,
+                                             stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
+
+            util.check_for_phantom_warnings(output, exit_at_error=True)
+            util.save_phantom_output(output.rstrip(), self.pbconf, self.run_dir)
+
+            log.debug('Writing jobscript template.')
+
+            try:
+                # Use the job scheduler provided in pbconf if one has been defined
+                if "job_scheduler" in self.pbconf:
+                    log.info('Creating jobscripts using the job_scheduler provided in the '
+                             'PhantomBatch config file..')
+
+                    qsys = self.pbconf['job_scheduler']
+                    qsys_string = 'QSYS=' + str(qsys)#.upper()
+
+                else:
+                    qsys_string = ''
+
+                jobname_string = 'JOBNAME=' + 'phantombatch'
+
+                log.debug('Attempting to create jobscript files using ' + self.system_string + '.')
+
+                execution_string = 'make qscript INFILE=' + self.pbconf['setup'] + '.in ' + self.system_string + \
+                                   ' ' + qsys_string + ' ' + jobname_string
+
+                log.debug('Running ' + execution_string)
+
+                output = subprocess.check_output(execution_string,
                                                  stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
+
+                with open(self.pbconf['setup'] + '.jobscript', 'w+') as f:
+                    f.write(output)
+
+            except subprocess.CalledProcessError:
+                if 'Error: qscript needs known SYSTEM variables set' in output:
+                    log.error('Error attempting to create jobscript file. SYSTEM variable is not defined or not '
+                              'recognised. If SYSTEM is not ifort or gfortran, please define it in the Phantom '
+                              'Makefile before continuing to use PhantomBatch.')
+                else:
+                    log.info(output)
+                    log.error('Error attempting to create jobscript file. '
+                              'Please check the \'phantom_output\' file.')
 
                 util.save_phantom_output(
                     output.rstrip(), self.pbconf, self.run_dir)
 
-                os.chdir(setup_dir)
+                util.call_exit()
 
-                make_settings = ''
-
-                if self.system_in_make_options:
-                    make_settings = str(self.pbconf['make_options'])
-
-                elif self.system_string is not None:
-                    make_settings = self.system_string
-
-                    if 'make_options' in self.pbconf:
-                        make_settings = make_settings + ' ' + str(self.pbconf['make_options'])
-
-                log.info('Compiling Phantom with ' + make_settings)
-
-                # Compile the Phantom code with make_settings
-                output = subprocess.check_output('make ' + make_settings,
+            if 'make_moddump_options' in self.pbconf:
+                output = subprocess.check_output('make moddump ' + self.pbconf['make_moddump_options'],
                                                  stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
+                util.save_phantom_output(
+                    output.rstrip(), self.pbconf, self.run_dir)
 
-                # Check for warnings and errors, then save output
-                util.check_for_phantom_warnings(output, exit_at_error=True)
-                util.save_phantom_output(output.rstrip(), self.pbconf, self.run_dir)
-
-                # Compile phantomsetup with make_settings
-                output = subprocess.check_output('make setup ' + make_settings,
-                                                 stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
-
-                util.check_for_phantom_warnings(output, exit_at_error=True)
-                util.save_phantom_output(output.rstrip(), self.pbconf, self.run_dir)
-
-                log.debug('Writing jobscript template.')
-
-                try:
-                    # Use the job scheduler provided in pbconf if one has been defined
-                    if "job_scheduler" in self.pbconf:
-                        log.info('Creating jobscripts using the job_scheduler provided in the '
-                                 'PhantomBatch config file..')
-
-                        qsys = self.pbconf['job_scheduler']
-                        qsys_string = 'QSYS=' + str(qsys)#.upper()
-
-                    else:
-                        qsys_string = ''
-
-                    jobname_string = 'JOBNAME=' + 'phantombatch'
-
-                    log.debug('Attempting to create jobscript files using ' + self.system_string + '.')
-
-                    execution_string = 'make qscript INFILE=' + self.pbconf['setup'] + '.in ' + self.system_string + \
-                                       ' ' + qsys_string + ' ' + jobname_string
-
-                    log.debug('Running ' + execution_string)
-
-                    output = subprocess.check_output(execution_string,
-                                                     stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
-
-                    with open(self.pbconf['setup'] + '.jobscript', 'w+') as f:
-                        f.write(output)
-
-                except subprocess.CalledProcessError:
-                    if 'Error: qscript needs known SYSTEM variables set' in output:
-                        log.error('Error attempting to create jobscript file. SYSTEM variable is not defined or not '
-                                  'recognised. If SYSTEM is not ifort or gfortran, please define it in the Phantom '
-                                  'Makefile before continuing to use PhantomBatch.')
-                    else:
-                        log.info(output)
-                        log.error('Error attempting to create jobscript file. '
-                                  'Please check the \'phantom_output\' file.')
-
-                    util.save_phantom_output(
-                        output.rstrip(), self.pbconf, self.run_dir)
-
-                    util.call_exit()
-
-                if 'make_moddump_options' in self.pbconf:
-                    output = subprocess.check_output('make moddump ' + self.pbconf['make_moddump_options'],
-                                                     stderr=subprocess.STDOUT, universal_newlines=True, shell=True)
-                    util.save_phantom_output(
-                        output.rstrip(), self.pbconf, self.run_dir)
-
-                os.chdir(self.run_dir)
+            os.chdir(self.run_dir)
 
     def create_setups(self):
         """ This function will create all of the setup files for the simulation parameters
@@ -321,7 +321,7 @@ class PhantomBatch(object):
                       for tmp_dir in self.pbconf['dirs']]
 
         self.pbconf['sim_dirs'] = setup_dirs
-        setuphandler.write_setup_files(self.pconf, self.pbconf)
+        setuphandler.create_setup_files(self.pconf, self.pbconf)
 
         log.info('Completed.')
 
@@ -390,7 +390,7 @@ class PhantomBatch(object):
 
         if self.initialise_phantombatch:
             self.initialise()
-            self.create_setups()
+            # self.create_setups()
             self.run_phantom_setup()
 
         self.pbconf['job_names'] = jobscripthandler.create_jobscripts(

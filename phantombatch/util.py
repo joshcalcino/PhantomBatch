@@ -108,25 +108,6 @@ def check_config_key_change(conf, conf_tmp, key_change):
     return conf_tmp, key_change
 
 
-def extract_string_list_values(stupid_string):
-    """ Extract values from a list that's a stupid string and return them
-            as an actual list."""
-
-    # Trunctate the start and end
-    stupid_string = stupid_string.replace('[', '')
-    stupid_string = stupid_string.replace(']', '')
-
-    # Now split the string from a comma delimiter
-    split_string = stupid_string.split(',')
-
-    # Populate a list with the values
-    values = []
-    for string in split_string:
-        values.append(float(string))
-
-    return values
-
-
 def call_exit():
     log.info('PhantomBatch will now exit')
     exit()
