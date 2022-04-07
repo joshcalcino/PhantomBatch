@@ -5,6 +5,7 @@ from phantombatch import param_keys
 import phantomconfig as pc
 from copy import deepcopy
 import numpy as np
+from collections import Counter
 
 
 def loop_keys_dir(variables, setup, pbconf):
@@ -83,9 +84,15 @@ def loop_keys_dir(variables, setup, pbconf):
             # the directory name and setup files
             if key in max_to_min_keys_nl.keys():
                 # We do not want to expand setup_list if this has been entered more than once
+                repeated_values = True if len([k for k,v in Counter(variables[key]).items() if v>1]) > 0 else False
+                print("is key ", key, "repeated ", repeated_values)
                 if first_key_request:
                     if nl_keys[i] not in no_loop_keys:
-                        dirs = keys_dir(dirs, nl_keys[i], variables, no_loop=False)
+                        if repeated_values:
+                            dirs = keys_dir(dirs, [nl_keys[i], fw_keys[i]], variables, no_loop=False)
+                        else:
+                            dirs = keys_dir(dirs, nl_keys[i], variables, no_loop=False)
+
                     setup_list = setup_func(setup, setup_list, [fw_keys[i], nl_keys[i]], [variables[fw_keys[i]],
                                         variables[nl_keys[i]]], no_loop=False, fixed_pair=True, duplicate_key=False)
                     first_key_request = False
@@ -96,8 +103,12 @@ def loop_keys_dir(variables, setup, pbconf):
                 no_loop_keys.append(fw_keys[i])
 
         for i, key in enumerate(nl_keys):
+            repeated_values = True if len([k for k,v in Counter(variables[key]).items() if v>1]) > 0 else False
             if nl_keys[i] not in no_loop_keys:
-                dirs = keys_dir(dirs, nl_keys[i], variables, no_loop=False)
+                if repeated_values:
+                    dirs = keys_dir(dirs, [nl_keys[i], fw_keys[i]], variables, no_loop=False)
+                else:
+                    dirs = keys_dir(dirs, nl_keys[i], variables, no_loop=False)
                 setup_list = setup_func(setup, setup_list, [fw_keys[i], nl_keys[i]], [variables[fw_keys[i]],
                                     variables[nl_keys[i]]], no_loop=False, fixed_pair=True)
                 no_loop_keys.append(fw_keys[i])
@@ -112,26 +123,29 @@ def loop_keys_dir(variables, setup, pbconf):
 
 
 def keys_dir(dirs, key, variables, no_loop=False):
-    # print()
-    #
-    # if key == 'binary_a':
-    #     # Build array of a's, which are rounded, to get rid of unnecessary decimal places
-    #     dict_arr = [round(i, 1) for i in variables[key]]
-    #     dirs = dir_func(dirs, 'a', dict_arr, no_loop=no_loop)
-    #
     # if key == 'binary_e':
     #     # Build up an array of e's that isn't too long and disregard the '0.'
     #     dict_arr = [format(i, '.2f')[2:] for i in variables[key]]
     #     dirs = dir_func(dirs, 'e', dict_arr, no_loop=no_loop)
-
-
-    if key in param_keys.all_names:
-        dirs = dir_func(dirs, param_keys.all_names[key], variables[key], no_loop=no_loop)
+    if isinstance(key, list):
+        # print("repeated values, should be calling _keys_func twice")
+        # print(key[0], variables[key[0]])
+        # print(key[1], variables[key[1]])
+        dirs = _keys_func(dirs, key[0], variables[key[0]], no_loop=False)
+        # print("dirs after first call", dirs, len(dirs))
+        dirs = _keys_func(dirs, key[1], variables[key[1]], no_loop=True)
+        # print("dirs after second call", dirs, len(dirs))
     else:
-        dirs = dir_func(dirs, key, variables[key], no_loop=no_loop)
+        dirs = _keys_func(dirs, key, variables[key], no_loop=False)
 
-    # dirs = dir_func(dirs, key, variables[key], no_loop=no_loop)
+    return dirs
 
+
+def _keys_func(dirs, key, variables, no_loop=False):
+    if key in param_keys.all_names:
+        dirs = dir_func(dirs, param_keys.all_names[key], variables, no_loop=no_loop)
+    else:
+        dirs = dir_func(dirs, key, variables, no_loop=no_loop)
     return dirs
 
 
@@ -213,7 +227,6 @@ def dir_func(dirs, string, dict_arr, no_loop=False):
         return dirs
 
     if no_loop:
-        # For now, this is only going to work if you're wanting no_loop over one set of parameters...
         dirs = [dirs[i] + string + str(dict_arr[i % len(dict_arr)]).replace('.', '')
                 for i in range(0, len(dirs))]
         return dirs
