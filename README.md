@@ -10,30 +10,14 @@ Below is a list of features that have been added, or that will be added, in no p
 
 ## Current features:
 - Support for SLURM and PBS job schedulers
-- Binary simulations
-    - Currently gas only
-    - Sink particles only
-    - Primary, secondary, and circumbinary discs supported
-    - Disc warping supported
-    - Exponential disc taper supported
-- Circumstellar disks
-- Dust on start up (testing)
-- Adding in planets
-    - Support for looping over planet parameters
+- Any arbitrary Phantom setup is supported
 - Terminates jobs if PhantomBatch is interrupted
 
 Adding in any additional Phantom setup should be trivial. All we require is a copy of the `.setup` file,
 and a few lines in the code to make the setup available for use.
 
 ## Features to add:
-- Full support for binary discs
-    - Disc mass setting (Currently only supports total disc mass)
-    - Support for potential
-- Support for all disc setups
-- Support for non-disc setups
-- Editing setup.in files before running phantom simulations (should be easy)
 - Ability to pick up where it left off if aborted (basic implementation for now)
-- Ability to render splash images/movies (currently being implemented)
 - Support for more job schedulers (e.g. SGE)
 - Ability to stop simulations, moddump, and restart.
 - Support to change parameters being looped over
@@ -72,48 +56,60 @@ This will interrupt the process.
 ## The Config File
 
 The `config.json` file should look like something like this (minus the inline comments I have added):
-```{
-"phantom_setup": {               # Actual setup options for Phantom. MAKE SURE YOU USE CORRECT PHANTOM NAMES!!
-  "np": 50000,                   # Number of gas particles (dust not supported fow now)
-  "binary_e": [0, 0.5],          # We are doing a binary simulation, and want to do e = 0 and e = 0.5
-  "binary_a": 20,                # Semi-major axis of the companion
-  "binary_i": [0, 10, 20, 30],   # Also looping over inclination
-  "disc_mbinary": 0.005,         # Mass of the disc, currently the only supported method of setting disc mass
-  "R_inbinary": 30,              # The inner edge of the gas disc
-  "R_outbinary": 80,             # The outer edge of the gas disc...
-  "R_cbinary": 80,               # etc ....
-  "R_refbinary": 40,
-  "itapergasbinary": "F",
-  "iwarpbinary": "F",
-  "use_primarydisc": "F",
-  "deltat": 1                     # How frequently you want to dump
-  },
-
-"phantom_batch_setup": {         # This contains all of the PhantomBatch settings. These MUST be set correctly
-                                 # for sensible output from PhantomBatch.
-  "name": "binary_test",         # The name of the simulation suite you are performing. Call this whatever
-  "short_name": "bt",            # A short name of your simulation suite, keep this short! 
-  "num_dumps": 200,              # Number of dump files you want.
-  "sleep_time": 1,               # How long (in minutes) PhantomBatch waits between checking job progress
-  "setup": "disc",               # The Phantom setup you are simulating. "disc" is the only supported setup for now
-  "job_scheduler": "slurm",      # The job handler of your cluster. Two options exist for now: "slurm", "pbs"
-  "ncpus": 4,                    # Num of cpus per job. If your SYSTEM env variable is set, will overwrite that value
-  "memory": "16G",               # How much RAM you want to request per job
-  "user": "uqjcalci",            # Your username on the cluster
-  "no_email": 1,                 # 0 = receive spam emails from cluster, 1 = no emails
-  "job_limit": 4,                # Maximum number of jobs you want PhantomBatch monitoring at a time
-  "binary": 1,                   # Are you running a binary system? binary = 1
-  "add_dust": 0,                 # Add dust? only 0 is supported for now
-  "make_options": "",            # Any additional make settings for Phantom
-  "make_setup_options": ""       # As above for make setup options
+```
+"phantom_batch_setup": {              # This contains all of the PhantomBatch settings. These MUST be set correctly
+                                      # for sensible output from PhantomBatch.
+  "name": "binary_test",              # The name of the simulation suite you are performing. Call this whatever
+  "short_name": "bt",                 # A short name of your simulation suite, keep this short! 
+  "sleep_time": 1,                    # How long (in minutes) PhantomBatch waits between checking job progress
+  "setup": "disc",                    # The Phantom setup you are simulating. Only used for naming things.
+  "no_loop": ["binary_e", "binary_i"] # Parameters that you do not want to be looped over.
+  "fix_wth": ["binary_a", "binary_a"] # Parameters fixed with no loop parameters
+  "job_scheduler": "slurm",           # The job handler of your cluster. Two options exist for now: "slurm", "pbs"
+  "ncpus": 4,                         # Num of cpus per job. If your SYSTEM env variable is set, will overwrite that value
+  "memory": "16G",                    # How much RAM you want to request per job
+  "user": "uqjcalci",                 # Your username on the cluster
+  "no_email": 1,                      # 0 = receive spam emails from cluster, 1 = no emails
+  "job_limit": 4,                     # Maximum number of jobs you want PhantomBatch monitoring at a time
+  "binary": 1,                        # Are you running a binary system? binary = 1
+  "make_options": "",                 # Any additional make settings for Phantom
+  "make_setup_options": ""            # As above for make setup options
   }
-}
+
+```
+The user then provides a phantom setup file and add into the parameters they would like to explore. For example,
+if you have a circumbinary disc simulation and you want to change the semi-major axis, eccentricity, inclination,
+and the mass of the companion, your setup file would look something like this:
+
+```
+# input file for disc setup routine
+
+# resolution
+                  np =     1000000    ! number of gas particles
+
+# units
+           dist_unit =          au    ! distance unit (e.g. au,pc,kpc,0.1pc)
+           mass_unit =      solarm    ! mass unit (e.g. solarm,jupiterm,earthm)
+
+# central object(s)/potential
+            icentral =           1    ! use sink particles or external potential (0=potential,1=sinks)
+              nsinks =           2    ! number of sinks
+             ibinary =           0    ! binary orbit (0=bound,1=unbound [flyby])
+
+# options for binary
+                  m1 =       1.000              ! primary mass
+                  m2 =       [0.1, 0.2, 0.3]    ! secondary mass
+            binary_a =       [20, 15, 10]       ! binary semi-major axis
+            binary_e =       [0, 0.2, 0.4]      ! binary eccentricity
+            binary_i =       [0, 15, 60]        ! i, inclination (deg)
 ```
 
-The above `config.json` file would simulate a total of 8 discs, each with 50k SPH particles for 200 orbits of the
-companion. If you define unused values in `phantom_setup`, do not worry, as these will be ignored for your particular
-choice of `setup`. For example, if you defined values for planets, but do no specifically set `setplanets = T`, then any
-other variables specifying planet parameters will be neglected in creating your Phantom `setup` files.
+Let's assume you're using the `config.json` file above. This would simulate `3*3=9` different simulations.
+The parameters `binary_a`, `binary_e`, and `binary_i` would all be fixed with one another (e.g. the first simulation
+would have `a=20, e=0, i=1`, the second `a=15, e=-0.2, i=15`, etc). Thus we would have 3 different binary orbits 
+multiplied by 3 different companion masses for a total of 9 simulations. If `binary_i` was left out of the 
+`no_loop` parameter, we would have `3*3*3=27` simulations where the inclination and companion mass is 
+varied for each combination of `a` and `e`.
 
 Please make sure that you add your cluster into the Phantom `Makefile`, and set your `SYSTEM` environment variable.
 PhantomBatch WILL NOT WORK if you do not do this!
