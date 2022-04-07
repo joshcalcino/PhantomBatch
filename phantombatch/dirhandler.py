@@ -124,12 +124,12 @@ def keys_dir(dirs, key, variables, no_loop=False):
     #     dict_arr = [format(i, '.2f')[2:] for i in variables[key]]
     #     dirs = dir_func(dirs, 'e', dict_arr, no_loop=no_loop)
 
-    # if key in param_keys.all_names:
-    #     dirs = dir_func(dirs, param_keys.all_names[key], variables[key], no_loop=no_loop)
-    # else:
-    #     dirs = dir_func(dirs, key, variables[key], no_loop=no_loop)
+    if key in param_keys.all_names:
+        dirs = dir_func(dirs, param_keys.all_names[key], variables[key], no_loop=no_loop)
+    else:
+        dirs = dir_func(dirs, key, variables[key], no_loop=no_loop)
 
-    dirs = dir_func(dirs, key, variables[key], no_loop=no_loop)
+    # dirs = dir_func(dirs, key, variables[key], no_loop=no_loop)
 
     return dirs
 
@@ -150,6 +150,7 @@ def create_dirs_and_setup(variables, setup, pbconf):
             log.debug('Directory ' + cdir + ' already exists.')
 
     pbconf['sim_dirs'] = dirs
+    pbconf['setup_names'] = dir_names
     log.debug('Completed create_dirs.')
 
 

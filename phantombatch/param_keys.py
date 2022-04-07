@@ -34,8 +34,14 @@ for key in disc_key_dict.keys():
 # ---------------------------------------------------------------------------
 # |                            STAR ORBIT KEYS                              |
 # ---------------------------------------------------------------------------
+orbital_elements = ['a', 'e', 'i', 'O', 'w', 'f']
+star_names = ['binary', 'binary2']
+star_names_short = ['b', 'b2']
 
-orbits = { 'm2': 'm2', 'accr2': 'acr2', 'binary_i': 'i' }
+orbits = { 'm2': 'm2', 'accr2': 'acr2'}
+for i, name in enumerate(star_names):
+    for j, el in enumerate(orbital_elements):
+        orbits[name+'_'+el] = star_names_short[i]+'_'+el
 
 for key in orbits.keys():
     all_names[key] = orbits[key]
