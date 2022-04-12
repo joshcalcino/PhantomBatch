@@ -1,7 +1,22 @@
 import json
 import logging as log
 import pickle
+import pathlib
+import phantomconfig as pc
 import os
+
+
+def read_in_file(in_file):
+    complete = False
+    print(type(in_file))
+    if isinstance(in_file, str):
+        # in file is a path
+        filepath = pathlib.Path(filename).expanduser().resolve()
+        in_file = pc.read_config(filepath)
+        complete = True
+        return in_file, complete
+    elif isinstance(in_file, pc.PhantomConfig):
+        return in_file, complete
 
 
 def load_init_config(filename):

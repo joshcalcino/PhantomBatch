@@ -15,7 +15,7 @@ __all__ = ["PhantomBatch"]
 class PhantomBatch(object):
 
     def __init__(self, config_filename, setup_filename, jobscript_filename=None,
-                 verbose=False, terminate_at_exit=True, run_dir=None,
+                 in_file=None, verbose=False, terminate_at_exit=True, run_dir=None,
                  fresh_start=False, do_not_recompile=False, submit_jobs=False):
         # Set class variables
         self.terminate_at_exit = terminate_at_exit
@@ -26,6 +26,11 @@ class PhantomBatch(object):
         self.initialise_jobscripts = True
         if self.jobscript_filename != None:
             self.initialise_jobscripts = False
+
+        self.in_file = in_file
+        self.complete_in_file = True
+        if in_file != None:
+            self.in_file, self.complete_in_file = util.read_in_file(in_file)
 
         # Get running directory, use current directory if run_dir not specified
         if run_dir is not None:
@@ -330,13 +335,20 @@ class PhantomBatch(object):
                                                  universal_newlines=True, shell=True)
 
                 if 'writing setup options file' in output:
-                    # Rerun phantomsetup because there might be some annoying
+                    # Rerun phantomsetup because there might be some annoying missing parameter
                     output = subprocess.check_output('./phantomsetup ' + self.pbconf['setup'], stderr=subprocess.STDOUT,
                                                      universal_newlines=True, shell=True)
 
                 util.check_for_phantom_warnings(output.rstrip())
                 util.save_phantom_output(
                     output.rstrip(), self.pbconf, self.run_dir)
+
+                if self.in_file != None:
+                    # We will overwrite values in the .in file
+                    current_in_file = pc.read_config(self.pbconf['setup'] + '.in')
+                    for key in self.in_file.config:
+                        current_in_file.change_value(key, self.in_file.config[key].value)
+                    current_in_file.write_phantom(self.pbconf['setup'] + '.in')
 
         os.chdir(self.run_dir)
         log.info('Completed.')
